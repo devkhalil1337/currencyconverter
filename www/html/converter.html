@@ -6,43 +6,48 @@
        </div>
     </div>
     <div class="new-recipe-section">
-       <form class="form" action="##" method="post" id="setting">
+       <form class="form" id="setting">
           <div class="fb-text">Select two currency example Bitcoin to</div>
           <div class="stt-form">
              <div class="form-group">
                 <div class="col-xs-12">
                    <label for="title">From</label>
-                   <select class="custom-select" id="gender2">
-                    <option selected>Choose...</option>
-                    <option value="1">Bitcoin</option>
-                    <option value="2">Ethereum</option>
-                    <option value="3">USD</option>
-                  </select> 
+                   <select class="custom-select" id="gender2" ng-options="curr.name for curr in currencies" ng-model="Currobject.selectedFromCurr">
+                    <!-- <option selected>Choose...</option>
+                    <option ng-repeat = "curr in currencies" value="{{curr}}" ng-selected="Currobject.selectedFromCurr.coinId == curr.coinId">{{curr.name}}</option> -->
+                </select> 
+                </div>
+             </div>
+             <div class="form-group">
+                <div class="col-xs-12">
+                   <label for="detail">Amount</label>
+                   <input id="ingredients" name="ingredients" cols="40" rows="3" class="form-control" ng-model="Currobject.fromCurrency"></textarea>
                 </div>
              </div>
              <div class="form-group">
                 <div class="col-xs-12">
                     <label for="title">To</label>
-                    <select class="custom-select" id="gender2">
-                     <option selected>Choose...</option>
-                     <option value="1">Bitcoin</option>
-                     <option value="2">Ethereum</option>
-                     <option value="3">USD</option>
+                    <select class="custom-select" id="gender2" ng-options="curr.name for curr in currencies" ng-model="Currobject.selectedToCurr">
                    </select> 
                  </div>
              </div>
              <div class="form-group">
                 <div class="col-xs-12">
-                   <label for="detail">Amount</label>
-                   <textarea id="ingredients" name="ingredients" cols="40" rows="3" class="form-control"  ></textarea>
-                </div>
-             </div>
-             <div class="form-group">
-                <div class="col-xs-12">
                    <label for="detail">Convereted</label>
-                   <textarea id="directions" name="directions" cols="40" rows="3" class="form-control"  ></textarea>
+                   <div class="input-group mb-3">
+                        <!-- <div class="input-group-prepend">
+                            <span class="input-group-text">{{Currobject.selectedToCurr}}</span>
+                        </div> -->
+                        <input id="directions" name="directions" class="form-control"  ng-model="Currobject.toCurrency" readonly></textarea>
+                   </div>
                 </div>
              </div>
+          </div>
+          <div class="submit-btn">
+            <div class="col-xs-12">
+              <button class="theme-button" ng-click="convert()">Save</button>
+              <button class="theme-button" ng-click="Currobject = {}">Reset</button>
+            </div>
           </div>
        </form>
     </div>
