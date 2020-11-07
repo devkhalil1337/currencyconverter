@@ -6,13 +6,13 @@
        </div>
     </div>
     <div class="new-recipe-section">
-       <form class="form" id="setting">
+       <form class="form" name="userForm" id="setting">
           <div class="fb-text">Select two currency example Bitcoin to</div>
           <div class="stt-form">
              <div class="form-group">
                 <div class="col-xs-12">
                    <label for="title">From</label>
-                   <select class="custom-select" id="gender2" ng-options="curr.name for curr in currencies" ng-model="Currobject.selectedFromCurr">
+                   <select class="custom-select" id="gender2" ng-options="curr.name for curr in currencies" ng-model="Currobject.selectedFromCurr" required>
                     <!-- <option selected>Choose...</option>
                     <option ng-repeat = "curr in currencies" value="{{curr}}" ng-selected="Currobject.selectedFromCurr.coinId == curr.coinId">{{curr.name}}</option> -->
                 </select> 
@@ -21,7 +21,7 @@
              <div class="form-group">
                 <div class="col-xs-12">
                    <label for="detail">Amount</label>
-                   <input id="ingredients" name="ingredients" cols="40" rows="3" class="form-control" ng-model="Currobject.fromCurrency"></textarea>
+                   <input type="number" id="ingredients" name="ingredients" class="form-control" ng-model="Currobject.fromCurrency">
                 </div>
              </div>
              <div class="form-group">
@@ -33,20 +33,19 @@
              </div>
              <div class="form-group">
                 <div class="col-xs-12">
-                   <label for="detail">Convereted</label>
+                   <label for="detail">Converted</label>
                    <div class="input-group mb-3">
-                        <!-- <div class="input-group-prepend">
-                            <span class="input-group-text">{{Currobject.selectedToCurr}}</span>
-                        </div> -->
-                        <input id="directions" name="directions" class="form-control"  ng-model="Currobject.toCurrency" readonly></textarea>
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">{{Currobject.selectedToCurr.symbol | uppercase}}</span>
+                        </div>
+                        <input id="directions" name="directions" class="form-control"  ng-model="Currobject.toCurrency" readonly>
                    </div>
                 </div>
              </div>
           </div>
           <div class="submit-btn">
             <div class="col-xs-12">
-              <button class="theme-button" ng-click="convert()">Save</button>
-              <button class="theme-button" ng-click="Currobject = {}">Reset</button>
+              <button class="theme-button" ng-click="convert()" ng-disabled="userForm.$invalid">Check</button>
             </div>
           </div>
        </form>
