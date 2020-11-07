@@ -1,0 +1,6 @@
+/node_modules
+/platforms
+/plugins
+*.rar
+*.zip
+*.dll

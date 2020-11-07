@@ -1,49 +1,95 @@
-<!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
+<!doctype html>
+<html lang="en">
 
-    http://www.apache.org/licenses/LICENSE-2.0
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<title>Currency Converter</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<meta name="HandheldFriendly" content="True">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
 
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
-<html>
-    <head>
-        <!--
-        Customize this policy to fit your own app's needs. For more guidance, see:
-            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
-        Some notes:
-            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-                * Enable inline JS: add 'unsafe-inline' to default-src
-        -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
-        <meta name="format-detection" content="telephone=no">
-        <meta name="msapplication-tap-highlight" content="no">
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-        <link rel="stylesheet" type="text/css" href="css/index.css">
-        <title>Hello World</title>
-    </head>
-    <body>
-        <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
-        </div>
-        <script type="text/javascript" src="cordova.js"></script>
+<!-- Bootstrap v4.3.1 CSS -->
+<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="css/normalize.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/theme/themelibrary.css">
+<!-- Slick CSS -->
+<link rel="stylesheet" type="text/css" href="lib/slick/slick/slick.css">
+<link rel="stylesheet" type="text/css" href="lib/slick/slick/slick-theme.css">
+<!-- Magnific Popup core CSS file -->
+<link rel="stylesheet" href="lib/Magnific-Popup-master/dist/magnific-popup.css">
+<!-- Font Awesome Free 5.10.2 JS -->
+<script defer src="lib/fontawesome-free-5.10.2-web/js/brands.js"></script>
+<script defer src="lib/fontawesome-free-5.10.2-web/js/solid.js"></script>
+<script defer src="lib/fontawesome-free-5.10.2-web/js/fontawesome.js"></script>
+</head>
+<body class="default">
+  
+<!-- Preloading -->
+<div class="preloading">
+  <div class="wrap-preload">
+    <div class="cssload-loader"></div>
+  </div>
+</div>
+<!-- .Preloading -->
+
+<div class="wrapper">
+    <!-- Sidebar left -->
+    <nav id="sidebarleft" class="sidenav">
+       <div id="dismiss">
+          <i class="fas fa-times"></i>
+       </div>
+       <div class="sidebar-header">
+          <h3></h3>
+       </div>
+       <ul class="list-unstyled components">
+           <li>
+             <a href><i class="fas fa-cog"></i> Settings</a>
+          </li>
+          <li>
+             <a href ><i class="fas fa-exclamation-circle"></i> About</a>
+          </li>
+       </ul>
+    </nav>
+    <!-- .Sidebar left -->
+    <!-- Page content  -->
+    <div id="content">
+       <!-- Header  -->
+       <nav class="navbar navbar-expand-lg navbar-light bg-header">
+          <div class="container-fluid">
+             <button type="button" id="sidebarleftbutton" class="btn">
+             <i class="fas fa-align-left"></i>
+             </button>
+             <div class="logo">Converter</div>
+          </div>
+       </nav>
+       <!-- .Header  -->
+       <!-- Content Wrap  -->
+       <div class="content-wrap"></div>
+       <!-- .Content wrap  -->
+    </div>
+    <!-- .Page content  -->
+    <div class="overlay"></div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery v3.4.1 -->
+    <script src="lib/jquery/jquery-3.4.1.min.js"></script>
+    <!--  Bootstrap v4.3.1 JS -->
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Magnific Popup core JS file -->
+    <script src="lib/Magnific-Popup-master/dist/jquery.magnific-popup.js"></script>
+    <!-- Slick JS -->
+    <script src="lib/slick/slick/slick.min.js"></script>
+    <!--  Custom JS -->
+    <script src="js/theme.js"></script>
+ </div>
+<script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
-    </body>
+</body>
+
+<!-- Mirrored from uidevr.com/tf/foodkuy/homepage.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Aug 2020 18:30:24 GMT -->
 </html>
