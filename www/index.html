@@ -45,7 +45,7 @@
           <i class="fas fa-times"></i>
        </div>
        <div class="sidebar-header">
-          <h3></h3>
+          <h3>Converter</h3>
        </div>
        <ul class="list-unstyled components">
            <li>
@@ -70,7 +70,9 @@
        </nav>
        <!-- .Header  -->
        <!-- Content Wrap  -->
-       <div class="content-wrap"></div>
+       <div class="content-wrap">
+           <div  data-ng-view ></div>
+       </div>
        <!-- .Content wrap  -->
     </div>
     <!-- .Page content  -->
@@ -86,9 +88,13 @@
     <script src="lib/slick/slick/slick.min.js"></script>
     <!--  Custom JS -->
     <script src="js/theme.js"></script>
- </div>
-<script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
+    </div>
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/angular-route.min.js"></script>
+    <script src="lib/index.js"></script>
+    <script src="js/Controllers/mainController.js"></script>
+    <script src="js/Controllers/converterController.js"></script>
+    <script src="js/Services/navigationService.js"></script>
 </body>
 
 <!-- Mirrored from uidevr.com/tf/foodkuy/homepage.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Aug 2020 18:30:24 GMT -->
