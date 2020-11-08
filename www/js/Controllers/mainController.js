@@ -1,7 +1,7 @@
 angular.module('myApp').controller("mainController", function ($scope, $q, $interval, $rootScope, navigationService) {
 
     function init() {
-        $scope.selectedTab = "converter"
+        $scope.selectedTab = "settings"
         console.log("I am init function of mainController");
         navigationService.setActiveTemplate($scope.selectedTab);
     }
@@ -10,7 +10,20 @@ angular.module('myApp').controller("mainController", function ($scope, $q, $inte
     $scope.openPage = function (option) {
         $scope.selectedTab = option;
         navigationService.setActiveTemplate(option);
+        $scope.closeSidePanel();
     }
+
+    $scope.openSidePanel = function(){
+        $('#sidebarleft').addClass('active'); 
+    }
+    
+    $scope.closeSidePanel = function(){
+        $('#sidebarleft').removeClass('active');
+        $('#sidebarright').removeClass('active');
+        $('.overlay').removeClass('active'); 
+        $('body').removeClass('noscroll');
+    }
+
 
     $scope.$on("$destroy", navigationService.observeActiveTemplateChanged(
         function (val) {

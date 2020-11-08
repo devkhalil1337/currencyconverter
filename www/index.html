@@ -39,42 +39,9 @@
 <!-- .Preloading -->
 
 <div class="wrapper">
-    <!-- Sidebar left -->
-    <nav id="sidebarleft" class="sidenav">
-       <div id="dismiss">
-          <i class="fas fa-times"></i>
-       </div>
-       <div class="sidebar-header">
-          <h3>Converter</h3>
-       </div>
-       <ul class="list-unstyled components">
-           <li>
-             <a href><i class="fas fa-cog"></i> Settings</a>
-          </li>
-          <li>
-             <a href ><i class="fas fa-exclamation-circle"></i> About</a>
-          </li>
-       </ul>
-    </nav>
-    <!-- .Sidebar left -->
+    
     <!-- Page content  -->
-    <div id="content">
-       <!-- Header  -->
-       <nav class="navbar navbar-expand-lg navbar-light bg-header">
-          <div class="container-fluid">
-             <button type="button" id="sidebarleftbutton" class="btn">
-             <i class="fas fa-align-left"></i>
-             </button>
-             <div class="logo">Converter</div>
-          </div>
-       </nav>
-       <!-- .Header  -->
-       <!-- Content Wrap  -->
-       <div class="content-wrap">
-           <div  data-ng-view ></div>
-       </div>
-       <!-- .Content wrap  -->
-    </div>
+    <div  data-ng-view ></div>
     <!-- .Page content  -->
     <div class="overlay"></div>
     <!-- Optional JavaScript -->
@@ -94,6 +61,7 @@
     <script src="lib/index.js"></script>
     <script src="js/Controllers/mainController.js"></script>
     <script src="js/Controllers/converterController.js"></script>
+    <script src="js/Controllers/settingsController.js"></script>
     <script src="js/Services/navigationService.js"></script>
     <script src="js/Services/apiService.js"></script>
     <script src="js/allcurrencies.js"></script>

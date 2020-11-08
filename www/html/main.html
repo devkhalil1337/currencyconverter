@@ -1,1 +1,39 @@
-<div data-ng-include="activeOption"></div>
+
+<!-- Sidebar left -->
+<nav id="sidebarleft" class="sidenav">
+    <div id="dismiss"  data-ng-click="closeSidePanel();">
+       <i class="fas fa-times"></i>
+    </div>
+    <div class="sidebar-header">
+       <h3>{{headerText}}</h3>
+    </div>
+    <ul class="list-unstyled components">
+        <li>
+            <a href data-ng-click="openPage('converter')"><i class="fas fa-exchange-alt"></i> Converter</a>
+         </li>
+        <li>
+          <a href data-ng-click="openPage('settings')"><i class="fas fa-cog"></i> Settings</a>
+       </li>
+       <li>
+          <a href ><i class="fas fa-exclamation-circle"></i> About</a>
+       </li>
+    </ul>
+ </nav>
+ <!-- .Sidebar left -->
+<div id="content">
+    <!-- Header  -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-header">
+        <div class="container-fluid">
+           <button type="button" id="sidebarleftbutton" ng-click="openSidePanel();" class="btn">
+           <i class="fas fa-align-left"></i>
+           </button>
+           <div class="logo">{{headerText}}</div>
+        </div>
+     </nav>
+    <!-- .Header  -->
+    <!-- Content Wrap  -->
+    <div class="content-wrap">
+        <div data-ng-include="activeOption"></div>
+    </div>
+    <!-- .Content wrap  -->
+ </div>
