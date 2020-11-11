@@ -6,6 +6,8 @@ angular.module('myApp').factory('navigationService', function (detachedScope) {
     var allTemplates = [];
     allTemplates["converter"] = { url: "html/converter.html", topHeader: "Converter" };
     allTemplates["settings"] = { url: "html/settings.html", topHeader: "Settings" };
+    allTemplates["prices"] = { url: "html/cryptoPrices.html", topHeader: "Crypto Prices" };
+    
     return {
 
         getActiveTemplate: function () {

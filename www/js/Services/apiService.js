@@ -34,5 +34,16 @@ angular.module('myApp').factory('apiService', function ($http, $q) {
         }
         return $http(req);
     }
+    factory.getMarketPrices = function (data) {
+        let url = apiBaseUrl + "coins/markets?vs_currency="+data.name+"&order=market_cap_desc&per_page=100&page=1&sparkline=false";
+        var req = {
+            method: 'GET',
+            url: url,
+            headers: {
+                'Content-Type': "application/json"
+            },
+        }
+        return $http(req);
+    }
     return factory;
 });

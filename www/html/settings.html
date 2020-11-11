@@ -1,4 +1,4 @@
-<div class="food-page-section">
+<div class="food-page-section" ng-controller="settingsController">
     <div class="wrap-food-recipe">
        <div class="heading-page">
           Settings
@@ -9,7 +9,7 @@
        <div class="section-single-page">
           <div class="row">
              <div class="col-6">
-                <button type="button" style="width:100%" class="btn btn-success" data-ng-click="">Crypto Prices</button>
+                <button type="button" style="width:100%" class="btn btn-success" data-ng-click="openPage('prices')">Crypto Prices</button>
              </div>
              <div class="col-6">
                 <button type="button" style="width:100%" class="btn btn-success" data-ng-click="openPage('converter')">Converter</button>
@@ -17,15 +17,10 @@
           </div>
           <div class="row pt-5">
              <div class="col-12">
-                <h6>Select Currency</h6>
+                <h6>Select Currency </h6>
                 <div class="input-group">
-                    <select class="custom-select">
-                      <option selected>Choose...</option>
-                      <option value="1">USD</option>
-                      <option value="2">Euro</option>
-                      <option value="3">Pound</option>
-                    </select>
-                  </div>
+                   <select class="custom-select" ng-model="selectedCurr" ng-options = "curr.name for curr in supportedCurrencies" ng-change="setCurrency();"></select>
+                 </div>
              </div>
           </div>
        </div>
