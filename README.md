@@ -1,6 +1,10 @@
-# Currency Converter
+# Crypto Currency Converter
 
 This application will help to convert currency from one to another. below is the supported list of currency currently.
+
+Features
+- Currency Converter
+- Display Live Prices of top 10 crytocurrencies
 
 Supported Currencey :
   "btc",
