@@ -13,6 +13,7 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
         let formData = {
             name:curr ? curr.name : "usd"
         }
+        $scope.Currency = formData;
         try{
             let response = await apiService.getMarketPrices(formData);
             $scope.MarketPrices = response.data;
