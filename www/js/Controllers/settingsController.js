@@ -13,6 +13,10 @@ angular.module('myApp').controller("settingsController", function ($scope, $q, $
         {
             id:3,
             name:"PKR"
+        },
+        {
+            id:4,
+            name:"INR"
         }
 
     ]

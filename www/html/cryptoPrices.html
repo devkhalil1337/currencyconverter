@@ -20,7 +20,16 @@
                       <div class="lrc-text">
                         {{price.current_price | number:2}} {{Currency.name | uppercase}} 
                       </div>
-                      <p class="card-text"><small class="text-muted">{{price.last_updated}}</small></p>
+                      <div class="lrc-button">
+                        <div class="lrcb-left">
+                          <span class="lhc like" ng-style="{color:price.market_cap_change_percentage_24h > 0  ? 'green':'red'}" ><i class="fas"  ng-style="{color:price.market_cap_change_percentage_24h > 0  ? 'green':'red'}" ng-class="{'fa-arrow-up':price.market_cap_change_percentage_24h > 0,'fa-arrow-down':price.market_cap_change_percentage_24h < 0}"></i> {{price.market_cap_change_percentage_24h | number:2}}%</span>
+                          <span class="lhc hours"><i class="fas fa-clock"></i> {{price.last_updated}}</span>
+                        </div>
+                        <div class="lrcb-right">
+                          
+                        </div>
+                        <div class="clear"></div>
+                      </div>
                     </div>
                    <div class="add-favourite">
                       <div class="awl-btn highlight">
