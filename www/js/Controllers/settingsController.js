@@ -17,6 +17,10 @@ angular.module('myApp').controller("settingsController", function ($scope, $q, $
         {
             id:4,
             name:"INR"
+        },
+        {
+            id:4,
+            name:"GBP"
         }
 
     ]

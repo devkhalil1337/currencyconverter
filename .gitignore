@@ -4,3 +4,5 @@
 *.rar
 *.zip
 *.dll
+currency.keystore
+build.json
