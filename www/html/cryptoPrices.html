@@ -9,36 +9,39 @@
                 </div>
              </div>
           </div>
-          <div class="lrc-item" ng-repeat="price in MarketPrices">
-             <a href >
-                <div class="lrc-content">
-                   <div class="lrc-img">
-                      <img src="{{price.image}}" alt="item" style="width: 70%;">
-                   </div>
-                   <div class="lrc-desc">
-                      <div class="lrc-title">{{price.name}}</div>
-                      <div class="lrc-text">
-                        {{price.current_price | number:2}} {{Currency.name | uppercase}}  <span class="lhc like" ng-style="{color:price.market_cap_change_percentage_24h > 0  ? 'green':'red'}" ><i class="fas"  ng-style="{color:price.market_cap_change_percentage_24h > 0  ? 'green':'red'}" ng-class="{'fa-arrow-up':price.market_cap_change_percentage_24h > 0,'fa-arrow-down':price.market_cap_change_percentage_24h < 0}"></i> {{price.market_cap_change_percentage_24h | number:2}}%</span>
-                      </div>
-                      <div class="lrc-button">
-                        <div class="lrcb-left">
-                          <span class="lhc hours"><i class="fas fa-clock"></i> {{price.last_updated}}</span>
+          <div class="row m-0">
+            <div class="lrc-item col-md-6 col-sm-12 col-xs-3" ng-repeat="price in MarketPrices">
+               <a href >
+                  <div class="lrc-content">
+                     <div class="lrc-img">
+                        <img src="{{price.image}}" alt="item" style="width: 70%;">
+                     </div>
+                     <div class="lrc-desc">
+                        <div class="lrc-title">{{price.name}}</div>
+                        <div class="lrc-text">
+                          {{price.current_price | number:2}} {{Currency.name | uppercase}}  <span class="lhc like" ng-style="{color:price.market_cap_change_percentage_24h > 0  ? 'green':'red'}" ><i class="fas"  ng-style="{color:price.market_cap_change_percentage_24h > 0  ? 'green':'red'}" ng-class="{'fa-arrow-up':price.market_cap_change_percentage_24h > 0,'fa-arrow-down':price.market_cap_change_percentage_24h < 0}"></i> {{price.market_cap_change_percentage_24h | number:2}}%</span>
                         </div>
-                        <div class="lrcb-right">
-                          
+                        <div class="lrc-button">
+                          <div class="lrcb-left">
+                            <span class="lhc hours"><i class="fas fa-clock"></i> {{price.last_updated}}</span>
+                          </div>
+                          <div class="lrcb-right">
+                            
+                          </div>
+                          <div class="clear"></div>
                         </div>
-                        <div class="clear"></div>
                       </div>
-                    </div>
-                   <div class="add-favourite">
-                      <div class="awl-btn highlight">
-                         <div class="awl-btn-icon">
-                            <i class="fas fa-heart"></i>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-             </a>
+                     <div class="add-favourite">
+                        <div class="awl-btn highlight">
+                           <div class="awl-btn-icon">
+                              <i class="fas fa-heart"></i>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </a>
+          </div>
+
           </div>
        </div>
        <!-- <div class="wrap-pagination">
