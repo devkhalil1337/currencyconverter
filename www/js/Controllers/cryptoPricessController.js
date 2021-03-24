@@ -23,6 +23,10 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
         }
     }
 
+    $scope.getCoin = coinObj => {
+        localStorageService.setCoinTradeView(coinObj.symbol);
+    }
+
 
     init();
 });

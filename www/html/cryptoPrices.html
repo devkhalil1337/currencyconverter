@@ -12,7 +12,7 @@
           <div class="row m-0">
             <div class="lrc-item col-md-6 col-sm-12 col-xs-3" ng-repeat="price in MarketPrices">
                <a href >
-                  <div class="lrc-content">
+                  <div class="lrc-content" data-ng-click="getCoin(price);openPage('marketprice')">
                      <div class="lrc-img">
                         <img src="{{price.image}}" alt="item" style="width: 70%;">
                      </div>
@@ -44,18 +44,5 @@
 
           </div>
        </div>
-       <!-- <div class="wrap-pagination">
-          <ul class="pagination">
-             <li class="page-item">
-                <a class="page-link" href>Previous</a>
-             </li>
-             <li class="page-item" ng-repeat="counter in paginations.pages">
-                <a class="page-link" href>{{counter+1}}</a>
-             </li>
-             <li class="page-item">
-                <a class="page-link" href>Next</a>
-             </li>
-          </ul>
-       </div> -->
     </div>
  </div>

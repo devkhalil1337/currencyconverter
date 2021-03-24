@@ -11,9 +11,14 @@ angular.module('myApp').factory('localStorageService', function () {
       return  JSON.parse(localStorage.getItem("curr"));
     }
 
+    const _setCoinTradeView = coinSymbol => localStorage.setItem("setCoinTradeView",coinSymbol);
+    const _getCoinTradeView = () => localStorage.getItem("setCoinTradeView");
     return{
         setCurrency:_setCurrency,
-        getCurrency:_getCurrency
+        getCurrency:_getCurrency,
+        setCoinTradeView:_setCoinTradeView,
+        getCoinTradeView:_getCoinTradeView
+
     }
 
 

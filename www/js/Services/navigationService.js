@@ -7,7 +7,7 @@ angular.module('myApp').factory('navigationService', function (detachedScope) {
     allTemplates["converter"] = { url: "html/converter.html", topHeader: "Converter" };
     allTemplates["settings"] = { url: "html/settings.html", topHeader: "Settings" };
     allTemplates["prices"] = { url: "html/cryptoPrices.html", topHeader: "Crypto Prices" };
-    
+    allTemplates["marketprice"] = { url: "html/markets.html", topHeader: "Markets Price" };
     return {
 
         getActiveTemplate: function () {
