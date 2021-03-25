@@ -1,4 +1,4 @@
-angular.module('myApp').controller("marketController", function ($scope,localStorageService) {
+angular.module('myApp').controller("marketController", function ($scope,localStorageService,navigationService) {
 
     $scope.MarketPrices = {};
 
@@ -6,6 +6,9 @@ angular.module('myApp').controller("marketController", function ($scope,localSto
         $scope.loadWidget();
     }
 
+    $scope.changePage = () => {
+        navigationService.setActiveTemplate("prices");
+    }
     $scope.loadWidget = function () {
         let symbol = localStorageService.getCoinTradeView();
         console.log(symbol);
