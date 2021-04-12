@@ -4,7 +4,7 @@ This application will help to convert currency from one to another. below is the
 
 Features
 - Currency Converter
-- Display Live Prices of top 10 crytocurrencies
+- Display Live Prices of top 250 crypto currencies
 
 Supported Currencey :
   "btc",
