@@ -1,8 +1,8 @@
 <div ng-controller="cryptoPricessController">
-    <div class="list-section favorites">
+    <div class="list-section favorites"  on-scroll-to-bottom="loadMore()">
        <div class="wrap-list-rc">
           <div class="row m-0">
-            <div class="lrc-item col-md-6 col-sm-12 col-xs-3" ng-repeat="price in MarketPrices">
+            <div class="lrc-item col-md-6 col-sm-12 col-xs-3" ng-repeat="price in MarketPrices | limitTo:totalDisplayed  track by $index">
                <a href >
                   <div class="lrc-content" data-ng-click="getCoin(price);openPage('marketprice')">
                      <div class="lrc-img">
