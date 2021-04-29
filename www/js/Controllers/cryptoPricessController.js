@@ -2,9 +2,8 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
 
     $scope.MarketPrices = {};
     $scope.totalDisplayed = 20;
-
+    $scope.selectedCoin = {};
     function init() {
-        console.log("I am crypto");
         $scope.getAllCoinsPrices();
     }
 
@@ -26,8 +25,28 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
         }
     }
 
-    $scope.getCoin = coinObj => {
-        localStorageService.setCoinTradeView(coinObj.symbol);
+
+    $scope.loadWidget =  coinObj =>  {
+        $scope.selectedCoin = coinObj;
+        const tradingView = new TradingView.widget({
+            'width': '200',
+            'height': '500',
+            'container_id': 'technical-analysis',
+            'autosize': true,
+            'symbol': coinObj.symbol,
+            'interval': 'D',
+            'timezone': 'Etc/UTC',
+            'theme': 'Light',
+            'style': '1',
+            'locale': 'en',
+            'toolbar_bg': '#f1f3f6',
+            'enabling_publishing': false,
+            'withdateranges': true,
+            'hide_side_toolbar': false,
+            'allow_symbol_change': true,
+            'save_image': false,
+            'hideideas': true
+        });
     }
 
 

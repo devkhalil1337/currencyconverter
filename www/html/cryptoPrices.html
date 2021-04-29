@@ -4,7 +4,7 @@
           <div class="row m-0">
             <div class="lrc-item col-md-6 col-sm-12 col-xs-3" ng-repeat="price in MarketPrices | limitTo:totalDisplayed  track by $index">
                <a href >
-                  <div class="lrc-content" data-ng-click="getCoin(price);openPage('marketprice')">
+                  <div class="lrc-content" data-toggle="modal" data-target="#marketGraphModal" data-ng-click="loadWidget(price);">
                      <div class="lrc-img">
                         <img src="{{price.image}}" alt="item" style="width: 70%;">
                      </div>
@@ -37,4 +37,35 @@
           </div>
        </div>
     </div>
+
+
+
+
+    <div class="modal fade modal-lg markert-dialog" id="marketGraphModal" tabindex="-1" role="dialog" aria-labelledby="coinSelectModalLabel" aria-hidden="true">
+      <div class="modal-dialog market-modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <div class="col-md-12">
+                      <div class="card ">
+                          <!-- <div class="card-header ">
+                              <h4 class="card-title">{{symbolSelected}}</h4>
+                              <p class="card-category">{{'text.priceChart' | i18n}}</p>
+                          </div> -->
+                          <div class="card-body" style="padding: 0px 0px 0px 0px;">
+                              <div id="technical-analysis" style="width:250;height: 500px"></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer"></div>
+          </div>
+      </div>
+  </div>
+
+  
  </div>
