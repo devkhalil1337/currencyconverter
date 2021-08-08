@@ -1,11 +1,14 @@
-angular.module('myApp').controller("mainController", function ($scope, $q, $interval, $rootScope, navigationService) {
+angular.module('myApp').controller("mainController", function ($scope, $q, $interval, $rootScope, navigationService,currencyService) {
 
     function init() {
+        setAllCurrencies();
         $scope.selectedTab = "settings"
         console.log("I am init function of mainController");
         navigationService.setActiveTemplate($scope.selectedTab);
     }
 
+
+    const setAllCurrencies = async () => await currencyService.getAllCurrencies();
 
     $scope.openPage = function (option) {
         $scope.selectedTab = option;
