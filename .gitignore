@@ -1,8 +1,6 @@
 /node_modules
-/platforms
+/.idea
 /plugins
 *.rar
 *.zip
 *.dll
-currency.keystore
-build.json

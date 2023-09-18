@@ -1,0 +1,14 @@
+
+{
+    "android":
+    {
+        "release":
+        {
+            "keystore": "currency.keystore",
+            "storePassword": "12ab34cd",
+            "alias":"currency",
+            "password":"12ab34cd",
+            "keystoretype":""
+        }
+    }
+}
