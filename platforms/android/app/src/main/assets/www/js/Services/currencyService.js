@@ -1,12 +1,12 @@
-angular.module('myApp').factory('currencyService', function ($http, $q,apiService,localStorageService) {
+angular.module('myApp').factory('currencyService', function ($http, $q, apiService, localStorageService) {
 
     var factory = {};
-    factory.getAllCurrencies = async function(){
+    factory.getAllCurrencies = async function () {
         let curr = localStorageService.getCurrency();
         let formData = {
-            name:curr ? curr.name : "usd"
+            name: curr ? curr.name : "usd"
         }
-        let response =  await apiService.getMarketPrices(formData);
+        let response = await apiService.getMarketPrices(formData);
         localStorageService.setToLocalStorage(response.data);
     }
 
