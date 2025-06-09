@@ -1,10 +1,12 @@
-angular.module('myApp').controller("converterController", function ($scope, $q, $interval, $rootScope, navigationService, apiService) {
+angular.module('myApp').controller("converterController", function ($scope, $q, $interval, $rootScope, navigationService, apiService, localStorageService) {
 
     $scope.Currobject = {}
-    $scope.currencies = allcurrencies;
+    $scope.currencies = [...allcurrencies, ...localStorageService.geAllCurrenciesFromLocalStorage()];
+    // let MarketPrices = ;
     function init() {
         $scope.Currobject.selectedFromCurr = allcurrencies[0];
         $scope.Currobject.selectedToCurr = allcurrencies[1];
+        console.log($scope.currencies)
     }
 
     $scope.getAllSupportedCurrencies = async function () {
@@ -25,7 +27,7 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
     }
 
     $scope.convert = async function () {
-        let selectedFromCoinId = $scope.Currobject.selectedFromCurr.coinId.toLowerCase()
+        let selectedFromCoinId = $scope.Currobject.selectedFromCurr.id.toLowerCase()
         let selectedToCoinId = $scope.Currobject.selectedToCurr.symbol.toLowerCase()
         try {
             let formData = {
