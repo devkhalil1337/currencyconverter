@@ -1,4 +1,4 @@
-angular.module('myApp').controller("converterController", function ($scope, $q, $interval, $rootScope, navigationService,apiService) {
+angular.module('myApp').controller("converterController", function ($scope, $q, $interval, $rootScope, navigationService, apiService) {
 
     $scope.Currobject = {}
     $scope.currencies = allcurrencies;
@@ -7,9 +7,9 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
         $scope.Currobject.selectedToCurr = allcurrencies[1];
     }
 
-    $scope.getAllSupportedCurrencies = async function(){
-        try{
-           let response = await apiService.getAllSupportedCurrencies();
+    $scope.getAllSupportedCurrencies = async function () {
+        try {
+            let response = await apiService.getAllSupportedCurrencies();
             let fullresp = await apiService.getAllSupportedCurrenciesFullName();
             $scope.currencies = response.data;
             let filtered = fullresp.data.filter(c => {
@@ -19,24 +19,24 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
             $scope.Currobject.selectedFromCurr = $scope.currencies[0];
             $scope.Currobject.selectedToCurr = $scope.currencies[1];
             $scope.$apply();
-        }catch(error){
+        } catch (error) {
             console.log(error);
         }
     }
 
-    $scope.convert = async function(){
-        let selectedFromCoinId = $scope.Currobject.selectedFromCurr.coinId
-        let selectedToCoinId = $scope.Currobject.selectedToCurr.coinId
-        try{
+    $scope.convert = async function () {
+        let selectedFromCoinId = $scope.Currobject.selectedFromCurr.coinId.toLowerCase()
+        let selectedToCoinId = $scope.Currobject.selectedToCurr.symbol.toLowerCase()
+        try {
             let formData = {
-                selectedFromCurr:selectedFromCoinId,
-                selectedToCurr:selectedToCoinId
+                selectedFromCurr: selectedFromCoinId,
+                selectedToCurr: selectedToCoinId
             }
             let response = await apiService.getCurrenciesPrice(formData)
             $scope.Currobject.toCurrency = response.data && response.data[selectedFromCoinId] && response.data[selectedFromCoinId][selectedToCoinId] || 0;
-            $scope.Currobject.toCurrency = $scope.Currobject.toCurrency ?  ($scope.Currobject.toCurrency * $scope.Currobject.fromCurrency) : 0;
+            $scope.Currobject.toCurrency = $scope.Currobject.toCurrency ? ($scope.Currobject.toCurrency * $scope.Currobject.fromCurrency) : 0;
             $scope.$apply();
-        }catch(error){
+        } catch (error) {
             $scope.Currobject.toCurrency = 0;
             console.log(error);
         }

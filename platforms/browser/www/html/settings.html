@@ -1,0 +1,31 @@
+<div class="food-page-section" ng-controller="settingsController">
+   <div class="wrap-food-recipe">
+      <div class="heading-page">
+         Dashboard
+         <div class="back-btn">
+            <div class="icon-back"><i class="fa fa-tachometer"></i></div>
+         </div>
+      </div>
+      <div class="section-single-page">
+         <div class="row">
+            <div class="col-6">
+               <button type="button" style="width:100%" class="btn btn-success"
+                  data-ng-click="openPage('prices')">Crypto Prices</button>
+            </div>
+            <div class="col-6">
+               <button type="button" style="width:100%" class="btn btn-success"
+                  data-ng-click="openPage('converter')">Converter</button>
+            </div>
+         </div>
+         <div class="row pt-5">
+            <div class="col-12">
+               <h6>Select Currency </h6>
+               <div class="input-group">
+                  <select class="custom-select" ng-model="selectedCurr"
+                     ng-options="curr.name for curr in supportedCurrencies" ng-change="setCurrency();"></select>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
