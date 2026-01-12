@@ -25,7 +25,8 @@ angular.module('myApp').factory('apiService', function ($http, $q) {
     }
     factory.getCurrenciesPrice = function (data) {
         //let url = apiBaseUrl + "simple/price?ids=" + data.selectedFromCurr + "&vs_currencies=" + data.selectedToCurr;
-        let url = "https://api.coingecko.com/api/v3/simple/price?ids=" + data.selectedFromCurr + "&vs_currencies=" + data.selectedToCurr;
+        // let url = "https://api.coingecko.com/api/v3/simple/price?ids=" + data.selectedFromCurr + "&vs_currencies=" + data.selectedToCurr;
+        let url = "https://latest.currency-api.pages.dev/v1/currencies/" + data.selectedFromCurr + ".json"
         var req = {
             method: 'GET',
             url: url,
