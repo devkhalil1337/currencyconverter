@@ -1,0 +1,172 @@
+.converter-container {
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: calc(100vh - 56px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.currency-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    overflow: hidden;
+    position: relative;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.currency-header {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.currency-header h3 {
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.input-group-custom {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 5;
+}
+
+.input-group-custom:focus-within {
+    border-color: #95b700;
+    box-shadow: 0 0 0 3px rgba(149, 183, 0, 0.1);
+    background: white;
+}
+
+.input-label {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 8px;
+    display: block;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.currency-select-wrapper {
+    display: flex;
+    flex-direction: column;
+    /* Stack input and select vertically or keep horizontal */
+    gap: 5px;
+}
+
+.custom-select-styled {
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    /* Bold name */
+    color: #333;
+    font-size: 1.1rem;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.amount-input {
+    flex: 3;
+    border: none;
+    border-bottom: 2px dashed #ccc;
+    background: rgba(255, 255, 255, 0.5);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+    text-align: right;
+    width: 100%;
+    min-width: 100px;
+    outline: none;
+    padding: 5px;
+    pointer-events: auto;
+    transition: all 0.3s;
+}
+
+.amount-input:focus {
+    border-bottom-color: #95b700;
+    background: #fff;
+}
+
+.amount-input::placeholder {
+    color: #ccc;
+}
+
+.swap-container {
+    display: flex;
+    justify-content: center;
+    margin: -10px 0;
+    position: relative;
+    z-index: 10;
+}
+
+.btn-swap {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #95b700;
+    color: white;
+    border: 4px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(149, 183, 0, 0.3);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-swap:active {
+    transform: scale(0.9) rotate(180deg);
+}
+
+.btn-swap i {
+    font-size: 14px;
+}
+
+.result-section {
+    margin-top: 30px;
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px dashed #eee;
+}
+
+.conversion-rate {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.last-updated {
+    font-size: 0.75rem;
+    color: #aaa;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.currency-card {
+    animation: slideIn 0.4s ease-out;
+}

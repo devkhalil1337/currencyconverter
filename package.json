@@ -12,12 +12,14 @@
     "cordova": {
         "plugins": {},
         "platforms": [
-            "android",
-            "browser"
+            "browser",
+            "android"
         ]
     },
     "dependencies": {
-        "cordova-android": "^12.0.1",
         "cordova-browser": "6.0.0"
+    },
+    "devDependencies": {
+        "cordova-android": "^12.0.1"
     }
 }

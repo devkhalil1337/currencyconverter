@@ -32,25 +32,25 @@ var allcurrencies = [
     {
         id: 'usd',
         coinId: "usd",
-        name: "USD",
+        name: "US Dollar (USD)",
         symbol: "usd"
     },
     {
         id: "eur",
         coinId: "eur",
-        name: "Euro",
+        name: "Euro (EUR)",
         symbol: "eur"
     },
     {
         id: "pkr",
         coinId: "pkr",
-        name: "Pakistani Ruppees",
+        name: "Pakistani Rupee (PKR)",
         symbol: "PKR"
     },
     {
         id: "inr",
         coinId: "inr",
-        name: "Indian Ruppees",
+        name: "Indian Rupee (INR)",
         symbol: "INR"
     },
 ]
