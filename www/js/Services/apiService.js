@@ -1,6 +1,13 @@
 angular.module('myApp').factory('apiService', function ($http, $q) {
     var apiBaseUrl = "https://api.coingecko.com/api/v3/";
+    var currencyApiBase = "https://latest.currency-api.pages.dev/v1/";
     var factory = {};
+    factory.getCurrencyCodesAndNames = function () {
+        return $http.get(currencyApiBase + "currencies.json");
+    };
+    factory.getUsdRates = function () {
+        return $http.get(currencyApiBase + "currencies/usd.json");
+    };
     factory.getAllSupportedCurrencies = function () {
         let url = apiBaseUrl + "simple/supported_vs_currencies";
         var req = {
@@ -26,7 +33,7 @@ angular.module('myApp').factory('apiService', function ($http, $q) {
     factory.getCurrenciesPrice = function (data) {
         //let url = apiBaseUrl + "simple/price?ids=" + data.selectedFromCurr + "&vs_currencies=" + data.selectedToCurr;
         // let url = "https://api.coingecko.com/api/v3/simple/price?ids=" + data.selectedFromCurr + "&vs_currencies=" + data.selectedToCurr;
-        let url = "https://latest.currency-api.pages.dev/v1/currencies/" + data.selectedFromCurr + ".json"
+        let url = currencyApiBase + "currencies/" + encodeURIComponent(data.selectedFromCurr) + ".json";
         var req = {
             method: 'GET',
             url: url,

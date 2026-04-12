@@ -1,50 +1,169 @@
-angular.module('myApp').controller("converterController", function ($scope, $q, $interval, $rootScope, navigationService, apiService, localStorageService) {
+angular.module('myApp').controller("converterController", function ($scope, $q, apiService) {
 
-    $scope.Currobject = {}
-    $scope.currencies = [...allcurrencies, ...localStorageService.geAllCurrenciesFromLocalStorage()];
-    // let MarketPrices = ;
-    function init() {
-        $scope.Currobject.selectedFromCurr = allcurrencies[0];
-        $scope.Currobject.selectedToCurr = allcurrencies[1];
-        console.log($scope.currencies)
+    var STALE_MS = 120 * 1000;
+    var cachedUsdRates = null;
+    var ratesFetchedAt = 0;
+    var refreshPromise = null;
+
+    $scope.Currobject = {
+        fromCurrency: 1,
+        toCurrency: 0
+    };
+    $scope.currencies = [];
+    $scope.listLoading = true;
+    $scope.listError = null;
+    $scope.refreshingRates = false;
+    $scope.ratesDateLabel = "";
+
+    function isRatesStale() {
+        return !ratesFetchedAt || !cachedUsdRates || (Date.now() - ratesFetchedAt > STALE_MS);
+    }
+
+    function applyLocalConvert(amount, from, to) {
+        if (from === to) {
+            $scope.Currobject.toCurrency = amount;
+            return;
+        }
+        if (!cachedUsdRates) {
+            $scope.Currobject.toCurrency = 0;
+            return;
+        }
+        var uf = cachedUsdRates[from];
+        var ut = cachedUsdRates[to];
+        if (typeof uf !== "number" || typeof ut !== "number" || uf === 0) {
+            $scope.Currobject.toCurrency = 0;
+            return;
+        }
+        $scope.Currobject.toCurrency = amount * (ut / uf);
+    }
+
+    function ensureUsdRates(forceRefresh) {
+        if (!forceRefresh && cachedUsdRates && !isRatesStale()) {
+            return $q.resolve();
+        }
+        if (refreshPromise) {
+            return refreshPromise;
+        }
+        $scope.refreshingRates = true;
+        refreshPromise = apiService.getUsdRates().then(function (response) {
+            var data = response.data;
+            if (data && data.usd && typeof data.usd === "object") {
+                cachedUsdRates = data.usd;
+                ratesFetchedAt = Date.now();
+                $scope.ratesDateLabel = data.date || "";
+            }
+        }).catch(function (err) {
+            console.log(err);
+        }).finally(function () {
+            $scope.refreshingRates = false;
+            refreshPromise = null;
+        });
+        return refreshPromise;
+    }
+
+    function buildCurrencyOptions(meta) {
+        return Object.keys(meta).map(function (code) {
+            var label = meta[code];
+            if (!label || !String(label).trim()) {
+                label = code.toUpperCase();
+            }
+            return {
+                code: code.toLowerCase(),
+                name: label + " (" + code.toUpperCase() + ")"
+            };
+        }).sort(function (a, b) {
+            return a.name.localeCompare(b.name);
+        });
+    }
+
+    function pickDefault(currencies, code) {
+        var lower = code.toLowerCase();
+        for (var i = 0; i < currencies.length; i++) {
+            if (currencies[i].code === lower) {
+                return currencies[i];
+            }
+        }
+        return null;
+    }
+
+    async function loadCurrencies() {
+        $scope.listLoading = true;
+        $scope.listError = null;
+        try {
+            var resp = await apiService.getCurrencyCodesAndNames();
+            $scope.currencies = buildCurrencyOptions(resp.data);
+            $scope.Currobject.selectedFromCurr = pickDefault($scope.currencies, "usd") || $scope.currencies[0];
+            $scope.Currobject.selectedToCurr = pickDefault($scope.currencies, "pkr")
+                || pickDefault($scope.currencies, "eur")
+                || ($scope.currencies[1] || $scope.currencies[0]);
+            await ensureUsdRates(true);
+        } catch (err) {
+            console.log(err);
+            $scope.listError = "Could not load currency list.";
+            var fallback = (allcurrencies || []).map(function (c) {
+                var code = (c.id || c.symbol || "").toString().toLowerCase();
+                return {
+                    code: code,
+                    name: c.name + " (" + code.toUpperCase() + ")"
+                };
+            });
+            $scope.currencies = fallback;
+            $scope.Currobject.selectedFromCurr = $scope.currencies[0];
+            $scope.Currobject.selectedToCurr = $scope.currencies[1] || $scope.currencies[0];
+            await ensureUsdRates(true);
+        } finally {
+            $scope.listLoading = false;
+            $scope.$apply();
+            $scope.convert();
+        }
     }
 
     $scope.getAllSupportedCurrencies = async function () {
-        try {
-            let response = await apiService.getAllSupportedCurrencies();
-            let fullresp = await apiService.getAllSupportedCurrenciesFullName();
-            $scope.currencies = response.data;
-            let filtered = fullresp.data.filter(c => {
-                return ($scope.currencies.some(f => f == c.symbol))
-            })
-            console.log(filtered);
-            $scope.Currobject.selectedFromCurr = $scope.currencies[0];
-            $scope.Currobject.selectedToCurr = $scope.currencies[1];
-            $scope.$apply();
-        } catch (error) {
-            console.log(error);
-        }
-    }
+        await loadCurrencies();
+    };
 
-    $scope.convert = async function () {
-        let selectedFromCoinId = $scope.Currobject.selectedFromCurr.id.toLowerCase()
-        let selectedToCoinId = $scope.Currobject.selectedToCurr.symbol.toLowerCase()
-        try {
-            let formData = {
-                selectedFromCurr: selectedFromCoinId,
-                selectedToCurr: selectedToCoinId
-            }
-            let response = await apiService.getCurrenciesPrice(formData)
-            $scope.Currobject.toCurrency = response.data && response.data[selectedFromCoinId] && response.data[selectedFromCoinId][selectedToCoinId] || 0;
-            $scope.Currobject.toCurrency = $scope.Currobject.toCurrency ? ($scope.Currobject.toCurrency * $scope.Currobject.fromCurrency) : 0;
-            $scope.$apply();
-        } catch (error) {
+    $scope.refreshRates = function () {
+        ensureUsdRates(true).then(function () {
+            $scope.convert();
+        });
+    };
+
+    $scope.swapCurrencies = function () {
+        var from = $scope.Currobject.selectedFromCurr;
+        var to = $scope.Currobject.selectedToCurr;
+        if (!from || !to || $scope.listLoading) {
+            return;
+        }
+        $scope.Currobject.selectedFromCurr = to;
+        $scope.Currobject.selectedToCurr = from;
+        $scope.convert();
+    };
+
+    $scope.convert = function () {
+        var from = $scope.Currobject.selectedFromCurr && $scope.Currobject.selectedFromCurr.code;
+        var to = $scope.Currobject.selectedToCurr && $scope.Currobject.selectedToCurr.code;
+        var amount = parseFloat($scope.Currobject.fromCurrency);
+        if (!from || !to || isNaN(amount)) {
             $scope.Currobject.toCurrency = 0;
-            console.log(error);
+            return;
         }
 
-    }
+        if (isRatesStale()) {
+            ensureUsdRates(false).then(function () {
+                var f = $scope.Currobject.selectedFromCurr && $scope.Currobject.selectedFromCurr.code;
+                var t = $scope.Currobject.selectedToCurr && $scope.Currobject.selectedToCurr.code;
+                var amt = parseFloat($scope.Currobject.fromCurrency);
+                if (!f || !t || isNaN(amt)) {
+                    $scope.Currobject.toCurrency = 0;
+                    return;
+                }
+                applyLocalConvert(amt, f, t);
+            });
+            return;
+        }
 
+        applyLocalConvert(amount, from, to);
+    };
 
-    init();
+    loadCurrencies();
 });

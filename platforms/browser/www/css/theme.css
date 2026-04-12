@@ -1212,6 +1212,65 @@ a[data-toggle="collapse"] {
   .new-recipe-section .form-check-label a:hover {
     color: #004a99;
     text-decoration: underline; }
+  .new-recipe-section .converter-swap-row {
+    margin-bottom: 8px;
+    margin-top: -4px; }
+  .new-recipe-section .converter-swap-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 999px;
+    background: #f5f5f5;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s ease, transform 0.1s ease; }
+  .new-recipe-section .converter-swap-btn:active:not(:disabled) {
+    transform: scale(0.97); }
+  .new-recipe-section .converter-swap-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed; }
+  .new-recipe-section .converter-swap-btn .fa-exchange-alt {
+    font-size: 16px;
+    color: #95b700; }
+  .new-recipe-section .converter-swap-label {
+    font-size: 13px; }
+  .new-recipe-section .converter-converted-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px; }
+  .new-recipe-section .converter-converted-label {
+    margin-bottom: 0; }
+  .new-recipe-section .converter-refresh-btn {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 50%;
+    background: #f5f5f5;
+    color: #95b700;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s ease, transform 0.1s ease; }
+  .new-recipe-section .converter-refresh-btn:active:not(:disabled) {
+    transform: scale(0.95); }
+  .new-recipe-section .converter-refresh-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed; }
+  .new-recipe-section .converter-refresh-btn .fa-sync-alt {
+    font-size: 16px; }
+  .new-recipe-section .converter-rates-meta {
+    font-size: 12px;
+    margin-bottom: 8px;
+    color: #888; }
 
 /* ---------------------------------------------------
 13. LOGIN
