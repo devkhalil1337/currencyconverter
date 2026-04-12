@@ -180,6 +180,8 @@ task cdvPrintProps {
 
 android {
     namespace cordovaConfig.PACKAGE_NAMESPACE
+    // compileSdk belongs on the android {} block (AGP 7+). Inside defaultConfig it can break aapt2 platform loading.
+    compileSdkVersion cordovaConfig.COMPILE_SDK_VERSION
 
     defaultConfig {
         versionCode cdvVersionCode ?: new BigInteger("" + privateHelpers.extractIntFromManifest("versionCode"))
@@ -190,7 +192,6 @@ android {
             maxSdkVersion cordovaConfig.MAX_SDK_VERSION
         }
         targetSdkVersion cordovaConfig.SDK_VERSION
-        compileSdkVersion 34
     }
 
     lintOptions {
