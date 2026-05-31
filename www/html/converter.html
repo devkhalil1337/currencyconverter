@@ -1,66 +1,89 @@
-<div ng-controller="converterController">
-    <div class="heading-page">
-       Select two currencies
-       <div class="back-btn">
-          <div class="icon-back" ng-click="openPage('settings')"><i class="fas fa-chevron-left"></i></div>
-       </div>
+<div ng-controller="converterController" class="converter-wrap">
+
+  <!-- Status banners -->
+  <div class="converter-status loading" ng-if="listLoading">
+    <i class="fas fa-circle-notch fa-spin"></i>
+    <span>Loading currencies…</span>
+  </div>
+  <div class="converter-status error" ng-if="listError">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{listError}}</span>
+  </div>
+
+  <!-- Hero result card -->
+  <div class="converter-hero">
+    <div class="hero-label">Converted amount</div>
+    <div class="hero-amount">
+      {{(Currobject.toCurrency | number:4) || '—'}}
+      <span style="font-size:18px;font-weight:500;color:rgba(255,255,255,.55);margin-left:4px;">
+        {{(Currobject.selectedToCurr.code || '') | uppercase}}
+      </span>
     </div>
-    <div class="new-recipe-section">
-       <div class="fb-text text-muted" ng-if="listLoading">Loading currencies…</div>
-       <div class="fb-text text-danger" ng-if="listError">{{listError}}</div>
-       <form class="form" name="userForm" id="setting">
-          <div class="fb-text">Select two currency example Bitcoin to</div>
-          <div class="stt-form">
-             <div class="form-group">
-                <div class="col-xs-12">
-                   <label for="title">From</label>
-                   <select class="custom-select" id="from-currency" ng-options="curr as curr.name for curr in currencies track by curr.code" ng-model="Currobject.selectedFromCurr" ng-change="convert()" ng-disabled="listLoading" required>
-                    <!-- <option selected>Choose...</option>
-                    <option ng-repeat = "curr in currencies" value="{{curr}}" ng-selected="Currobject.selectedFromCurr.coinId == curr.coinId">{{curr.name}}</option> -->
-                </select> 
-                </div>
-             </div>
-             <div class="form-group">
-                <div class="col-xs-12">
-                   <label for="detail">Amount</label>
-                   <input type="number" id="ingredients" name="ingredients" class="form-control" ng-model="Currobject.fromCurrency" ng-model-options="{ debounce: 300 }" ng-change="convert()" step="any">
-                </div>
-             </div>
-             <div class="form-group converter-swap-row">
-                <div class="col-xs-12 text-center">
-                   <button type="button" class="converter-swap-btn" ng-click="swapCurrencies()" ng-disabled="listLoading" title="Swap from and to">
-                      <i class="fas fa-exchange-alt" aria-hidden="true"></i>
-                      <span class="converter-swap-label">Swap</span>
-                   </button>
-                </div>
-             </div>
-             <div class="form-group">
-                <div class="col-xs-12">
-                    <label for="title">To</label>
-                    <select class="custom-select" id="to-currency" ng-options="curr as curr.name for curr in currencies track by curr.code" ng-model="Currobject.selectedToCurr" ng-change="convert()" ng-disabled="listLoading">
-                   </select> 
-                 </div>
-             </div>
-             <div class="form-group">
-                <div class="col-xs-12 converter-converted-header">
-                   <label for="detail" class="converter-converted-label">Converted</label>
-                   <button type="button" class="converter-refresh-btn" ng-click="refreshRates()" ng-disabled="refreshingRates || listLoading" title="Refresh exchange rates" aria-label="Refresh exchange rates">
-                      <i class="fas fa-sync-alt" ng-class="{'fa-spin': refreshingRates}"></i>
-                   </button>
-                </div>
-                <div class="col-xs-12 converter-rates-meta" ng-if="ratesDateLabel">
-                   Rates from {{ratesDateLabel}}
-                </div>
-                <div class="col-xs-12">
-                   <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">{{(Currobject.selectedToCurr.code || '') | uppercase}}</span>
-                        </div>
-                        <input id="directions" name="directions" class="form-control" ng-model="Currobject.toCurrency" readonly>
-                   </div>
-                </div>
-             </div>
-          </div>
-       </form>
+    <div class="hero-pair" ng-if="Currobject.selectedFromCurr && Currobject.selectedToCurr">
+      <span>{{(Currobject.selectedFromCurr.code || '') | uppercase}}</span>
+      <span class="arrow"><i class="fas fa-long-arrow-alt-right"></i></span>
+      <span>{{(Currobject.selectedToCurr.code || '') | uppercase}}</span>
     </div>
- </div>
+    <div class="hero-meta">
+      <span class="hero-date" ng-if="ratesDateLabel">Rates: {{ratesDateLabel}}</span>
+      <span class="hero-date" ng-if="!ratesDateLabel && !refreshingRates">Live rates</span>
+      <button class="hero-refresh"
+              ng-click="refreshRates()"
+              ng-disabled="refreshingRates || listLoading"
+              title="Refresh rates">
+        <i class="fas fa-sync-alt" ng-class="{'fa-spin': refreshingRates}"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Input card -->
+  <div class="converter-input-card">
+    <!-- FROM row -->
+    <div class="converter-row">
+      <div class="row-label">From</div>
+      <div class="row-controls">
+        <select class="form-control currency-select"
+                ng-options="curr as curr.name for curr in currencies track by curr.code"
+                ng-model="Currobject.selectedFromCurr"
+                ng-change="convert()"
+                ng-disabled="listLoading">
+        </select>
+      </div>
+      <div style="margin-top:10px;">
+        <input type="number"
+               class="form-control amount-input"
+               placeholder="0.00"
+               ng-model="Currobject.fromCurrency"
+               ng-model-options="{ debounce: 300 }"
+               ng-change="convert()"
+               step="any">
+      </div>
+    </div>
+
+    <!-- Swap divider -->
+    <div class="converter-swap-divider" style="margin: 0;">
+      <div style="width:100%;height:1px;background:var(--border);"></div>
+      <button class="swap-btn"
+              type="button"
+              ng-click="swapCurrencies()"
+              ng-disabled="listLoading"
+              title="Swap currencies">
+        <i class="fas fa-exchange-alt" style="transform:rotate(90deg);"></i>
+      </button>
+    </div>
+
+    <!-- TO row -->
+    <div class="converter-row" style="padding-top:20px;">
+      <div class="row-label">To</div>
+      <div class="row-controls">
+        <select class="form-control currency-select"
+                ng-options="curr as curr.name for curr in currencies track by curr.code"
+                ng-model="Currobject.selectedToCurr"
+                ng-change="convert()"
+                ng-disabled="listLoading">
+        </select>
+      </div>
+    </div>
+  </div>
+
+</div>

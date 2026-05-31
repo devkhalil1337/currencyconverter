@@ -1,31 +1,63 @@
-<div class="food-page-section" ng-controller="settingsController">
-   <div class="wrap-food-recipe">
-      <div class="heading-page">
-         Dashboard
-         <div class="back-btn">
-            <div class="icon-back"><i class="fa fa-tachometer"></i></div>
-         </div>
+<div class="dashboard-wrap" ng-controller="settingsController">
+
+  <div class="dashboard-greeting">
+    <h2>Dashboard</h2>
+    <p>Quick access to all features</p>
+  </div>
+
+  <!-- Quick access tiles -->
+  <div class="dashboard-grid">
+    <div class="dash-tile" ng-click="openPage('converter')">
+      <div class="tile-icon"><i class="fas fa-exchange-alt"></i></div>
+      <div class="tile-label">Converter</div>
+      <div class="tile-sub">Fiat &amp; crypto</div>
+    </div>
+    <div class="dash-tile" ng-click="openPage('prices')">
+      <div class="tile-icon"><i class="fas fa-chart-line"></i></div>
+      <div class="tile-label">Crypto Prices</div>
+      <div class="tile-sub">Live market data</div>
+    </div>
+    <div class="dash-tile" ng-click="openPage('favorite')">
+      <div class="tile-icon"><i class="fas fa-heart"></i></div>
+      <div class="tile-label">Watchlist</div>
+      <div class="tile-sub">Saved currencies</div>
+    </div>
+    <div class="dash-tile" style="cursor:default;pointer-events:none;opacity:.5;">
+      <div class="tile-icon"><i class="fas fa-bell"></i></div>
+      <div class="tile-label">Alerts</div>
+      <div class="tile-sub">Coming soon</div>
+    </div>
+  </div>
+
+  <!-- Preferences -->
+  <div class="settings-section-title">Preferences</div>
+  <div class="settings-card">
+    <div class="settings-row">
+      <div class="sr-icon"><i class="fas fa-coins"></i></div>
+      <div class="sr-body">
+        <div class="sr-label">Display Currency</div>
+        <div class="sr-sub">Prices shown in this currency</div>
       </div>
-      <div class="section-single-page">
-         <div class="row">
-            <div class="col-6">
-               <button type="button" style="width:100%" class="btn btn-success"
-                  data-ng-click="openPage('prices')">Crypto Prices</button>
-            </div>
-            <div class="col-6">
-               <button type="button" style="width:100%" class="btn btn-success"
-                  data-ng-click="openPage('converter')">Converter</button>
-            </div>
-         </div>
-         <div class="row pt-5">
-            <div class="col-12">
-               <h6>Select Currency </h6>
-               <div class="input-group">
-                  <select class="custom-select" ng-model="selectedCurr"
-                     ng-options="curr.name for curr in supportedCurrencies" ng-change="setCurrency();"></select>
-               </div>
-            </div>
-         </div>
+      <div class="sr-control">
+        <select class="custom-select"
+                ng-model="selectedCurr"
+                ng-options="curr.name for curr in supportedCurrencies"
+                ng-change="setCurrency();">
+        </select>
       </div>
-   </div>
+    </div>
+  </div>
+
+  <!-- App info -->
+  <div class="settings-section-title">App</div>
+  <div class="settings-card">
+    <div class="settings-row">
+      <div class="sr-icon"><i class="fas fa-info-circle"></i></div>
+      <div class="sr-body">
+        <div class="sr-label">About</div>
+        <div class="sr-sub">Crypto Currency Converter v3.1.4</div>
+      </div>
+    </div>
+  </div>
+
 </div>

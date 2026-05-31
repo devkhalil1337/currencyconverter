@@ -1,63 +1,65 @@
-<div ng-controller="favCurrenciesController">
-    <div class="list-section favorites"  on-scroll-to-bottom="loadMore()">
-       <div class="wrap-list-rc">
-          <div class="row m-0">
-            <div class="lrc-item col-md-6 col-sm-12 col-xs-3" ng-repeat="price in getCurrencies() | filter:{isFav:true} |  limitTo:totalDisplayed  track by $index">
-               <a href >
-                  <div class="lrc-content">
-                     <div class="lrc-img">
-                        <img src="{{price.image}}" alt="item" style="width: 70%;">
-                     </div>
-                     <div class="lrc-desc"  data-toggle="modal" data-target="#marketGraphModal" data-ng-click="loadWidget(price);">
-                        <div class="lrc-title">{{price.market_cap_rank + '-' + price.name}}</div>
-                        <div class="lrc-text">
-                          {{price.current_price}} {{Currency.name | uppercase}}  <span class="lhc like" ng-style="{color:price.market_cap_change_percentage_24h > 0  ? 'green':'red'}" ><i class="fas"  ng-style="{color:price.market_cap_change_percentage_24h > 0  ? 'green':'red'}" ng-class="{'fa-arrow-up':price.market_cap_change_percentage_24h > 0,'fa-arrow-down':price.market_cap_change_percentage_24h < 0}"></i> {{price.market_cap_change_percentage_24h | number:2}}%</span>
-                        </div>
-                        <div class="lrc-button">
-                          <div class="lrcb-left">
-                            <span class="lhc hours"><i class="fas fa-clock"></i> {{price.last_updated |  date:'medium'}}</span>
-                          </div>
-                          <div class="lrcb-right">
-                            
-                          </div>
-                          <div class="clear"></div>
-                        </div>
-                      </div>
-                    </div>
-               </a>
-          </div>
-          </div>
-       </div>
-    </div>
+<div ng-controller="favCurrenciesController" class="prices-wrap">
 
-
-
-
-    <div class="modal fade modal-lg markert-dialog" id="marketGraphModal" tabindex="-1" role="dialog" aria-labelledby="coinSelectModalLabel" aria-hidden="true">
-      <div class="modal-dialog market-modal-dialog" role="document">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-              <div class="modal-body">
-                  <div class="col-md-12">
-                      <div class="card ">
-                          <!-- <div class="card-header ">
-                              <h4 class="card-title">{{symbolSelected}}</h4>
-                              <p class="card-category">{{'text.priceChart' | i18n}}</p>
-                          </div> -->
-                          <div class="card-body" style="padding: 0px 0px 0px 0px;">
-                              <div id="technical-analysis" style="width:250;height: 500px"></div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="modal-footer"></div>
-          </div>
-      </div>
+  <div ng-if="(getCurrencies() | filter:{isFav:true}).length === 0"
+       style="text-align:center;padding:48px 24px;color:var(--text-3);">
+    <i class="fas fa-heart" style="font-size:40px;margin-bottom:14px;display:block;color:var(--border);"></i>
+    <div style="font-size:15px;font-weight:600;color:var(--text-2);margin-bottom:6px;">No watchlist items yet</div>
+    <div style="font-size:13px;">Tap the heart icon on any crypto price to add it here.</div>
   </div>
 
-  
- </div>
+  <div class="price-list">
+    <div class="price-card"
+         ng-repeat="price in getCurrencies() | filter:{isFav:true} | limitTo:totalDisplayed track by $index"
+         data-toggle="modal"
+         data-target="#marketGraphModal"
+         ng-click="loadWidget(price)">
+
+      <div class="pc-logo">
+        <img src="{{price.image}}" alt="{{price.name}}" ng-if="price.image">
+        <i class="fas fa-coins" style="color:var(--text-3);font-size:20px;" ng-if="!price.image"></i>
+      </div>
+
+      <div class="pc-info">
+        <div class="pc-name">{{price.name}}</div>
+        <div class="pc-symbol">
+          {{price.symbol | uppercase}}
+          <span ng-if="price.market_cap_rank" style="margin-left:4px;color:var(--text-3);">#{{price.market_cap_rank}}</span>
+        </div>
+      </div>
+
+      <div class="pc-right">
+        <div class="pc-price">{{price.current_price}} {{Currency.name | uppercase}}</div>
+        <div class="pc-change"
+             ng-class="price.market_cap_change_percentage_24h > 0 ? 'up' : 'down'">
+          <i class="fas"
+             ng-class="price.market_cap_change_percentage_24h > 0 ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+          {{price.market_cap_change_percentage_24h | number:2}}%
+        </div>
+      </div>
+
+      <button class="pc-fav active"
+              ng-click="addToFav(price.id); $event.stopPropagation()"
+              title="Remove from watchlist">
+        <i class="fas fa-heart"></i>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Chart modal -->
+  <div class="modal fade markert-dialog" id="marketGraphModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog market-modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body" style="padding:0;">
+          <div id="technical-analysis" style="width:100%;height:480px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
