@@ -45,7 +45,7 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
             return refreshPromise;
         }
         $scope.refreshingRates = true;
-        refreshPromise = apiService.getUsdRates().then(function (response) {
+        var promise = apiService.getUsdRates().then(function (response) {
             var data = response.data;
             if (data && data.usd && typeof data.usd === "object") {
                 cachedUsdRates = data.usd;
@@ -56,9 +56,12 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
             console.log(err);
         }).finally(function () {
             $scope.refreshingRates = false;
-            refreshPromise = null;
+            if (refreshPromise === promise) {
+                refreshPromise = null;
+            }
         });
-        return refreshPromise;
+        refreshPromise = promise;
+        return promise;
     }
 
     function buildCurrencyOptions(meta) {
@@ -101,7 +104,7 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
             console.log(err);
             $scope.listError = "Could not load currency list.";
             var fallback = (allcurrencies || []).map(function (c) {
-                var code = (c.id || c.symbol || "").toString().toLowerCase();
+                var code = (c.coinId || c.id || c.symbol || "").toString().toLowerCase();
                 return {
                     code: code,
                     name: c.name + " (" + code.toUpperCase() + ")"
@@ -113,7 +116,9 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
             await ensureUsdRates(true);
         } finally {
             $scope.listLoading = false;
-            $scope.$apply();
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
             $scope.convert();
         }
     }
