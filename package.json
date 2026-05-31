@@ -1,13 +1,13 @@
 {
-    "name": "helloworld",
-    "displayName": "HelloCordova",
-    "version": "1.0.0",
-    "description": "A sample Apache Cordova application that responds to the deviceready event.",
+    "name": "crypto-currency-converter",
+    "displayName": "Crypto Currency Converter",
+    "version": "3.1.4",
+    "description": "Simple and easy fiat and crypto currency converter.",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "author": "Apache Cordova Team",
+    "author": "devkhalil1337",
     "license": "Apache-2.0",
     "cordova": {
         "plugins": {},
