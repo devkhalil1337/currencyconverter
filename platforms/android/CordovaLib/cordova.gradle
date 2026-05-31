@@ -43,6 +43,10 @@ Boolean isVersionValid(version) {
     return !(new Version(version)).isEqual('0.0.0')
 }
 
+Boolean isVersionGreaterThanEqual(versionX, versionY) {
+    return (new Version(versionX)) >= (new Version(versionY))
+}
+
 String doFindLatestInstalledBuildTools(String minBuildToolsVersionString) {
     def buildToolsDirContents
     try {
@@ -66,7 +70,7 @@ String doFindLatestInstalledBuildTools(String minBuildToolsVersionString) {
         throw new RuntimeException("""
             No installed build tools found. Please install the Android build tools
             version ${minBuildToolsVersionString}.
-            """.replaceAll(/\s+/, ' ').trim())
+        """.replaceAll(/\s+/, ' ').trim())
     }
 
     if (highestBuildToolsVersion.isLowerThan(minBuildToolsVersionString)) {

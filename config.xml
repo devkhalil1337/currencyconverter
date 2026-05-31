@@ -18,14 +18,14 @@
     <platform name="android">
         <allow-intent href="market:*" />
         <preference name="loadUrlTimeoutValue" value="700000" />
-        <preference name="android-targetSdkVersion" value="34" />
-        <preference name="android-compileSdkVersion" value="34" />
+        <preference name="android-targetSdkVersion" value="35" />
+        <preference name="android-compileSdkVersion" value="35" />
+        <preference name="android-buildToolsVersion" value="35.0.0" />
         <preference name="android-versionCode" value="30105" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <engine name="android" spec="^12.0.1" />
     <engine name="browser" spec="6.0.0" />
 </widget>
