@@ -42,12 +42,41 @@
     <div class="converter-row">
       <div class="row-label">From</div>
       <div class="row-controls">
-        <select class="form-control currency-select"
-                ng-options="curr as curr.name for curr in currencies track by curr.code"
-                ng-model="Currobject.selectedFromCurr"
-                ng-change="convert()"
-                ng-disabled="listLoading">
-        </select>
+        <div class="currency-picker" ng-class="{'open': currencyPicker.open === 'from'}">
+          <button class="currency-picker-toggle"
+                  type="button"
+                  ng-click="toggleCurrencyPicker('from')"
+                  ng-disabled="listLoading">
+            <span>
+              <strong>{{(Currobject.selectedFromCurr.code || '') | uppercase}}</strong>
+              <small>{{Currobject.selectedFromCurr.name || 'Select currency'}}</small>
+            </span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+
+          <div class="currency-picker-panel" ng-if="currencyPicker.open === 'from'">
+            <div class="currency-search">
+              <i class="fas fa-search"></i>
+              <input type="search"
+                     placeholder="Search currency"
+                     ng-model="currencyPicker.query.from"
+                     ng-model-options="{ debounce: 80 }">
+            </div>
+            <div class="currency-results">
+              <button class="currency-option"
+                      type="button"
+                      ng-repeat="curr in filteredCurrencies('from') track by curr.code"
+                      ng-click="selectCurrency('from', curr)"
+                      ng-class="{'selected': Currobject.selectedFromCurr.code === curr.code}">
+                <span class="currency-code">{{curr.code | uppercase}}</span>
+                <span class="currency-name">{{curr.name}}</span>
+              </button>
+              <div class="currency-empty" ng-if="filteredCurrencies('from').length === 0">
+                No currency found
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div style="margin-top:10px;">
         <input type="number"
@@ -76,12 +105,41 @@
     <div class="converter-row" style="padding-top:20px;">
       <div class="row-label">To</div>
       <div class="row-controls">
-        <select class="form-control currency-select"
-                ng-options="curr as curr.name for curr in currencies track by curr.code"
-                ng-model="Currobject.selectedToCurr"
-                ng-change="convert()"
-                ng-disabled="listLoading">
-        </select>
+        <div class="currency-picker" ng-class="{'open': currencyPicker.open === 'to'}">
+          <button class="currency-picker-toggle"
+                  type="button"
+                  ng-click="toggleCurrencyPicker('to')"
+                  ng-disabled="listLoading">
+            <span>
+              <strong>{{(Currobject.selectedToCurr.code || '') | uppercase}}</strong>
+              <small>{{Currobject.selectedToCurr.name || 'Select currency'}}</small>
+            </span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+
+          <div class="currency-picker-panel" ng-if="currencyPicker.open === 'to'">
+            <div class="currency-search">
+              <i class="fas fa-search"></i>
+              <input type="search"
+                     placeholder="Search currency"
+                     ng-model="currencyPicker.query.to"
+                     ng-model-options="{ debounce: 80 }">
+            </div>
+            <div class="currency-results">
+              <button class="currency-option"
+                      type="button"
+                      ng-repeat="curr in filteredCurrencies('to') track by curr.code"
+                      ng-click="selectCurrency('to', curr)"
+                      ng-class="{'selected': Currobject.selectedToCurr.code === curr.code}">
+                <span class="currency-code">{{curr.code | uppercase}}</span>
+                <span class="currency-name">{{curr.name}}</span>
+              </button>
+              <div class="currency-empty" ng-if="filteredCurrencies('to').length === 0">
+                No currency found
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

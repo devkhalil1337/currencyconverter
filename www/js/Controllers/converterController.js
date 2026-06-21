@@ -14,6 +14,13 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
     $scope.listError = null;
     $scope.refreshingRates = false;
     $scope.ratesDateLabel = "";
+    $scope.currencyPicker = {
+        open: null,
+        query: {
+            from: "",
+            to: ""
+        }
+    };
 
     function isRatesStale() {
         return !ratesFetchedAt || !cachedUsdRates || (Date.now() - ratesFetchedAt > STALE_MS);
@@ -139,8 +146,41 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
         if (!from || !to || $scope.listLoading) {
             return;
         }
+        $scope.currencyPicker.open = null;
         $scope.Currobject.selectedFromCurr = to;
         $scope.Currobject.selectedToCurr = from;
+        $scope.convert();
+    };
+
+    $scope.toggleCurrencyPicker = function (side) {
+        if ($scope.listLoading) {
+            return;
+        }
+        $scope.currencyPicker.open = $scope.currencyPicker.open === side ? null : side;
+        $scope.currencyPicker.query[side] = "";
+    };
+
+    $scope.filteredCurrencies = function (side) {
+        var query = ($scope.currencyPicker.query[side] || "").toLowerCase().trim();
+        if (!query) {
+            return $scope.currencies;
+        }
+        return $scope.currencies.filter(function (curr) {
+            return curr.code.indexOf(query) !== -1 || curr.name.toLowerCase().indexOf(query) !== -1;
+        });
+    };
+
+    $scope.selectCurrency = function (side, curr) {
+        if (!curr) {
+            return;
+        }
+        if (side === "from") {
+            $scope.Currobject.selectedFromCurr = curr;
+        } else {
+            $scope.Currobject.selectedToCurr = curr;
+        }
+        $scope.currencyPicker.open = null;
+        $scope.currencyPicker.query[side] = "";
         $scope.convert();
     };
 
