@@ -8,6 +8,7 @@
   <div class="converter-status error" ng-if="listError">
     <i class="fas fa-exclamation-circle"></i>
     <span>{{listError}}</span>
+    <button type="button" ng-click="getAllSupportedCurrencies()">Retry</button>
   </div>
 
   <!-- Hero result card -->
@@ -86,6 +87,14 @@
                ng-model-options="{ debounce: 300 }"
                ng-change="convert()"
                step="any">
+        <div class="quick-amounts">
+          <button class="quick-amount"
+                  type="button"
+                  ng-repeat="amount in quickAmounts track by amount"
+                  ng-click="setQuickAmount(amount)">
+            {{amount}}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -141,6 +150,59 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="converter-tools">
+    <div class="section-title-row">
+      <div class="section-kicker">Favorite pairs</div>
+      <button class="icon-text-btn"
+              type="button"
+              ng-click="toggleFavoritePair()"
+              ng-disabled="listLoading || !Currobject.selectedFromCurr || !Currobject.selectedToCurr">
+        <i class="fas" ng-class="isCurrentPairFavorite() ? 'fa-star' : 'fa-plus'"></i>
+        <span>{{isCurrentPairFavorite() ? 'Saved' : 'Save'}}</span>
+      </button>
+    </div>
+
+    <div class="pair-chip-list" ng-if="favoritePairs.length">
+      <button class="pair-chip"
+              type="button"
+              ng-repeat="pair in favoritePairs track by pair.key"
+              ng-click="applyFavoritePair(pair)">
+        <strong>{{pair.fromCode | uppercase}}</strong>
+        <i class="fas fa-long-arrow-alt-right"></i>
+        <strong>{{pair.toCode | uppercase}}</strong>
+      </button>
+    </div>
+    <div class="empty-inline" ng-if="!favoritePairs.length">
+      Save your common pairs for one-tap switching.
+    </div>
+  </div>
+
+  <div class="converter-tools" ng-if="conversionHistory.length">
+    <div class="section-title-row">
+      <div class="section-kicker">Recent conversions</div>
+      <button class="icon-text-btn muted"
+              type="button"
+              ng-click="clearConversionHistory()">
+        <i class="fas fa-trash-alt"></i>
+        <span>Clear</span>
+      </button>
+    </div>
+
+    <div class="history-list">
+      <button class="history-item"
+              type="button"
+              ng-repeat="item in conversionHistory track by $index"
+              ng-click="applyHistoryItem(item)">
+        <span class="history-main">
+          <strong>{{item.amount | number:2}} {{item.fromCode | uppercase}}</strong>
+          <i class="fas fa-long-arrow-alt-right"></i>
+          <strong>{{item.result | number:4}} {{item.toCode | uppercase}}</strong>
+        </span>
+        <span class="history-sub">{{item.createdAt | date:'shortTime'}}</span>
+      </button>
     </div>
   </div>
 

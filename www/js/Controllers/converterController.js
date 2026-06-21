@@ -1,8 +1,9 @@
-angular.module('myApp').controller("converterController", function ($scope, $q, apiService) {
+angular.module('myApp').controller("converterController", function ($scope, $q, apiService, localStorageService) {
 
     var STALE_MS = 120 * 1000;
-    var cachedUsdRates = null;
-    var ratesFetchedAt = 0;
+    var storedRates = localStorageService.getCachedUsdRates();
+    var cachedUsdRates = storedRates && storedRates.rates ? storedRates.rates : null;
+    var ratesFetchedAt = storedRates && storedRates.fetchedAt ? storedRates.fetchedAt : 0;
     var refreshPromise = null;
 
     $scope.Currobject = {
@@ -13,7 +14,10 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
     $scope.listLoading = true;
     $scope.listError = null;
     $scope.refreshingRates = false;
-    $scope.ratesDateLabel = "";
+    $scope.ratesDateLabel = storedRates && storedRates.date ? storedRates.date + " (cached)" : "";
+    $scope.conversionHistory = localStorageService.getConverterHistory();
+    $scope.favoritePairs = localStorageService.getFavoritePairs();
+    $scope.quickAmounts = [10, 50, 100, 1000];
     $scope.currencyPicker = {
         open: null,
         query: {
@@ -58,9 +62,20 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
                 cachedUsdRates = data.usd;
                 ratesFetchedAt = Date.now();
                 $scope.ratesDateLabel = data.date || "";
+                localStorageService.setCachedUsdRates({
+                    rates: cachedUsdRates,
+                    fetchedAt: ratesFetchedAt,
+                    date: data.date || ""
+                });
             }
         }).catch(function (err) {
             console.log(err);
+            var fallbackRates = localStorageService.getCachedUsdRates();
+            if (fallbackRates && fallbackRates.rates) {
+                cachedUsdRates = fallbackRates.rates;
+                ratesFetchedAt = fallbackRates.fetchedAt || Date.now();
+                $scope.ratesDateLabel = (fallbackRates.date || "Last saved") + " (cached)";
+            }
         }).finally(function () {
             $scope.refreshingRates = false;
             if (refreshPromise === promise) {
@@ -94,6 +109,40 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
             }
         }
         return null;
+    }
+
+    function findCurrency(code) {
+        return pickDefault($scope.currencies, code || "");
+    }
+
+    function pairKey(from, to) {
+        return (from || "").toLowerCase() + ":" + (to || "").toLowerCase();
+    }
+
+    function persistHistory(item) {
+        if (!item.fromCode || !item.toCode || !item.amount || !item.result) {
+            return;
+        }
+        var history = localStorageService.getConverterHistory().filter(function (entry) {
+            return !(entry.fromCode === item.fromCode && entry.toCode === item.toCode && entry.amount === item.amount);
+        });
+        history.unshift(item);
+        history = history.slice(0, 8);
+        localStorageService.setConverterHistory(history);
+        $scope.conversionHistory = history;
+    }
+
+    function saveCurrentConversion(amount, from, to) {
+        if (!from || !to || isNaN(amount) || !$scope.Currobject.toCurrency) {
+            return;
+        }
+        persistHistory({
+            amount: amount,
+            result: $scope.Currobject.toCurrency,
+            fromCode: from,
+            toCode: to,
+            createdAt: Date.now()
+        });
     }
 
     async function loadCurrencies() {
@@ -184,6 +233,75 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
         $scope.convert();
     };
 
+    $scope.isCurrentPairFavorite = function () {
+        var from = $scope.Currobject.selectedFromCurr && $scope.Currobject.selectedFromCurr.code;
+        var to = $scope.Currobject.selectedToCurr && $scope.Currobject.selectedToCurr.code;
+        if (!from || !to) {
+            return false;
+        }
+        var key = pairKey(from, to);
+        return $scope.favoritePairs.some(function (pair) {
+            return pair.key === key;
+        });
+    };
+
+    $scope.toggleFavoritePair = function () {
+        var from = $scope.Currobject.selectedFromCurr;
+        var to = $scope.Currobject.selectedToCurr;
+        if (!from || !to) {
+            return;
+        }
+        var key = pairKey(from.code, to.code);
+        var pairs = localStorageService.getFavoritePairs();
+        if (pairs.some(function (pair) { return pair.key === key; })) {
+            pairs = pairs.filter(function (pair) { return pair.key !== key; });
+        } else {
+            pairs.unshift({
+                key: key,
+                fromCode: from.code,
+                fromName: from.name,
+                toCode: to.code,
+                toName: to.name
+            });
+        }
+        pairs = pairs.slice(0, 10);
+        localStorageService.setFavoritePairs(pairs);
+        $scope.favoritePairs = pairs;
+    };
+
+    $scope.applyFavoritePair = function (pair) {
+        var from = findCurrency(pair.fromCode);
+        var to = findCurrency(pair.toCode);
+        if (!from || !to) {
+            return;
+        }
+        $scope.Currobject.selectedFromCurr = from;
+        $scope.Currobject.selectedToCurr = to;
+        $scope.convert();
+    };
+
+    $scope.applyHistoryItem = function (item) {
+        var from = findCurrency(item.fromCode);
+        var to = findCurrency(item.toCode);
+        if (!from || !to) {
+            return;
+        }
+        $scope.Currobject.selectedFromCurr = from;
+        $scope.Currobject.selectedToCurr = to;
+        $scope.Currobject.fromCurrency = item.amount;
+        $scope.convert();
+    };
+
+    $scope.clearConversionHistory = function () {
+        localStorageService.setConverterHistory([]);
+        $scope.conversionHistory = [];
+    };
+
+    $scope.setQuickAmount = function (amount) {
+        $scope.Currobject.fromCurrency = amount;
+        $scope.convert();
+    };
+
     $scope.convert = function () {
         var from = $scope.Currobject.selectedFromCurr && $scope.Currobject.selectedFromCurr.code;
         var to = $scope.Currobject.selectedToCurr && $scope.Currobject.selectedToCurr.code;
@@ -203,11 +321,13 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
                     return;
                 }
                 applyLocalConvert(amt, f, t);
+                saveCurrentConversion(amt, f, t);
             });
             return;
         }
 
         applyLocalConvert(amount, from, to);
+        saveCurrentConversion(amount, from, to);
     };
 
     loadCurrencies();

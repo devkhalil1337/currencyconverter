@@ -32,6 +32,12 @@ angular.module('myApp').factory('localStorageService', function () {
 
     const _setToLocalStorage = currencies => localStorage.setItem("allCurrencies",JSON.stringify(currencies))
     const _geAllCurrenciesFromLocalStorage = () => JSON.parse(localStorage.getItem("allCurrencies"));
+    const _getConverterHistory = () => JSON.parse(localStorage.getItem("converterHistory")) || [];
+    const _setConverterHistory = history => localStorage.setItem("converterHistory", JSON.stringify(history || []));
+    const _getFavoritePairs = () => JSON.parse(localStorage.getItem("favoritePairs")) || [];
+    const _setFavoritePairs = pairs => localStorage.setItem("favoritePairs", JSON.stringify(pairs || []));
+    const _getCachedUsdRates = () => JSON.parse(localStorage.getItem("cachedUsdRates"));
+    const _setCachedUsdRates = rates => localStorage.setItem("cachedUsdRates", JSON.stringify(rates));
 
     return{
         setCurrency:_setCurrency,
@@ -41,7 +47,13 @@ angular.module('myApp').factory('localStorageService', function () {
         isFavCurrAlreadyAdded: _isFavCurrAlreadyAdded,
         removeFavCurr:_removeFavCurr,
         setToLocalStorage: _setToLocalStorage,
-        geAllCurrenciesFromLocalStorage:_geAllCurrenciesFromLocalStorage
+        geAllCurrenciesFromLocalStorage:_geAllCurrenciesFromLocalStorage,
+        getConverterHistory: _getConverterHistory,
+        setConverterHistory: _setConverterHistory,
+        getFavoritePairs: _getFavoritePairs,
+        setFavoritePairs: _setFavoritePairs,
+        getCachedUsdRates: _getCachedUsdRates,
+        setCachedUsdRates: _setCachedUsdRates
 
     }
 
