@@ -40,6 +40,12 @@ angular.module('myApp').factory('localStorageService', function () {
     const _setCachedUsdRates = rates => localStorage.setItem("cachedUsdRates", JSON.stringify(rates));
     const _getRateAlerts = () => JSON.parse(localStorage.getItem("rateAlerts")) || [];
     const _setRateAlerts = alerts => localStorage.setItem("rateAlerts", JSON.stringify(alerts || []));
+    const _getPortfolioHoldings = () => JSON.parse(localStorage.getItem("portfolioHoldings")) || [];
+    const _setPortfolioHoldings = holdings => localStorage.setItem("portfolioHoldings", JSON.stringify(holdings || []));
+    const _getThemeMode = () => localStorage.getItem("themeMode") || "light";
+    const _setThemeMode = mode => localStorage.setItem("themeMode", mode || "light");
+    const _getComparisonCurrencies = () => JSON.parse(localStorage.getItem("comparisonCurrencies")) || ["eur", "gbp", "aed"];
+    const _setComparisonCurrencies = codes => localStorage.setItem("comparisonCurrencies", JSON.stringify(codes || []));
 
     return{
         setCurrency:_setCurrency,
@@ -57,7 +63,13 @@ angular.module('myApp').factory('localStorageService', function () {
         getCachedUsdRates: _getCachedUsdRates,
         setCachedUsdRates: _setCachedUsdRates,
         getRateAlerts: _getRateAlerts,
-        setRateAlerts: _setRateAlerts
+        setRateAlerts: _setRateAlerts,
+        getPortfolioHoldings: _getPortfolioHoldings,
+        setPortfolioHoldings: _setPortfolioHoldings,
+        getThemeMode: _getThemeMode,
+        setThemeMode: _setThemeMode,
+        getComparisonCurrencies: _getComparisonCurrencies,
+        setComparisonCurrencies: _setComparisonCurrencies
 
     }
 

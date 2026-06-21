@@ -1,12 +1,21 @@
-angular.module('myApp').controller("mainController", function ($scope, $q, $interval, $rootScope, navigationService,currencyService) {
+angular.module('myApp').controller("mainController", function ($scope, $q, $interval, $rootScope, navigationService,currencyService,localStorageService) {
 
     function init() {
+        applyTheme();
         setAllCurrencies();
-        $scope.selectedTab = "converter";
+        $scope.selectedTab = "settings";
         navigationService.setActiveTemplate($scope.selectedTab);
     }
 
     const setAllCurrencies = async () => await currencyService.getAllCurrencies();
+
+    function applyTheme() {
+        if (localStorageService.getThemeMode() === "dark") {
+            document.body.classList.add("dark-theme");
+        } else {
+            document.body.classList.remove("dark-theme");
+        }
+    }
 
     $scope.openPage = function (option) {
         $scope.selectedTab = option;

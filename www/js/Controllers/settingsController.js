@@ -30,6 +30,8 @@ angular.module('myApp').controller("settingsController", function ($scope, $q, $
         console.log("I am setting controller");
 
         $scope.getCurrency();
+        $scope.themeMode = localStorageService.getThemeMode();
+        applyTheme();
     }
 
     $scope.getCurrency = function(){
@@ -44,6 +46,46 @@ angular.module('myApp').controller("settingsController", function ($scope, $q, $
 
     $scope.setCurrency = function(curr){
         localStorageService.setCurrency($scope.selectedCurr);
+    }
+
+    $scope.getLastConversion = function () {
+        return localStorageService.getConverterHistory()[0];
+    }
+
+    $scope.getFavoritePairCount = function () {
+        return localStorageService.getFavoritePairs().length;
+    }
+
+    $scope.getPortfolioTotal = function () {
+        var prices = localStorageService.geAllCurrenciesFromLocalStorage() || [];
+        return localStorageService.getPortfolioHoldings().reduce(function (total, holding) {
+            var market = prices.filter(function (price) {
+                return price.id === holding.coinId;
+            })[0];
+            return total + ((parseFloat(market && market.current_price) || 0) * holding.amount);
+        }, 0);
+    }
+
+    $scope.getTopMover = function () {
+        var prices = (localStorageService.geAllCurrenciesFromLocalStorage() || []).slice();
+        prices.sort(function (a, b) {
+            return (b.market_cap_change_percentage_24h || 0) - (a.market_cap_change_percentage_24h || 0);
+        });
+        return prices[0];
+    }
+
+    function applyTheme() {
+        if ($scope.themeMode === "dark") {
+            document.body.classList.add("dark-theme");
+        } else {
+            document.body.classList.remove("dark-theme");
+        }
+    }
+
+    $scope.toggleTheme = function () {
+        $scope.themeMode = $scope.themeMode === "dark" ? "light" : "dark";
+        localStorageService.setThemeMode($scope.themeMode);
+        applyTheme();
     }
 
 

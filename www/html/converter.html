@@ -225,6 +225,43 @@
     </div>
   </div>
 
+  <div class="converter-tools">
+    <div class="section-title-row">
+      <div class="section-kicker">Compare</div>
+      <div class="rate-now">{{Currobject.fromCurrency || 0}} {{Currobject.selectedFromCurr.code | uppercase}}</div>
+    </div>
+
+    <div class="alert-create-row">
+      <select class="custom-select alert-rate-input"
+              ng-model="selectedComparisonCurrency"
+              ng-options="curr.code as (curr.name) for curr in currencies">
+        <option value="">Add currency</option>
+      </select>
+      <button class="icon-text-btn"
+              type="button"
+              ng-click="addComparisonCurrency()"
+              ng-disabled="!selectedComparisonCurrency">
+        <i class="fas fa-plus"></i>
+        <span>Add</span>
+      </button>
+    </div>
+
+    <div class="comparison-list" ng-if="getComparisonRows().length">
+      <div class="comparison-row" ng-repeat="row in getComparisonRows() track by row.code">
+        <div>
+          <strong>{{row.code | uppercase}}</strong>
+          <span>{{row.name}}</span>
+        </div>
+        <div class="comparison-value">
+          <strong>{{row.value | number:4}}</strong>
+          <button type="button" ng-click="removeComparisonCurrency(row.code)" title="Remove currency">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="converter-tools" ng-if="conversionHistory.length">
     <div class="section-title-row">
       <div class="section-kicker">Recent conversions</div>

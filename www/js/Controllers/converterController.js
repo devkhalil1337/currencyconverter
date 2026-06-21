@@ -20,6 +20,8 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
     $scope.rateAlerts = [];
     $scope.alertTargetRate = "";
     $scope.quickAmounts = [10, 50, 100, 1000];
+    $scope.comparisonCurrencies = localStorageService.getComparisonCurrencies();
+    $scope.selectedComparisonCurrency = "";
     $scope.currencyPicker = {
         open: null,
         query: {
@@ -32,22 +34,23 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
         return !ratesFetchedAt || !cachedUsdRates || (Date.now() - ratesFetchedAt > STALE_MS);
     }
 
-    function applyLocalConvert(amount, from, to) {
+    function calculateLocalConvert(amount, from, to) {
         if (from === to) {
-            $scope.Currobject.toCurrency = amount;
-            return;
+            return amount;
         }
         if (!cachedUsdRates) {
-            $scope.Currobject.toCurrency = 0;
-            return;
+            return 0;
         }
         var uf = cachedUsdRates[from];
         var ut = cachedUsdRates[to];
         if (typeof uf !== "number" || typeof ut !== "number" || uf === 0) {
-            $scope.Currobject.toCurrency = 0;
-            return;
+            return 0;
         }
-        $scope.Currobject.toCurrency = amount * (ut / uf);
+        return amount * (ut / uf);
+    }
+
+    function applyLocalConvert(amount, from, to) {
+        $scope.Currobject.toCurrency = calculateLocalConvert(amount, from, to);
     }
 
     function ensureUsdRates(forceRefresh) {
@@ -329,6 +332,39 @@ angular.module('myApp').controller("converterController", function ($scope, $q, 
     $scope.setQuickAmount = function (amount) {
         $scope.Currobject.fromCurrency = amount;
         $scope.convert();
+    };
+
+    $scope.addComparisonCurrency = function () {
+        var code = ($scope.selectedComparisonCurrency || "").toLowerCase();
+        if (!code || $scope.comparisonCurrencies.indexOf(code) !== -1) {
+            return;
+        }
+        $scope.comparisonCurrencies.push(code);
+        localStorageService.setComparisonCurrencies($scope.comparisonCurrencies);
+        $scope.selectedComparisonCurrency = "";
+    };
+
+    $scope.removeComparisonCurrency = function (code) {
+        $scope.comparisonCurrencies = $scope.comparisonCurrencies.filter(function (item) {
+            return item !== code;
+        });
+        localStorageService.setComparisonCurrencies($scope.comparisonCurrencies);
+    };
+
+    $scope.getComparisonRows = function () {
+        var from = $scope.Currobject.selectedFromCurr && $scope.Currobject.selectedFromCurr.code;
+        var amount = parseFloat($scope.Currobject.fromCurrency);
+        if (!from || isNaN(amount)) {
+            return [];
+        }
+        return $scope.comparisonCurrencies.map(function (code) {
+            var currency = findCurrency(code);
+            return {
+                code: code,
+                name: currency ? currency.name : code.toUpperCase(),
+                value: calculateLocalConvert(amount, from, code)
+            };
+        });
     };
 
     $scope.addRateAlert = function () {

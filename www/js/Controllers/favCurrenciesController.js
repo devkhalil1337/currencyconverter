@@ -4,9 +4,11 @@ angular.module('myApp').controller("favCurrenciesController", function ($scope, 
     $scope.totalDisplayed = 20;
     $scope.selectedCoin = {};
     $scope.cryptoAlertTarget = "";
+    $scope.holdingAmount = "";
+    $scope.marketLoading = false;
+    $scope.marketError = "";
     async function init() {
-        setAllCurrencies();
-        MarketPrices = localStorageService.geAllCurrenciesFromLocalStorage();
+        await $scope.refreshMarketPrices();
     }
 
 
@@ -14,6 +16,26 @@ angular.module('myApp').controller("favCurrenciesController", function ($scope, 
 
 
     const setAllCurrencies = async () => await currencyService.getAllCurrencies();
+
+    $scope.refreshMarketPrices = async function () {
+        $scope.marketLoading = true;
+        $scope.marketError = "";
+        try {
+            await setAllCurrencies();
+            MarketPrices = localStorageService.geAllCurrenciesFromLocalStorage() || [];
+        } catch (err) {
+            console.log(err);
+            MarketPrices = localStorageService.geAllCurrenciesFromLocalStorage() || [];
+            $scope.marketError = MarketPrices.length
+                ? "Fresh prices failed. Showing saved data."
+                : "Could not load watchlist prices.";
+        } finally {
+            $scope.marketLoading = false;
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+        }
+    }
 
     function getTradingViewSymbol(coinObj) {
         var symbol = (coinObj && coinObj.symbol ? coinObj.symbol : "").toString().toUpperCase();
@@ -35,12 +57,12 @@ angular.module('myApp').controller("favCurrenciesController", function ($scope, 
         if(!_favCurr)
             _favCurr = [];
         
-            MarketPrices.forEach(elm => {
+            (MarketPrices || []).forEach(elm => {
                 if(_favCurr.some(favCur => favCur == elm.id)){
                     elm.isFav = true;
                 }
             });
-            return MarketPrices;
+            return MarketPrices || [];
     }
 
 
@@ -63,6 +85,10 @@ angular.module('myApp').controller("favCurrenciesController", function ($scope, 
     $scope.loadWidget =  coinObj =>  {
         $scope.selectedCoin = coinObj;
         $scope.cryptoAlertTarget = "";
+        var savedHolding = localStorageService.getPortfolioHoldings().filter(function (holding) {
+            return holding.coinId === coinObj.id;
+        })[0];
+        $scope.holdingAmount = savedHolding ? savedHolding.amount : "";
         clearTradingViewContainer();
         const tradingView = new TradingView.widget({
             'width': '200',
@@ -104,6 +130,25 @@ angular.module('myApp').controller("favCurrenciesController", function ($scope, 
         alerts = alerts.slice(0, 12);
         localStorageService.setRateAlerts(alerts);
         $scope.cryptoAlertTarget = "";
+    }
+
+    $scope.saveHolding = function () {
+        var amount = parseFloat($scope.holdingAmount);
+        if (!$scope.selectedCoin || !$scope.selectedCoin.id || isNaN(amount) || amount < 0) {
+            return;
+        }
+        var holdings = localStorageService.getPortfolioHoldings().filter(function (holding) {
+            return holding.coinId !== $scope.selectedCoin.id;
+        });
+        if (amount > 0) {
+            holdings.unshift({
+                coinId: $scope.selectedCoin.id,
+                coinName: $scope.selectedCoin.name,
+                symbol: $scope.selectedCoin.symbol,
+                amount: amount
+            });
+        }
+        localStorageService.setPortfolioHoldings(holdings);
     }
 
 

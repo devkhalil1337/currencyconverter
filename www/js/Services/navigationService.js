@@ -5,7 +5,7 @@ angular.module('myApp').factory('navigationService', function (detachedScope) {
 
     var allTemplates = [];
     allTemplates["converter"] = { url: "html/converter.html", topHeader: "Converter" };
-    allTemplates["settings"] = { url: "html/settings.html", topHeader: "Settings" };
+    allTemplates["settings"] = { url: "html/settings.html", topHeader: "Home" };
     allTemplates["prices"] = { url: "html/cryptoPrices.html", topHeader: "Crypto Prices" };
     allTemplates["favorite"] = { url: "html/favCurrencies.html", topHeader: "Fav Currencies" };
     return {

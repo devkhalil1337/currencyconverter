@@ -5,6 +5,30 @@
     <p>Quick access to all features</p>
   </div>
 
+  <div class="home-summary-grid">
+    <div class="home-summary">
+      <span>Portfolio</span>
+      <strong>{{getPortfolioTotal() | number:2}} {{selectedCurr.name}}</strong>
+    </div>
+    <div class="home-summary">
+      <span>Favorite pairs</span>
+      <strong>{{getFavoritePairCount()}}</strong>
+    </div>
+    <div class="home-summary wide" ng-if="getLastConversion()">
+      <span>Last conversion</span>
+      <strong>
+        {{getLastConversion().amount | number:2}} {{getLastConversion().fromCode | uppercase}}
+        to {{getLastConversion().result | number:2}} {{getLastConversion().toCode | uppercase}}
+      </strong>
+    </div>
+    <div class="home-summary wide" ng-if="getTopMover()">
+      <span>Top mover</span>
+      <strong>
+        {{getTopMover().name}} {{getTopMover().market_cap_change_percentage_24h | number:2}}%
+      </strong>
+    </div>
+  </div>
+
   <!-- Quick access tiles -->
   <div class="dashboard-grid">
     <div class="dash-tile" ng-click="openPage('converter')">
@@ -44,6 +68,22 @@
                 ng-options="curr.name for curr in supportedCurrencies"
                 ng-change="setCurrency();">
         </select>
+      </div>
+    </div>
+    <div class="settings-row">
+      <div class="sr-icon"><i class="fas" ng-class="themeMode === 'dark' ? 'fa-moon' : 'fa-sun'"></i></div>
+      <div class="sr-body">
+        <div class="sr-label">Theme</div>
+        <div class="sr-sub">{{themeMode === 'dark' ? 'Dark mode' : 'Light mode'}}</div>
+      </div>
+      <div class="sr-control">
+        <button class="theme-toggle"
+                type="button"
+                ng-class="{active: themeMode === 'dark'}"
+                ng-click="toggleTheme()"
+                title="Toggle theme">
+          <span></span>
+        </button>
       </div>
     </div>
   </div>

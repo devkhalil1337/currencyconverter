@@ -1,5 +1,15 @@
 <div ng-controller="favCurrenciesController" class="prices-wrap">
 
+  <div class="converter-status loading" ng-if="marketLoading">
+    <i class="fas fa-circle-notch fa-spin"></i>
+    <span>Loading watchlist...</span>
+  </div>
+  <div class="converter-status error" ng-if="marketError">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{marketError}}</span>
+    <button type="button" ng-click="refreshMarketPrices()">Retry</button>
+  </div>
+
   <div ng-if="(getCurrencies() | filter:{isFav:true}).length === 0"
        style="text-align:center;padding:48px 24px;color:var(--text-3);">
     <i class="fas fa-heart" style="font-size:40px;margin-bottom:14px;display:block;color:var(--border);"></i>
@@ -56,6 +66,44 @@
           </button>
         </div>
         <div class="modal-body" style="padding:0;">
+          <div class="crypto-detail-panel" ng-if="selectedCoin.id">
+            <div class="crypto-detail-head">
+              <div class="detail-logo">
+                <img src="{{selectedCoin.image}}" alt="{{selectedCoin.name}}" ng-if="selectedCoin.image">
+                <i class="fas fa-coins" ng-if="!selectedCoin.image"></i>
+              </div>
+              <div class="detail-title">
+                <strong>{{selectedCoin.name}}</strong>
+                <span>{{selectedCoin.symbol | uppercase}} <em ng-if="selectedCoin.market_cap_rank">#{{selectedCoin.market_cap_rank}}</em></span>
+              </div>
+              <div class="detail-price">
+                <strong>{{selectedCoin.current_price}} {{Currency.name | uppercase}}</strong>
+                <span ng-class="selectedCoin.market_cap_change_percentage_24h > 0 ? 'up' : 'down'">
+                  {{selectedCoin.market_cap_change_percentage_24h | number:2}}%
+                </span>
+              </div>
+            </div>
+
+            <div class="crypto-stat-grid">
+              <div class="crypto-stat">
+                <span>24h high</span>
+                <strong>{{selectedCoin.high_24h || '-'}}</strong>
+              </div>
+              <div class="crypto-stat">
+                <span>24h low</span>
+                <strong>{{selectedCoin.low_24h || '-'}}</strong>
+              </div>
+              <div class="crypto-stat">
+                <span>Market cap</span>
+                <strong>{{selectedCoin.market_cap || '-'}}</strong>
+              </div>
+              <div class="crypto-stat">
+                <span>Volume</span>
+                <strong>{{selectedCoin.total_volume || '-'}}</strong>
+              </div>
+            </div>
+          </div>
+
           <div class="crypto-alert-panel" ng-if="selectedCoin.id">
             <div class="section-title-row">
               <div class="section-kicker">Price alert</div>
@@ -75,6 +123,29 @@
                       ng-disabled="!cryptoAlertTarget">
                 <i class="fas fa-bell"></i>
                 <span>Add</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="crypto-alert-panel" ng-if="selectedCoin.id">
+            <div class="section-title-row">
+              <div class="section-kicker">Holding</div>
+              <div class="rate-now" ng-if="holdingAmount">
+                {{(holdingAmount * selectedCoin.current_price) | number:2}} {{Currency.name | uppercase}}
+              </div>
+            </div>
+            <div class="alert-create-row">
+              <input type="number"
+                     class="form-control alert-rate-input"
+                     placeholder="Amount owned"
+                     ng-model="holdingAmount"
+                     step="any">
+              <button class="icon-text-btn"
+                      type="button"
+                      ng-click="saveHolding()"
+                      ng-disabled="holdingAmount === ''">
+                <i class="fas fa-wallet"></i>
+                <span>Save</span>
               </button>
             </div>
           </div>

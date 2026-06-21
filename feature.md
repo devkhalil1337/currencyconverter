@@ -26,8 +26,6 @@
    - Support alerts for fiat pairs and crypto prices.
    - Store alerts locally until push notifications are added.
 
-## Ready To Implement
-
 7. Better crypto detail screen
    - Show TradingView chart plus price, 24h high/low, market cap, volume, and rank.
    - Keep detail content readable on mobile.

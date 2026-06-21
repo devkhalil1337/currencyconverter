@@ -4,16 +4,49 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
     $scope.totalDisplayed = 20;
     $scope.selectedCoin = {};
     $scope.cryptoAlertTarget = "";
+    $scope.priceFilter = "rank";
+    $scope.holdingAmount = "";
+    $scope.marketLoading = false;
+    $scope.marketError = "";
 
     async function init() {
-        setAllCurrencies();
-        MarketPrices = localStorageService.geAllCurrenciesFromLocalStorage();
+        await $scope.refreshMarketPrices();
         initializeWebSocket();
     }
 
     $scope.loadMore = () => $scope.totalDisplayed += 20;
 
     const setAllCurrencies = async () => await currencyService.getAllCurrencies();
+
+    $scope.refreshMarketPrices = async function () {
+        $scope.marketLoading = true;
+        $scope.marketError = "";
+        try {
+            await setAllCurrencies();
+            MarketPrices = localStorageService.geAllCurrenciesFromLocalStorage() || [];
+        } catch (err) {
+            console.log(err);
+            MarketPrices = localStorageService.geAllCurrenciesFromLocalStorage() || [];
+            $scope.marketError = MarketPrices.length
+                ? "Fresh prices failed. Showing saved data."
+                : "Could not load market prices.";
+        } finally {
+            $scope.marketLoading = false;
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+        }
+    }
+
+    function applyFavoriteFlags(currencies) {
+        let _favCurr = localStorageService.getFavCurrency();
+        if (!_favCurr) _favCurr = [];
+
+        currencies.forEach(elm => {
+            elm.isFav = _favCurr.some(favCur => favCur == elm.id);
+        });
+        return currencies;
+    }
 
     function getTradingViewSymbol(coinObj) {
         var symbol = (coinObj && coinObj.symbol ? coinObj.symbol : "").toString().toUpperCase();
@@ -31,15 +64,70 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
     }
 
     $scope.getCurrencies = function () {
-        let _favCurr = localStorageService.getFavCurrency();
-        if (!_favCurr) _favCurr = [];
+        return applyFavoriteFlags(MarketPrices || []);
+    }
 
-        MarketPrices.forEach(elm => {
-            if (_favCurr.some(favCur => favCur == elm.id)) {
-                elm.isFav = true;
+    $scope.setPriceFilter = function (filterName) {
+        $scope.priceFilter = filterName;
+    }
+
+    $scope.getFilteredCurrencies = function () {
+        var list = $scope.getCurrencies().slice();
+        var query = ($scope.Search || "").toLowerCase().trim();
+        if (query) {
+            list = list.filter(function (price) {
+                return (price.name || "").toLowerCase().indexOf(query) !== -1
+                    || (price.symbol || "").toLowerCase().indexOf(query) !== -1;
+            });
+        }
+        if ($scope.priceFilter === "favorites") {
+            list = list.filter(function (price) { return price.isFav; });
+        }
+        if ($scope.priceFilter === "gainers") {
+            list.sort(function (a, b) {
+                return (b.market_cap_change_percentage_24h || 0) - (a.market_cap_change_percentage_24h || 0);
+            });
+        } else if ($scope.priceFilter === "losers") {
+            list.sort(function (a, b) {
+                return (a.market_cap_change_percentage_24h || 0) - (b.market_cap_change_percentage_24h || 0);
+            });
+        } else {
+            list.sort(function (a, b) {
+                return (a.market_cap_rank || 999999) - (b.market_cap_rank || 999999);
+            });
+        }
+        return list;
+    }
+
+    function findMarketPrice(coinId) {
+        var prices = MarketPrices || [];
+        for (var i = 0; i < prices.length; i++) {
+            if (prices[i].id === coinId) {
+                return prices[i];
             }
+        }
+        return null;
+    }
+
+    $scope.getPortfolioRows = function () {
+        return localStorageService.getPortfolioHoldings().map(function (holding) {
+            var market = findMarketPrice(holding.coinId) || {};
+            var price = parseFloat(market.current_price) || 0;
+            return {
+                coinId: holding.coinId,
+                coinName: holding.coinName,
+                symbol: holding.symbol,
+                amount: holding.amount,
+                price: price,
+                value: holding.amount * price
+            };
         });
-        return MarketPrices;
+    }
+
+    $scope.getPortfolioTotal = function () {
+        return $scope.getPortfolioRows().reduce(function (total, row) {
+            return total + row.value;
+        }, 0);
     }
 
     $scope.addToFav = function (id) {
@@ -57,6 +145,10 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
     $scope.loadWidget = coinObj => {
         $scope.selectedCoin = coinObj;
         $scope.cryptoAlertTarget = "";
+        var savedHolding = localStorageService.getPortfolioHoldings().filter(function (holding) {
+            return holding.coinId === coinObj.id;
+        })[0];
+        $scope.holdingAmount = savedHolding ? savedHolding.amount : "";
         clearTradingViewContainer();
         const tradingView = new TradingView.widget({
             'width': '200',
@@ -100,7 +192,36 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
         $scope.cryptoAlertTarget = "";
     }
 
+    $scope.saveHolding = function () {
+        var amount = parseFloat($scope.holdingAmount);
+        if (!$scope.selectedCoin || !$scope.selectedCoin.id || isNaN(amount) || amount < 0) {
+            return;
+        }
+        var holdings = localStorageService.getPortfolioHoldings().filter(function (holding) {
+            return holding.coinId !== $scope.selectedCoin.id;
+        });
+        if (amount > 0) {
+            holdings.unshift({
+                coinId: $scope.selectedCoin.id,
+                coinName: $scope.selectedCoin.name,
+                symbol: $scope.selectedCoin.symbol,
+                amount: amount
+            });
+        }
+        localStorageService.setPortfolioHoldings(holdings);
+    }
+
+    $scope.removeHolding = function (coinId) {
+        var holdings = localStorageService.getPortfolioHoldings().filter(function (holding) {
+            return holding.coinId !== coinId;
+        });
+        localStorageService.setPortfolioHoldings(holdings);
+    }
+
     function initializeWebSocket() {
+        if (!MarketPrices || !MarketPrices.length) {
+            return;
+        }
         const currencies = MarketPrices.map(cur => cur.id);
         //        debugger
         const socket = new WebSocket(`wss://ws.coincap.io/prices?assets=ALL`);
