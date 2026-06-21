@@ -14,6 +14,21 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
 
     const setAllCurrencies = async () => await currencyService.getAllCurrencies();
 
+    function getTradingViewSymbol(coinObj) {
+        var symbol = (coinObj && coinObj.symbol ? coinObj.symbol : "").toString().toUpperCase();
+        if (!symbol) {
+            return "";
+        }
+        return "BINANCE:" + symbol + "USDT";
+    }
+
+    function clearTradingViewContainer() {
+        var container = document.getElementById("technical-analysis");
+        if (container) {
+            container.innerHTML = "";
+        }
+    }
+
     $scope.getCurrencies = function () {
         let _favCurr = localStorageService.getFavCurrency();
         if (!_favCurr) _favCurr = [];
@@ -40,12 +55,13 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
 
     $scope.loadWidget = coinObj => {
         $scope.selectedCoin = coinObj;
+        clearTradingViewContainer();
         const tradingView = new TradingView.widget({
             'width': '200',
             'height': '500',
             'container_id': 'technical-analysis',
             'autosize': true,
-            'symbol': coinObj.symbol,
+            'symbol': getTradingViewSymbol(coinObj),
             'interval': 'D',
             'timezone': 'Etc/UTC',
             'theme': 'Light',
