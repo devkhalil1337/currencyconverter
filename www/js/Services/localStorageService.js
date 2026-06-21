@@ -38,6 +38,8 @@ angular.module('myApp').factory('localStorageService', function () {
     const _setFavoritePairs = pairs => localStorage.setItem("favoritePairs", JSON.stringify(pairs || []));
     const _getCachedUsdRates = () => JSON.parse(localStorage.getItem("cachedUsdRates"));
     const _setCachedUsdRates = rates => localStorage.setItem("cachedUsdRates", JSON.stringify(rates));
+    const _getRateAlerts = () => JSON.parse(localStorage.getItem("rateAlerts")) || [];
+    const _setRateAlerts = alerts => localStorage.setItem("rateAlerts", JSON.stringify(alerts || []));
 
     return{
         setCurrency:_setCurrency,
@@ -53,7 +55,9 @@ angular.module('myApp').factory('localStorageService', function () {
         getFavoritePairs: _getFavoritePairs,
         setFavoritePairs: _setFavoritePairs,
         getCachedUsdRates: _getCachedUsdRates,
-        setCachedUsdRates: _setCachedUsdRates
+        setCachedUsdRates: _setCachedUsdRates,
+        getRateAlerts: _getRateAlerts,
+        setRateAlerts: _setRateAlerts
 
     }
 

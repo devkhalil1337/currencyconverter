@@ -57,6 +57,28 @@
           </button>
         </div>
         <div class="modal-body" style="padding:0;">
+          <div class="crypto-alert-panel" ng-if="selectedCoin.id">
+            <div class="section-title-row">
+              <div class="section-kicker">Price alert</div>
+              <div class="rate-now">
+                {{selectedCoin.current_price}} {{Currency.name | uppercase}}
+              </div>
+            </div>
+            <div class="alert-create-row">
+              <input type="number"
+                     class="form-control alert-rate-input"
+                     placeholder="Target price"
+                     ng-model="cryptoAlertTarget"
+                     step="any">
+              <button class="icon-text-btn"
+                      type="button"
+                      ng-click="addCryptoAlert()"
+                      ng-disabled="!cryptoAlertTarget">
+                <i class="fas fa-bell"></i>
+                <span>Add</span>
+              </button>
+            </div>
+          </div>
           <div id="technical-analysis" style="width:100%;height:480px;"></div>
         </div>
       </div>

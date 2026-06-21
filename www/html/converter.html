@@ -180,6 +180,51 @@
     </div>
   </div>
 
+  <div class="converter-tools">
+    <div class="section-title-row">
+      <div class="section-kicker">Rate alerts</div>
+      <div class="rate-now" ng-if="Currobject.fromCurrency && Currobject.toCurrency">
+        1 {{Currobject.selectedFromCurr.code | uppercase}} = {{(Currobject.toCurrency / Currobject.fromCurrency) | number:4}} {{Currobject.selectedToCurr.code | uppercase}}
+      </div>
+    </div>
+
+    <div class="alert-create-row">
+      <input type="number"
+             class="form-control alert-rate-input"
+             placeholder="Target rate"
+             ng-model="alertTargetRate"
+             step="any">
+      <button class="icon-text-btn"
+              type="button"
+              ng-click="addRateAlert()"
+              ng-disabled="!alertTargetRate || listLoading">
+        <i class="fas fa-bell"></i>
+        <span>Add</span>
+      </button>
+    </div>
+
+    <div class="alert-list" ng-if="rateAlerts.length">
+      <div class="alert-item"
+           ng-repeat="alert in rateAlerts track by alert.id"
+           ng-class="{'reached': alert.isReached}">
+        <div class="alert-copy">
+          <strong>{{alert.fromCode | uppercase}}/{{alert.toCode | uppercase}}</strong>
+          <span>Target {{alert.targetRate | number:4}}</span>
+          <small>{{alert.isReached ? 'Reached' : 'Active'}}</small>
+        </div>
+        <button class="alert-remove"
+                type="button"
+                ng-click="removeRateAlert(alert.id)"
+                title="Remove alert">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div class="empty-inline" ng-if="!rateAlerts.length">
+      Add a target rate for the selected pair.
+    </div>
+  </div>
+
   <div class="converter-tools" ng-if="conversionHistory.length">
     <div class="section-title-row">
       <div class="section-kicker">Recent conversions</div>

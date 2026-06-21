@@ -3,6 +3,7 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
     let MarketPrices = localStorageService.geAllCurrenciesFromLocalStorage();
     $scope.totalDisplayed = 20;
     $scope.selectedCoin = {};
+    $scope.cryptoAlertTarget = "";
 
     async function init() {
         setAllCurrencies();
@@ -55,6 +56,7 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
 
     $scope.loadWidget = coinObj => {
         $scope.selectedCoin = coinObj;
+        $scope.cryptoAlertTarget = "";
         clearTradingViewContainer();
         const tradingView = new TradingView.widget({
             'width': '200',
@@ -75,6 +77,27 @@ angular.module('myApp').controller("cryptoPricessController", function ($scope, 
             'save_image': false,
             'hideideas': true
         });
+    }
+
+    $scope.addCryptoAlert = function () {
+        var targetPrice = parseFloat($scope.cryptoAlertTarget);
+        if (!$scope.selectedCoin || !$scope.selectedCoin.id || isNaN(targetPrice) || targetPrice <= 0) {
+            return;
+        }
+        var alerts = localStorageService.getRateAlerts();
+        alerts.unshift({
+            id: Date.now(),
+            type: "crypto",
+            coinId: $scope.selectedCoin.id,
+            coinName: $scope.selectedCoin.name,
+            symbol: $scope.selectedCoin.symbol,
+            targetRate: targetPrice,
+            currentRate: parseFloat($scope.selectedCoin.current_price) || 0,
+            createdAt: Date.now()
+        });
+        alerts = alerts.slice(0, 12);
+        localStorageService.setRateAlerts(alerts);
+        $scope.cryptoAlertTarget = "";
     }
 
     function initializeWebSocket() {
