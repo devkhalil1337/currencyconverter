@@ -19,6 +19,7 @@ import { configureForegroundNotifications } from '@/lib/notifications';
 import { activeAlertCount, useAlerts } from '@/store/alerts';
 import { usePrefs } from '@/store/prefs';
 import { useRates } from '@/store/rates';
+import { useTrips } from '@/store/trips';
 import { syncAlertTask } from '@/tasks/rate-alerts';
 
 SplashScreen.preventAutoHideAsync();
@@ -26,7 +27,10 @@ configureForegroundNotifications();
 
 function useStoresHydrated() {
   const check = () =>
-    usePrefs.persist.hasHydrated() && useRates.persist.hasHydrated() && useAlerts.persist.hasHydrated();
+    usePrefs.persist.hasHydrated() &&
+    useRates.persist.hasHydrated() &&
+    useAlerts.persist.hasHydrated() &&
+    useTrips.persist.hasHydrated();
   const [hydrated, setHydrated] = useState(check);
   useEffect(() => {
     const update = () => setHydrated(check());
@@ -34,6 +38,7 @@ function useStoresHydrated() {
       usePrefs.persist.onFinishHydration(update),
       useRates.persist.onFinishHydration(update),
       useAlerts.persist.onFinishHydration(update),
+      useTrips.persist.onFinishHydration(update),
     ];
     update();
     return () => unsubs.forEach((unsub) => unsub());
@@ -125,6 +130,9 @@ export default function RootLayout() {
                 }
           }
         />
+        <Stack.Screen name="trip-new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="expense-new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="trip/[id]" />
       </Stack>
     </ThemeProvider>
   );

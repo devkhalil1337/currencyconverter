@@ -35,3 +35,25 @@ export function formatTyped(typed: string): string {
 export function formatTime(timestamp: number): string {
   return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
+
+const currencyFormatters = new Map<string, Intl.NumberFormat | null>();
+
+/** "€842.60" when the code is a known ISO currency, else "842.60 BTC". */
+export function formatCurrency(value: number, code: string): string {
+  const upper = code.toUpperCase();
+  if (!currencyFormatters.has(upper)) {
+    let f: Intl.NumberFormat | null = null;
+    if (/^[A-Z]{3}$/.test(upper)) {
+      try {
+        f = new Intl.NumberFormat('en-US', { style: 'currency', currency: upper, currencyDisplay: 'narrowSymbol' });
+      } catch {
+        f = null;
+      }
+    }
+    currencyFormatters.set(upper, f);
+  }
+  const f = currencyFormatters.get(upper);
+  // Currency style rounds to 2 decimals, which hides small crypto amounts.
+  if (!f || decimalsFor(value, code) > 2) return `${formatMoney(value, code)} ${upper}`;
+  return f.format(value);
+}

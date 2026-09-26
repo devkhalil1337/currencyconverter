@@ -19,6 +19,10 @@ export const Palette = {
     onAccent: '#FFFFFF',
     inverse: '#15171C',
     onInverse: '#FFFFFF',
+    /** Dark hero surface (trip card) in both modes, with mint accents. */
+    feature: '#15171C',
+    onFeature: '#FFFFFF',
+    featureAccent: '#5EEAD4',
     danger: '#B42318',
   },
   dark: {
@@ -35,6 +39,9 @@ export const Palette = {
     onAccent: '#0D0F12',
     inverse: '#F1F0EB',
     onInverse: '#0D0F12',
+    feature: '#16302D',
+    onFeature: '#F1F0EB',
+    featureAccent: '#5EEAD4',
     danger: '#F97066',
   },
 } as const;

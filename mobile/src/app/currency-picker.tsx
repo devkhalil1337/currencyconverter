@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { FlatList, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
@@ -10,8 +10,9 @@ import { Font, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
 import { usePrefs } from '@/store/prefs';
 import { currencyName, POPULAR, useRates } from '@/store/rates';
+import { useTripDraft } from '@/store/trip-draft';
 
-type Mode = 'add' | 'home';
+type Mode = 'add' | 'home' | 'trip';
 
 export default function CurrencyPicker() {
   const c = useColors();
@@ -20,6 +21,7 @@ export default function CurrencyPicker() {
   const [query, setQuery] = useState('');
   const { rates, names } = useRates();
   const { currencies, homeCurrency, addCurrency, setHomeCurrency } = usePrefs();
+  const setTripCurrency = useTripDraft((s) => s.setCurrency);
 
   const options = useMemo(() => {
     const codes = Object.keys(rates ?? {}).filter((code) => names[code]?.trim());
@@ -36,15 +38,16 @@ export default function CurrencyPicker() {
 
   const choose = (code: string) => {
     if (mode === 'home') setHomeCurrency(code);
+    else if (mode === 'trip') setTripCurrency(code);
     else addCurrency(code);
     router.back();
   };
 
   return (
     <View style={[styles.container, { backgroundColor: c.bg }]}>
-      <View style={styles.inner}>
+      <View style={[styles.inner, Platform.OS === 'android' && { paddingTop: insets.top + Spacing.three }]}>
         <View style={styles.header}>
-          <AppText style={styles.title}>{mode === 'home' ? 'Home currency' : 'Add currency'}</AppText>
+          <AppText style={styles.title}>{mode === 'home' ? 'Home currency' : mode === 'trip' ? 'Trip currency' : 'Add currency'}</AppText>
           <Pressable
             onPress={() => router.back()}
             accessibilityRole="button"

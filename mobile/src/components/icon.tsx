@@ -15,6 +15,14 @@ export type IconName =
   | 'refresh'
   | 'shield'
   | 'bell'
+  | 'food'
+  | 'transport'
+  | 'stay'
+  | 'shopping'
+  | 'activity'
+  | 'other'
+  | 'camera'
+  | 'trash'
   | 'minus';
 
 interface IconProps {
@@ -93,6 +101,56 @@ export function Icon({ name, size = 20, color, strokeWidth = 2 }: IconProps) {
           <Path d="M4 4v4h4" {...common} />
           <Path d="M4 13a8 8 0 0 0 14.9 4" {...common} />
           <Path d="M20 20v-4h-4" {...common} />
+        </>
+      )}
+      {name === 'food' && (
+        <>
+          <Path d="M7 3v18" {...common} />
+          <Path d="M4 3v5a3 3 0 0 0 6 0V3" {...common} />
+          <Path d="M18 21V3c-2 0-4 2-4 6s2 5 4 5" {...common} />
+        </>
+      )}
+      {name === 'transport' && (
+        <>
+          <Rect x={6} y={3} width={12} height={14} rx={3} {...common} />
+          <Path d="M6 11h12M9 21l1-4M15 21l-1-4" {...common} />
+        </>
+      )}
+      {name === 'stay' && (
+        <>
+          <Path d="M3 18V6M21 18v-6a3 3 0 0 0-3-3h-7v6" {...common} />
+          <Path d="M3 15h18" {...common} />
+          <Circle cx={7} cy={11} r={2} {...common} />
+        </>
+      )}
+      {name === 'shopping' && (
+        <>
+          <Path d="M5 8h14l-1 12H6z" {...common} />
+          <Path d="M9 8V6a3 3 0 0 1 6 0v2" {...common} />
+        </>
+      )}
+      {name === 'activity' && (
+        <>
+          <Path d="M4 8a2 2 0 0 0 0 4v4h16v-4a2 2 0 0 0 0-4V4H4z" {...common} />
+          <Path d="M14 4v12" {...common} />
+        </>
+      )}
+      {name === 'other' && (
+        <>
+          <Circle cx={6} cy={12} r={1.2} {...common} />
+          <Circle cx={12} cy={12} r={1.2} {...common} />
+          <Circle cx={18} cy={12} r={1.2} {...common} />
+        </>
+      )}
+      {name === 'camera' && (
+        <>
+          <Path d="M4 8h3l2-3h6l2 3h3v11H4z" {...common} />
+          <Circle cx={12} cy={13} r={3.5} {...common} />
+        </>
+      )}
+      {name === 'trash' && (
+        <>
+          <Path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" {...common} />
         </>
       )}
       {name === 'bell' && (
