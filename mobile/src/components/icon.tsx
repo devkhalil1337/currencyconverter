@@ -23,7 +23,12 @@ export type IconName =
   | 'other'
   | 'camera'
   | 'trash'
-  | 'minus';
+  | 'minus'
+  | 'calendar'
+  | 'share'
+  | 'image'
+  | 'globe'
+  | 'receipt';
 
 interface IconProps {
   name: IconName;
@@ -163,6 +168,37 @@ export function Icon({ name, size = 20, color, strokeWidth = 2 }: IconProps) {
         <>
           <Path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z" {...common} />
           <Path d="M9 12l2 2 4-4" {...common} />
+        </>
+      )}
+      {name === 'calendar' && (
+        <>
+          <Rect x={3} y={5} width={18} height={16} rx={2.5} {...common} />
+          <Path d="M3 10h18M8 3v4M16 3v4" {...common} />
+        </>
+      )}
+      {name === 'share' && (
+        <>
+          <Path d="M12 15V3M8 7l4-4 4 4" {...common} />
+          <Path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" {...common} />
+        </>
+      )}
+      {name === 'image' && (
+        <>
+          <Rect x={3} y={4} width={18} height={16} rx={2.5} {...common} />
+          <Circle cx={9} cy={10} r={1.8} {...common} />
+          <Path d="M21 16l-5-5-9 9" {...common} />
+        </>
+      )}
+      {name === 'globe' && (
+        <>
+          <Circle cx={12} cy={12} r={9} {...common} />
+          <Path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" {...common} />
+        </>
+      )}
+      {name === 'receipt' && (
+        <>
+          <Path d="M6 3h12v18l-3-2-3 2-3-2-3 2z" {...common} />
+          <Path d="M9 8h6M9 12h6M9 16h3" {...common} />
         </>
       )}
     </Svg>
