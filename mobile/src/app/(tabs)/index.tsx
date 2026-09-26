@@ -36,7 +36,7 @@ export default function ConvertScreen() {
   return (
     <Screen title="Convert" right={<RatesStatus />}>
       <AppText variant="small" tone="muted" style={styles.subtitle}>
-        Tap a currency to make it the base · long press to remove
+        Tap to set base · hold to remove
       </AppText>
 
       {!rates && status === 'error' ? (
@@ -92,7 +92,7 @@ export default function ConvertScreen() {
         <Chip
           toggle
           icon="card"
-          label={`Real cost · ${cardFee}% card fee`}
+          label={`Real cost +${cardFee}%`}
           active={realCost}
           onPress={toggleRealCost}
           accessibilityHint="Adds your card fee to converted amounts"

@@ -89,6 +89,9 @@ export const Radius = {
   pill: 999,
 } as const;
 
-/** Space to leave below content so it clears the floating tab bar. */
-export const BottomTabInset = Platform.select({ ios: 50, android: 80, web: 96 }) ?? 0;
+/**
+ * Space to leave below content so it clears the tab bar. iOS 26 and web float
+ * the bar over content; Android's Material bar sits below it, so needs none.
+ */
+export const BottomTabInset = Platform.select({ ios: 50, android: 0, web: 96 }) ?? 0;
 export const MaxContentWidth = 560;

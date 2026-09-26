@@ -6,7 +6,10 @@ import { useColors } from '@/hooks/use-colors';
 export default function AppTabs() {
   const c = useColors();
   return (
-    <NativeTabs tintColor={c.accent} iconColor={{ default: c.muted, selected: c.accent }}>
+    <NativeTabs
+      tintColor={c.accent}
+      iconColor={{ default: c.muted, selected: c.accent }}
+      labelVisibilityMode="labeled">
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Label>Convert</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon sf="arrow.left.arrow.right" md="swap_horiz" />
