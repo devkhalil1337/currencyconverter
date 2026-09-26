@@ -20,8 +20,10 @@ interface PrefsState {
   realCost: boolean;
   cardFee: number;
   appearance: Appearance;
+  onboarded: boolean;
 
   press: (key: Key) => void;
+  completeOnboarding: (currencies: string[]) => void;
   setBase: (code: string, amount: string) => void;
   toggleRealCost: () => void;
   setCardFee: (fee: number) => void;
@@ -52,8 +54,19 @@ export const usePrefs = create<PrefsState>()(
       realCost: false,
       cardFee: 3,
       appearance: 'system',
+      onboarded: false,
 
       press: (key) => set((s) => ({ amount: pressKey(s.amount, key) })),
+      completeOnboarding: (picked) =>
+        set((s) => {
+          const list = Array.from(new Set([s.homeCurrency, ...picked])).slice(0, MAX_CURRENCIES);
+          return {
+            onboarded: true,
+            currencies: list.length >= 2 ? list : defaultCurrencies(s.homeCurrency),
+            base: s.homeCurrency,
+            amount: '100',
+          };
+        }),
       setBase: (code, amount) => set({ base: code, amount }),
       toggleRealCost: () => set((s) => ({ realCost: !s.realCost })),
       setCardFee: (fee) => set({ cardFee: Math.min(10, Math.max(0, Math.round(fee * 10) / 10)) }),

@@ -83,14 +83,25 @@ export default function RootLayout() {
       <StatusBar style={isDark ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="onboarding" options={{ gestureEnabled: false, animation: 'fade' }} />
         <Stack.Screen
           name="currency-picker"
-          options={{
-            presentation: 'formSheet',
-            sheetAllowedDetents: [0.9],
-            sheetGrabberVisible: true,
-            contentStyle: { backgroundColor: palette.bg },
-          }}
+          options={
+            // Android's form sheet collapses when the search keyboard opens,
+            // so use a full-screen modal there.
+            Platform.OS === 'ios'
+              ? {
+                  presentation: 'formSheet',
+                  sheetAllowedDetents: [0.9],
+                  sheetGrabberVisible: true,
+                  contentStyle: { backgroundColor: palette.bg },
+                }
+              : {
+                  presentation: 'modal',
+                  animation: 'slide_from_bottom',
+                  contentStyle: { backgroundColor: palette.bg },
+                }
+          }
         />
       </Stack>
     </ThemeProvider>

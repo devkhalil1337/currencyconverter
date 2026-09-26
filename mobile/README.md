@@ -26,7 +26,10 @@ npm run typecheck
 - **Offline rates**: last good rates are cached and used when the network is down.
 - **Currency picker**: search 300+ currencies, add to the list, change the home currency.
 - **Settings**: home currency, card fee, appearance (system/light/dark), refresh rates.
-- **Rates** (basic list) and **Trips** (placeholder). Charts, alerts and trips come next.
+- **Onboarding**: home currency (detected from the region) and travel currencies on first launch.
+- **Rates**: pair chart (1W, 1M, 1Y, 5Y) with scrubbing, low/high, and a compare list. History comes from ECB via
+  Frankfurter for ~30 major currencies, and from exchange-api daily snapshots for the rest.
+- **Trips**: placeholder. Alerts and trips come next.
 
 ## Layout
 
