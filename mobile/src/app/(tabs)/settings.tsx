@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/app-text';
+import { DevTools } from '@/components/dev-tools';
 import { Icon } from '@/components/icon';
 import { ListGroup, ListRow } from '@/components/list-group';
 import { Screen } from '@/components/screen';
@@ -84,6 +85,8 @@ export default function SettingsScreen() {
             onPress={() => refresh(true)}
           />
         </ListGroup>
+
+        {__DEV__ && <DevTools />}
 
         <View style={styles.privacy}>
           <Icon name="shield" size={18} color={c.muted} />

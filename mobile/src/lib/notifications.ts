@@ -53,8 +53,9 @@ export async function showNotification(title: string, body: string): Promise<voi
   if (!n) return;
   await ensureChannel(n);
   await n.scheduleNotificationAsync({
-    content: { title, body, ...(Platform.OS === 'android' ? { channelId: CHANNEL_ID } : {}) },
-    trigger: null,
+    content: { title, body },
+    // An immediate trigger that names the channel; `null` would use Expo's fallback channel.
+    trigger: Platform.OS === 'android' ? { channelId: CHANNEL_ID } : null,
   });
 }
 

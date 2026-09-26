@@ -2,16 +2,17 @@ import { useAlerts } from '@/store/alerts';
 import { useRates } from '@/store/rates';
 
 import { isTriggered } from './alerts';
-import { unitRate } from './convert';
+import { unitRate, type Rates } from './convert';
 import { formatRate } from './format';
 import { showNotification } from './notifications';
 
 /**
  * Fires a notification for every active alert whose target the cached rates
  * have reached, then marks those alerts as triggered. Returns how many fired.
+ * `ratesOverride` lets debug tools simulate a market move.
  */
-export async function checkAlerts(): Promise<number> {
-  const { rates } = useRates.getState();
+export async function checkAlerts(ratesOverride?: Rates): Promise<number> {
+  const rates = ratesOverride ?? useRates.getState().rates;
   const { alerts, markTriggered } = useAlerts.getState();
   if (!rates) return 0;
 
