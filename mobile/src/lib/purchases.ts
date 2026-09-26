@@ -1,11 +1,14 @@
 import { Platform } from 'react-native';
 import Purchases, {
+  INTRO_ELIGIBILITY_STATUS,
   LOG_LEVEL,
   PACKAGE_TYPE,
   PURCHASES_ERROR_CODE,
   type CustomerInfo,
   type PurchasesPackage,
 } from 'react-native-purchases';
+
+import { freeTrial, type Period } from './trial';
 
 /** RevenueCat entitlement that unlocks Pro. Create it with this identifier in the dashboard. */
 export const PRO_ENTITLEMENT = 'pro';
@@ -61,6 +64,33 @@ export async function loadPackages(): Promise<PurchasesPackage[]> {
     return i === -1 ? ORDER.length : i;
   };
   return [...packages].sort((a, b) => rank(a) - rank(b));
+}
+
+/**
+ * Free trials by package identifier, only where this user would get one. Google Play already
+ * leaves out offers the user can't redeem. iOS has to be asked, and anything but a clear "eligible"
+ * counts as no, so the paywall never promises a trial the App Store won't give.
+ */
+export async function loadTrials(packages: PurchasesPackage[]): Promise<Record<string, Period>> {
+  const found = packages.flatMap((pkg) => {
+    const trial = freeTrial(pkg.product);
+    return trial ? [{ pkg, trial }] : [];
+  });
+  if (found.length === 0) return {};
+  if (Platform.OS !== 'ios') return Object.fromEntries(found.map(({ pkg, trial }) => [pkg.identifier, trial]));
+  try {
+    const eligibility = await Purchases.checkTrialOrIntroductoryPriceEligibility(
+      found.map(({ pkg }) => pkg.product.identifier)
+    );
+    const eligible = found.filter(
+      ({ pkg }) =>
+        eligibility[pkg.product.identifier]?.status === INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE
+    );
+    return Object.fromEntries(eligible.map(({ pkg, trial }) => [pkg.identifier, trial]));
+  } catch (err) {
+    console.warn('Could not check trial eligibility', err);
+    return {};
+  }
 }
 
 export type PurchaseResult = 'purchased' | 'cancelled' | 'failed';

@@ -23,7 +23,7 @@ import { usePro } from '@/store/pro';
 import { useRates } from '@/store/rates';
 import { useTrips } from '@/store/trips';
 import { syncAlertTask } from '@/tasks/rate-alerts';
-import { updateRatesWidget } from '@/widgets/task-handler';
+import { updateWidgets } from '@/widgets/task-handler';
 
 SplashScreen.preventAutoHideAsync();
 configureForegroundNotifications();
@@ -102,12 +102,12 @@ export default function RootLayout() {
     if (hydrated) configurePurchases(setPro);
   }, [hydrated, setPro]);
 
-  // Keep a placed home-screen widget in step with rates, the currency list and Pro.
+  // Keep placed home-screen widgets in step with rates, the currency list and Pro.
   const homeCurrency = usePrefs((s) => s.homeCurrency);
   const currencies = usePrefs((s) => s.currencies);
   const proState = usePro((s) => s.isPro || s.devPro);
   useEffect(() => {
-    if (hydrated) updateRatesWidget();
+    if (hydrated) updateWidgets();
   }, [hydrated, fetchedAt, homeCurrency, currencies, proState]);
 
   const ready = (fontsLoaded || !!fontError) && hydrated;
@@ -153,6 +153,7 @@ export default function RootLayout() {
         <Stack.Screen name="expense-new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="trip/[id]" />
         <Stack.Screen name="paywall" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="past-rate" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
       </Stack>
     </ThemeProvider>
   );

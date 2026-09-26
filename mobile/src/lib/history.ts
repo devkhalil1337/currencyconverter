@@ -13,13 +13,13 @@ export interface History {
 const RANGE_DAYS: Record<Range, number> = { '1W': 7, '1M': 30, '1Y': 365, '5Y': 5 * 365 };
 
 // Currencies published by the ECB, served by Frankfurter as one time-series request.
-const ECB = new Set([
+export const ECB = new Set([
   'aud', 'brl', 'cad', 'chf', 'cny', 'czk', 'dkk', 'eur', 'gbp', 'hkd', 'huf', 'idr', 'ils', 'inr', 'isk',
   'jpy', 'krw', 'mxn', 'myr', 'nok', 'nzd', 'php', 'pln', 'ron', 'sek', 'sgd', 'thb', 'try', 'usd', 'zar',
 ]);
 
 // Dated snapshots of fawazahmed0/exchange-api start here.
-const EXCHANGE_API_START = '2024-03-02';
+export const EXCHANGE_API_START = '2024-03-02';
 const MAX_POINTS = 120;
 
 function isoDate(d: Date): string {

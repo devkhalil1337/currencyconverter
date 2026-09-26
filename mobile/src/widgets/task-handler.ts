@@ -3,6 +3,7 @@ import { requestPinWidget, requestWidgetUpdate, type WidgetTaskHandler } from 'r
 
 import { useRates } from '@/store/rates';
 
+import { updateIosWidget } from './ios-widget';
 import { RATES_WIDGET, ratesWidget } from './rates-widget';
 import { ratesWidgetProps, rehydrateWidgetStores } from './widget-data';
 
@@ -30,6 +31,12 @@ export function updateRatesWidget(): void {
     widgetName: RATES_WIDGET,
     renderWidget: () => ratesWidget(ratesWidgetProps()),
   }).catch((err) => console.warn('Widget update failed', err));
+}
+
+/** Refreshes home-screen widgets on whichever platform this is. */
+export function updateWidgets(): void {
+  updateRatesWidget();
+  updateIosWidget();
 }
 
 /** Asks the launcher to place the widget; returns false if the launcher can't pin widgets. */

@@ -1,6 +1,7 @@
 # Store listing (draft, US English)
 
-Only describes features that ship today. Add Trips, widgets and Pro when they are built.
+Only describes features that ship today. Widgets differ by platform: iPhone has home and lock-screen
+widgets (iOS 17+), Android has a home-screen widget; the description says both.
 
 ## Name and short texts
 
@@ -50,8 +51,12 @@ Log what you spend on a trip in the local currency and see the total at home, ca
 with a daily budget.
 
 **Fairrate Pro**
-Unlimited alerts and trips, plus a home-screen widget on Android. Free includes 2 alerts and
-1 trip.
+- Widgets: your rates on the home screen, and on the Lock Screen on iPhone (iOS 17 or later).
+- Rates on any past date, for checking what a purchase really cost, plus CSV export for your
+  records or expense reports.
+- Unlimited rate alerts and trips.
+
+Free includes 2 alerts and 1 trip.
 
 **Private by design**
 No account. No ads. No tracking. Your settings, alerts and trips stay on your phone.
@@ -62,7 +67,8 @@ They are for information only. Your bank or exchange service may use a different
 ## Update notes (Cordova → Fairrate)
 
 > Say hello to Fairrate. The app has been rebuilt from scratch with a new design, a faster
-> converter, offline rates, card-fee "Real cost", rate charts and rate alerts.
+> converter, offline rates, card-fee "Real cost", rate charts, rate alerts and trip budgets.
+> Fairrate Pro adds widgets, rates on past dates and CSV export.
 > Note: crypto portfolio and watchlist from the old version were retired.
 
 ## Privacy answers
@@ -85,3 +91,5 @@ With RevenueCat purchases (and still no analytics):
 4. Alert form and list: "Get alerted at your rate".
 5. Onboarding headline: "Every currency. One tap."
 6. Dark mode Convert: "Easy on the eyes, day or night".
+7. Home and Lock Screen widgets (Pro): "Rates at a glance".
+8. Trip budget with expenses (Pro): "Know what your trip really costs".

@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { Linking, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Linking, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/app-text';
 import { DevTools } from '@/components/dev-tools';
@@ -21,9 +21,32 @@ const APPEARANCES: { value: Appearance; label: string }[] = [
   { value: 'dark', label: 'Dark' },
 ];
 
+const RATE_TYPES: { value: boolean; label: string }[] = [
+  { value: false, label: 'Mid-market' },
+  { value: true, label: 'With card fee' },
+];
+
+// The iOS widget extension needs iOS 17, while the app itself still runs on iOS 16.
+const HAS_WIDGETS =
+  Platform.OS === 'android' || (Platform.OS === 'ios' && parseInt(String(Platform.Version), 10) >= 17);
+
+async function openWidgets(isPro: boolean) {
+  if (!isPro) {
+    router.push({ pathname: '/paywall', params: { reason: 'widgets' } });
+  } else if (Platform.OS === 'ios') {
+    Alert.alert(
+      'Add a widget',
+      'Touch and hold your Home Screen, tap Edit › Add Widget, then search for Fairrate.\n\nLock Screen widgets: touch and hold the Lock Screen › Customize.'
+    );
+  } else if (!(await pinRatesWidget())) {
+    // Some launchers can't pin widgets for an app, so explain the manual way.
+    Alert.alert('Add the widget', 'Touch and hold an empty spot on your home screen, tap Widgets, then find Fairrate.');
+  }
+}
+
 export default function SettingsScreen() {
   const c = useColors();
-  const { homeCurrency, cardFee, appearance, setCardFee, setAppearance } = usePrefs();
+  const { homeCurrency, cardFee, realCost, appearance, setCardFee, toggleRealCost, setAppearance } = usePrefs();
   const { rates, names, fetchedAt, status, refresh } = useRates();
   const rateCount = rates ? Object.keys(rates).length : 0;
   const isPro = useIsPro();
@@ -37,10 +60,10 @@ export default function SettingsScreen() {
           </AppText>
           <AppText variant="small" style={{ color: c.accentOnSoft }}>
             {isPro
-              ? 'Unlimited alerts and trips are unlocked.'
-              : Platform.OS === 'android'
-                ? 'Unlimited rate alerts and trips, plus a home-screen widget.'
-                : 'Unlimited rate alerts and trips. Widgets coming soon.'}
+              ? 'Every Pro feature is unlocked. Thanks for your support!'
+              : HAS_WIDGETS
+                ? 'Widgets, trips, past rates, export and unlimited alerts.'
+                : 'Trips, past rates, export and unlimited alerts.'}
           </AppText>
           <Pressable
             onPress={() =>
@@ -78,40 +101,20 @@ export default function SettingsScreen() {
               </View>
             }
           />
+          <View style={styles.segmentRow}>
+            <AppText style={styles.segmentLabel}>Rate type</AppText>
+            <Segment
+              label="Rate type"
+              options={RATE_TYPES}
+              value={realCost}
+              onChange={(value) => {
+                if (value !== realCost) toggleRealCost();
+              }}
+            />
+          </View>
         </ListGroup>
 
         <ListGroup title="App">
-          {Platform.OS === 'android' ? (
-            <ListRow
-              label="Home-screen widget"
-              value={isPro ? 'Add' : 'Pro'}
-              onPress={() => (isPro ? pinRatesWidget() : router.push('/paywall'))}
-            />
-          ) : null}
-          <View style={styles.appearanceRow}>
-            <AppText>Appearance</AppText>
-            <View
-              accessibilityRole="radiogroup"
-              style={[styles.segment, { backgroundColor: c.subtle }]}>
-              {APPEARANCES.map((option) => {
-                const selected = option.value === appearance;
-                return (
-                  <Pressable
-                    key={option.value}
-                    onPress={() => setAppearance(option.value)}
-                    accessibilityRole="radio"
-                    accessibilityState={{ checked: selected }}
-                    style={[styles.segmentItem, selected && { backgroundColor: c.card }]}>
-                    <AppText
-                      variant="small"
-                      style={{ fontFamily: Font.semibold, color: selected ? c.ink : c.muted }}>
-                      {option.label}
-                    </AppText>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
           <ListRow
             label="Offline rates"
             value={
@@ -123,6 +126,18 @@ export default function SettingsScreen() {
             }
             onPress={() => refresh(true)}
           />
+          {HAS_WIDGETS ? (
+            <ListRow
+              label={Platform.OS === 'ios' ? 'Widgets' : 'Home-screen widget'}
+              value={isPro ? 'Add' : undefined}
+              right={isPro ? undefined : <ProPill />}
+              onPress={() => openWidgets(isPro)}
+            />
+          ) : null}
+          <View style={styles.segmentRow}>
+            <AppText style={styles.segmentLabel}>Appearance</AppText>
+            <Segment label="Appearance" options={APPEARANCES} value={appearance} onChange={setAppearance} />
+          </View>
         </ListGroup>
 
         {__DEV__ && <DevTools />}
@@ -138,6 +153,54 @@ export default function SettingsScreen() {
         </AppText>
       </ScrollView>
     </Screen>
+  );
+}
+
+function Segment<T extends string | boolean>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: { value: T; label: string }[];
+  value: T;
+  onChange: (value: T) => void;
+}) {
+  const c = useColors();
+  return (
+    <View
+      accessibilityRole="radiogroup"
+      accessibilityLabel={label}
+      style={[styles.segment, { backgroundColor: c.subtle }]}>
+      {options.map((option) => {
+        const selected = option.value === value;
+        return (
+          <Pressable
+            key={String(option.value)}
+            onPress={() => onChange(option.value)}
+            accessibilityRole="radio"
+            accessibilityState={{ checked: selected }}
+            hitSlop={{ top: 6, bottom: 6 }}
+            style={[styles.segmentItem, selected && { backgroundColor: c.card }]}>
+            <AppText variant="small" style={{ fontFamily: Font.semibold, color: selected ? c.ink : c.muted }}>
+              {option.label}
+            </AppText>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
+function ProPill() {
+  const c = useColors();
+  return (
+    <View style={[styles.proPill, { backgroundColor: c.feature }]}>
+      <AppText variant="caption" style={[styles.proPillText, { color: c.featureAccent }]}>
+        PRO
+      </AppText>
+    </View>
   );
 }
 
@@ -197,13 +260,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  appearanceRow: {
+  segmentRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: Spacing.two,
     minHeight: 56,
     paddingHorizontal: 14,
+    paddingVertical: Spacing.two,
+  },
+  segmentLabel: {
+    flexShrink: 1,
   },
   segment: {
     flexDirection: 'row',
@@ -215,6 +283,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     justifyContent: 'center',
     borderRadius: Radius.sm,
+  },
+  proPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: Radius.pill,
+  },
+  proPillText: {
+    fontFamily: Font.bold,
+    letterSpacing: 0.4,
   },
   privacy: {
     flexDirection: 'row',

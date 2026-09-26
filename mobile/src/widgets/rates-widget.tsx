@@ -36,7 +36,7 @@ function Body({ home, rows, updated, locked, t }: RatesWidgetProps & { t: Tone }
     return (
       <FlexWidget
         clickAction="OPEN_URI"
-        clickActionData={{ uri: 'fairrate://paywall' }}
+        clickActionData={{ uri: 'fairrate://paywall?reason=widgets' }}
         style={{
           height: 'match_parent',
           width: 'match_parent',

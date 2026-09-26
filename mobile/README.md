@@ -25,7 +25,8 @@ npm run typecheck
   and **Real cost** mode (adds your card fee).
 - **Offline rates**: last good rates are cached and used when the network is down.
 - **Currency picker**: search 300+ currencies, add to the list, change the home currency.
-- **Settings**: home currency, card fee, appearance (system/light/dark), refresh rates.
+- **Settings**: home currency, card fee, rate type (mid-market or with card fee, the same switch as
+  the Convert tab's Real cost chip), appearance (system/light/dark), refresh rates, widgets.
 - **Onboarding**: home currency (detected from the region) and travel currencies on first launch.
 - **Rates**: pair chart (1W, 1M, 1Y, 5Y) with scrubbing, low/high, and a compare list. History comes from ECB via
   Frankfurter for ~30 major currencies, and from exchange-api daily snapshots for the rest.
@@ -34,8 +35,11 @@ npm run typecheck
   checks need a development or store build; in Expo Go alerts only show as Reached in the list.
 - **Trips**: trips with a local currency, dates and budget; expenses by category and card/cash,
   with the home cost fixed at entry (card fee included); budget left per day.
-- **Pro** (RevenueCat): paywall, restore, Settings card. Free plan: 2 active alerts and 1 trip.
-- **Android widget**: home-screen "Rates" widget (Pro); free users see an unlock prompt.
+- **Pro** (RevenueCat): paywall with free-trial copy when the store offers a trial, restore,
+  Settings card. Pro unlocks widgets, rates on any past date, CSV export,
+  and unlimited alerts and trips. Free plan: 2 active alerts and 1 trip.
+- **Widgets** (Pro): Android home-screen "Rates" widget, where free users see an unlock prompt;
+  iOS home and lock-screen widgets (iOS 17+).
 
 ## Layout
 
@@ -68,6 +72,44 @@ EXPO_PUBLIC_PRIVACY_URL=https://your-site/privacy
 
 Without keys the paywall says purchases aren't set up. In debug builds, Settings › Developer ›
 Pretend Pro unlocks Pro features for testing.
+
+The paywall uses these reasons (`/paywall?reason=...`) for its first line: `alerts`, `trips`,
+`history`, `export`, `scan`, `widgets`.
+
+### Free trial setup
+
+The paywall advertises a trial only when the store returns one, so there is nothing to switch on
+in the app:
+
+- **App Store Connect**: open the annual subscription › Subscription Prices › Introductory Offers,
+  and add a **Free** offer for **1 week** in all territories.
+- **Google Play Console**: on the annual subscription's base plan, add an offer for new customers
+  with a **Free trial** phase of **7 days**, then activate it.
+- **RevenueCat** picks both up automatically. No dashboard change is needed.
+
+What the user sees: the yearly plan reads "7-day free trial · $1.25/mo", the button reads "Start
+7-day free trial" and the fine print "Then $14.99/year. Cancel anytime." The length comes from
+the store, so a 2-week trial shows as "14-day". On iOS the app also asks the App Store whether this
+user is eligible and hides the trial unless the answer is a clear yes. Google Play only returns
+offers the user can still redeem. Without a trial the button says "Subscribe" or "Buy lifetime".
+Test with an App Store sandbox account or a Play license tester. The RevenueCat Test Store key used
+in debug builds may not return intro offers.
+
+## iOS widgets
+
+Home and lock-screen widgets are a widget extension that `@bacons/apple-targets` generates from
+`targets/widget` during prebuild, so they need a development or store build (not Expo Go) and
+**iOS 17 or later**.
+
+The app and the widget share data through the App Group `group.com.currency.io`. In the Apple
+Developer portal (Certificates, Identifiers & Profiles › Identifiers) enable that App Group for
+both `com.currency.io` and the widget's bundle ID `com.currency.io.widget`. EAS credentials can do
+this for you: run an iOS build with `npx eas-cli@latest build --platform ios` and let it sync
+capabilities and create the provisioning profiles for both targets.
+
+Settings › Widgets shows free users the paywall and tells Pro users how to add a widget. The app
+itself still supports iOS 16.4, so on iOS 16 the Widgets row and the paywall's widget line are
+hidden.
 
 ## Testing on an iPhone
 

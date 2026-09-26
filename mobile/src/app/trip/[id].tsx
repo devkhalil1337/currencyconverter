@@ -8,10 +8,13 @@ import { Icon } from '@/components/icon';
 import { ListGroup } from '@/components/list-group';
 import { SheetHeader } from '@/components/sheet-header';
 import { TripCard } from '@/components/trip-card';
-import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
+import { Font, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { exportFileName, tripCsv } from '@/lib/csv';
+import { shareCsv } from '@/lib/export-file';
 import { summarize, toIsoDate, type Expense } from '@/lib/trips';
 import { usePrefs } from '@/store/prefs';
+import { useIsPro } from '@/store/pro';
 import { useTrips } from '@/store/trips';
 
 function confirm(message: string, action: string, onConfirm: () => void) {
@@ -39,6 +42,7 @@ export default function TripDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { trips, expenses, deleteTrip, deleteExpense } = useTrips();
   const cardFee = usePrefs((s) => s.cardFee);
+  const isPro = useIsPro();
   const trip = trips.find((t) => t.id === id);
   const today = toIsoDate(new Date());
 
@@ -61,6 +65,19 @@ export default function TripDetail() {
     if (last?.label === label) last.items.push(e);
     else groups.push({ label, items: [e] });
   }
+
+  const exportCsv = async () => {
+    if (!isPro) {
+      router.push({ pathname: '/paywall', params: { reason: 'export' } });
+      return;
+    }
+    try {
+      const result = await shareCsv(exportFileName([trip.name], today, 'trip'), tripCsv(trip, expenses), trip.name);
+      if (result === 'unavailable') Alert.alert('Sharing isn’t available on this device.');
+    } catch {
+      Alert.alert('Couldn’t export this trip', 'Please try again.');
+    }
+  };
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: c.bg }]} edges={['top', 'left', 'right']}>
@@ -103,20 +120,39 @@ export default function TripDetail() {
           </AppText>
         )}
 
-        <Pressable
-          onPress={() =>
-            confirm(`Delete ${trip.name} and all its expenses?`, 'Delete trip', () => {
-              deleteTrip(trip.id);
-              router.back();
-            })
-          }
-          accessibilityRole="button"
-          style={({ pressed }) => [styles.delete, { borderColor: c.line, opacity: pressed ? 0.7 : 1 }]}>
-          <Icon name="trash" size={18} color={c.danger} />
-          <AppText variant="bodyStrong" tone="danger">
-            Delete trip
-          </AppText>
-        </Pressable>
+        <View style={styles.actions}>
+          {own.length > 0 && (
+            <Pressable
+              onPress={exportCsv}
+              accessibilityRole="button"
+              accessibilityHint={isPro ? 'Shares a spreadsheet of this trip’s expenses' : 'Requires Fairrate Pro'}
+              style={({ pressed }) => [styles.action, { borderColor: c.line, opacity: pressed ? 0.7 : 1 }]}>
+              <Icon name="share" size={18} color={c.ink} />
+              <AppText variant="bodyStrong">Export CSV</AppText>
+              {!isPro && (
+                <View style={[styles.proPill, { backgroundColor: c.feature }]}>
+                  <AppText variant="caption" style={[styles.proText, { color: c.featureAccent }]}>
+                    PRO
+                  </AppText>
+                </View>
+              )}
+            </Pressable>
+          )}
+          <Pressable
+            onPress={() =>
+              confirm(`Delete ${trip.name} and all its expenses?`, 'Delete trip', () => {
+                deleteTrip(trip.id);
+                router.back();
+              })
+            }
+            accessibilityRole="button"
+            style={({ pressed }) => [styles.action, { borderColor: c.line, opacity: pressed ? 0.7 : 1 }]}>
+            <Icon name="trash" size={18} color={c.danger} />
+            <AppText variant="bodyStrong" tone="danger">
+              Delete trip
+            </AppText>
+          </Pressable>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -145,14 +181,26 @@ const styles = StyleSheet.create({
   center: {
     textAlign: 'center',
   },
-  delete: {
+  actions: {
+    gap: Spacing.two,
+    marginTop: Spacing.three,
+  },
+  action: {
     flexDirection: 'row',
     gap: Spacing.two,
     minHeight: 48,
-    marginTop: Spacing.three,
     borderRadius: Radius.md,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  proPill: {
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: Radius.pill,
+  },
+  proText: {
+    fontFamily: Font.bold,
+    letterSpacing: 0.6,
   },
 });

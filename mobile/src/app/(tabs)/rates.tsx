@@ -1,5 +1,6 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/app-text';
 import { CurrencyBadge } from '@/components/currency-badge';
@@ -11,10 +12,16 @@ import { Screen } from '@/components/screen';
 import { BottomTabInset, Font, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
 import { useHistory } from '@/hooks/use-history';
+import { alertTargets } from '@/lib/chart-markers';
 import { unitRate } from '@/lib/convert';
+import { exportFileName, seriesCsv } from '@/lib/csv';
+import { shareCsv } from '@/lib/export-file';
 import { formatRate } from '@/lib/format';
 import type { Point, Range } from '@/lib/history';
+import { toIsoDate } from '@/lib/trips';
+import { useAlerts } from '@/store/alerts';
 import { usePrefs } from '@/store/prefs';
+import { useIsPro } from '@/store/pro';
 import { currencyName, useRates } from '@/store/rates';
 
 const RANGES: Range[] = ['1W', '1M', '1Y', '5Y'];
@@ -54,9 +61,37 @@ export default function RatesScreen() {
   const low = values.length ? Math.min(...values) : null;
   const high = values.length ? Math.max(...values) : null;
 
+  const alerts = useAlerts((s) => s.alerts);
+  const markers = alertTargets(alerts, from, to).map((value) => ({ value, label: `Alert · ${formatRate(value)}` }));
+  const isPro = useIsPro();
+
   const swap = () => {
     setFrom(to);
     setPicked(from);
+  };
+
+  const exportHistory = async () => {
+    if (!isPro) {
+      router.push({ pathname: '/paywall', params: { reason: 'export' } });
+      return;
+    }
+    if (!history) return;
+    const pair = `${from.toUpperCase()}/${to.toUpperCase()}`;
+    try {
+      const result = await shareCsv(
+        exportFileName([from, to, range], toIsoDate(new Date())),
+        seriesCsv(history.points, from, to),
+        `${pair} rates`
+      );
+      if (result === 'unavailable') Alert.alert('Sharing isn’t available on this device.');
+    } catch {
+      Alert.alert('Couldn’t export', 'Please try again.');
+    }
+  };
+
+  const openPastRate = () => {
+    if (!isPro) router.push({ pathname: '/paywall', params: { reason: 'history' } });
+    else router.push({ pathname: '/past-rate', params: { from, to } });
   };
 
   return (
@@ -123,7 +158,13 @@ export default function RatesScreen() {
 
         <View style={styles.chartBox}>
           {history ? (
-            <LineChart points={history.points} color={c.accent} lineColor={c.bg} onScrub={setScrub} />
+            <LineChart
+              points={history.points}
+              color={c.accent}
+              lineColor={c.bg}
+              markers={markers}
+              onScrub={setScrub}
+            />
           ) : loading ? (
             <ActivityIndicator color={c.accent} />
           ) : (
@@ -148,9 +189,24 @@ export default function RatesScreen() {
           <Stat label="Now" value={live !== null ? formatRate(live) : '—'} />
         </View>
         {history && (
-          <AppText variant="caption" tone="muted">
-            {history.source === 'ecb' ? 'History: European Central Bank (via Frankfurter)' : 'History: exchange-api daily snapshots'}
-          </AppText>
+          <View style={styles.sourceRow}>
+            <AppText variant="caption" tone="muted" style={styles.pairNames}>
+              {history.source === 'ecb' ? 'History: European Central Bank (via Frankfurter)' : 'History: exchange-api daily snapshots'}
+            </AppText>
+            <Pressable
+              onPress={exportHistory}
+              accessibilityRole="button"
+              accessibilityLabel="Export chart data as CSV"
+              accessibilityHint={isPro ? undefined : 'Requires Fairrate Pro'}
+              hitSlop={6}
+              style={({ pressed }) => [styles.export, { borderColor: c.line, opacity: pressed ? 0.7 : 1 }]}>
+              <Icon name="share" size={14} color={c.ink} />
+              <AppText variant="small" style={{ fontFamily: Font.semibold }}>
+                Export
+              </AppText>
+              {!isPro && <ProPill />}
+            </Pressable>
+          </View>
         )}
 
         <ListGroup title={`Compare with 1 ${from.toUpperCase()}`}>
@@ -187,8 +243,40 @@ export default function RatesScreen() {
             setPicked(t);
           }}
         />
+
+        <Pressable
+          onPress={openPastRate}
+          accessibilityRole="button"
+          accessibilityHint={isPro ? undefined : 'Requires Fairrate Pro'}
+          style={({ pressed }) => [
+            styles.pair,
+            { backgroundColor: pressed ? c.subtle : c.card, borderColor: c.line },
+          ]}>
+          <View style={[styles.featureIcon, { backgroundColor: c.accentSoft }]}>
+            <Icon name="calendar" size={18} color={c.accentOnSoft} />
+          </View>
+          <View style={styles.pairNames}>
+            <AppText variant="bodyStrong">Rate on a past date</AppText>
+            <AppText variant="small" tone="muted">
+              For invoices and expense reports
+            </AppText>
+          </View>
+          {!isPro && <ProPill />}
+          <Icon name="chevron" size={16} color={c.muted} />
+        </Pressable>
       </ScrollView>
     </Screen>
+  );
+}
+
+function ProPill() {
+  const c = useColors();
+  return (
+    <View style={[styles.proPill, { backgroundColor: c.feature }]}>
+      <AppText variant="caption" style={[styles.proText, { color: c.featureAccent }]}>
+        PRO
+      </AppText>
+    </View>
   );
 }
 
@@ -291,6 +379,36 @@ const styles = StyleSheet.create({
   },
   statValue: {
     fontVariant: ['tabular-nums'],
+  },
+  sourceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+  },
+  export: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    minHeight: 32,
+    paddingHorizontal: 10,
+    borderRadius: Radius.pill,
+    borderWidth: 1,
+  },
+  featureIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  proPill: {
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: Radius.pill,
+  },
+  proText: {
+    fontFamily: Font.bold,
+    letterSpacing: 0.6,
   },
   row: {
     flexDirection: 'row',

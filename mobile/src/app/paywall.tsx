@@ -10,7 +10,8 @@ import { Icon } from '@/components/icon';
 import { SheetHeader } from '@/components/sheet-header';
 import { Font, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
-import { buy, loadPackages, purchasesAvailable, restore } from '@/lib/purchases';
+import { buy, loadPackages, loadTrials, purchasesAvailable, restore } from '@/lib/purchases';
+import { billingPeriod, fullPrice, pricePer, trialLength, type Period } from '@/lib/trial';
 import { FREE_LIMITS, useIsPro, usePro } from '@/store/pro';
 
 const TERMS_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
@@ -19,16 +20,34 @@ const PRIVACY_URL = process.env.EXPO_PUBLIC_PRIVACY_URL;
 const REASONS: Record<string, string> = {
   alerts: `Free includes ${FREE_LIMITS.activeAlerts} active alerts.`,
   trips: `Free includes ${FREE_LIMITS.trips} trip.`,
+  history: 'Rates on past dates are part of Pro.',
+  export: 'CSV export is part of Pro.',
+  scan: 'Receipt scanning is part of Pro.',
+  widgets: 'Widgets are part of Pro.',
 };
 
+// Only promise widgets where they exist: the iOS extension needs iOS 17, and web has none.
+const WIDGETS =
+  Platform.OS === 'android'
+    ? ['Home-screen rates widget']
+    : Platform.OS === 'ios' && parseInt(String(Platform.Version), 10) >= 17
+      ? ['Home & lock-screen widgets']
+      : [];
+
 const BENEFITS = [
-  'Unlimited rate alerts',
+  ...WIDGETS,
   'Unlimited trips with budgets',
-  Platform.OS === 'android' ? 'Home-screen rates widget' : 'Home-screen widgets (coming soon)',
-  'Rates on any past date + CSV export (coming soon)',
+  'Rates on any past date + CSV export',
+  'Unlimited rate alerts',
 ];
 
-function planLabel(pkg: PurchasesPackage): { name: string; note: string } {
+function planLabel(pkg: PurchasesPackage, trial: Period | undefined): { name: string; note: string } {
+  const { name, note } = basePlanLabel(pkg);
+  const lead = trial ? `${trialLength(trial)} free trial` : '';
+  return { name, note: [lead, note].filter(Boolean).join(' · ') };
+}
+
+function basePlanLabel(pkg: PurchasesPackage): { name: string; note: string } {
   switch (pkg.packageType) {
     case PACKAGE_TYPE.ANNUAL:
       return {
@@ -44,6 +63,21 @@ function planLabel(pkg: PurchasesPackage): { name: string; note: string } {
   }
 }
 
+function checkout(pkg: PurchasesPackage | null, trial: Period | undefined): { cta: string; fine: string | null } {
+  if (!pkg) return { cta: 'Subscribe', fine: null };
+  if (pkg.packageType === PACKAGE_TYPE.LIFETIME) {
+    return { cta: 'Buy lifetime', fine: 'One-time purchase. No subscription.' };
+  }
+  if (trial) {
+    const renewal = pricePer(fullPrice(pkg.product), billingPeriod(pkg.packageType, pkg.product.subscriptionPeriod));
+    return { cta: `Start ${trialLength(trial)} free trial`, fine: `Then ${renewal}. Cancel anytime.` };
+  }
+  return {
+    cta: 'Subscribe',
+    fine: 'Renews automatically until cancelled. Cancel anytime in your store account settings.',
+  };
+}
+
 export default function Paywall() {
   const c = useColors();
   const { reason } = useLocalSearchParams<{ reason?: string }>();
@@ -52,6 +86,7 @@ export default function Paywall() {
   const available = purchasesAvailable();
 
   const [packages, setPackages] = useState<PurchasesPackage[] | null>(available ? null : []);
+  const [trials, setTrials] = useState<Record<string, Period>>({});
   const [selected, setSelected] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -59,9 +94,10 @@ export default function Paywall() {
   useEffect(() => {
     if (!available) return;
     loadPackages()
-      .then((list) => {
+      .then(async (list) => {
+        setTrials(await loadTrials(list));
         setPackages(list);
-        setSelected(list[0]?.identifier ?? null);
+        setSelected((list.find((p) => p.packageType === PACKAGE_TYPE.ANNUAL) ?? list[0])?.identifier ?? null);
       })
       .catch(() => {
         setPackages([]);
@@ -70,6 +106,7 @@ export default function Paywall() {
   }, [available]);
 
   const chosen = packages?.find((p) => p.identifier === selected) ?? null;
+  const { cta, fine } = checkout(chosen, chosen ? trials[chosen.identifier] : undefined);
 
   const purchase = async () => {
     if (!chosen) return;
@@ -79,7 +116,9 @@ export default function Paywall() {
     setBusy(false);
     if (result === 'purchased') {
       setPro(true);
-      router.back();
+      // Widgets deep-link here, so on a cold start there may be nothing to go back to.
+      if (router.canGoBack()) router.back();
+      else router.replace('/');
     } else if (result === 'failed') {
       setMessage('The purchase didn’t go through. You haven’t been charged.');
     }
@@ -139,7 +178,8 @@ export default function Paywall() {
           <View accessibilityRole="radiogroup" style={styles.plans}>
             {packages.map((pkg) => {
               const on = pkg.identifier === selected;
-              const { name, note } = planLabel(pkg);
+              const { name, note } = planLabel(pkg, trials[pkg.identifier]);
+              const best = pkg.packageType === PACKAGE_TYPE.ANNUAL && packages.length > 1;
               return (
                 <Pressable
                   key={pkg.identifier}
@@ -154,14 +194,23 @@ export default function Paywall() {
                     {on && <View style={[styles.dot, { backgroundColor: c.accent }]} />}
                   </View>
                   <View style={styles.flex}>
-                    <AppText variant="bodyStrong">{name}</AppText>
+                    <View style={styles.planName}>
+                      <AppText variant="bodyStrong">{name}</AppText>
+                      {best && (
+                        <View style={[styles.pill, { backgroundColor: c.accent }]}>
+                          <AppText variant="caption" tone="onAccent" style={styles.pillText}>
+                            Best value
+                          </AppText>
+                        </View>
+                      )}
+                    </View>
                     {note ? (
                       <AppText variant="small" tone="muted">
                         {note}
                       </AppText>
                     ) : null}
                   </View>
-                  <AppText variant="bodyStrong">{pkg.product.priceString}</AppText>
+                  <AppText variant="bodyStrong">{fullPrice(pkg.product)}</AppText>
                 </Pressable>
               );
             })}
@@ -188,14 +237,14 @@ export default function Paywall() {
               <ActivityIndicator color={c.onAccent} />
             ) : (
               <AppText variant="bodyStrong" tone={chosen ? 'onAccent' : 'muted'} style={styles.ctaText}>
-                {chosen?.packageType === PACKAGE_TYPE.LIFETIME ? 'Buy Pro' : 'Subscribe'}
+                {cta}
               </AppText>
             )}
           </Pressable>
         )}
-        {!isPro && chosen && chosen.packageType !== PACKAGE_TYPE.LIFETIME && (
+        {!isPro && fine && (
           <AppText variant="caption" tone="muted" style={styles.center}>
-            Renews automatically until cancelled. Cancel anytime in your store account settings.
+            {fine}
           </AppText>
         )}
 
@@ -268,8 +317,23 @@ const styles = StyleSheet.create({
     gap: 12,
     minHeight: 64,
     paddingHorizontal: 16,
+    paddingVertical: 12,
     borderRadius: Radius.lg,
     borderWidth: 1.5,
+  },
+  planName: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: Spacing.two,
+  },
+  pill: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: Radius.pill,
+  },
+  pillText: {
+    fontFamily: Font.bold,
   },
   radio: {
     width: 20,
