@@ -6,6 +6,7 @@ import { CurrencyBadge } from '@/components/currency-badge';
 import { Icon } from '@/components/icon';
 import { LineChart } from '@/components/line-chart';
 import { ListGroup } from '@/components/list-group';
+import { RateAlerts } from '@/components/rate-alerts';
 import { Screen } from '@/components/screen';
 import { BottomTabInset, Font, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
@@ -177,14 +178,15 @@ export default function RatesScreen() {
           })}
         </ListGroup>
 
-        <View style={[styles.next, { backgroundColor: c.accentSoft }]}>
-          <AppText variant="bodyStrong" style={{ color: c.accentOnSoft }}>
-            Rate alerts are next
-          </AppText>
-          <AppText variant="small" style={{ color: c.accentOnSoft }}>
-            Get a push notification when {from.toUpperCase()}/{to.toUpperCase()} crosses your target.
-          </AppText>
-        </View>
+        <RateAlerts
+          from={from}
+          to={to}
+          live={live}
+          onSelectPair={(f, t) => {
+            setFrom(f);
+            setPicked(t);
+          }}
+        />
       </ScrollView>
     </Screen>
   );
@@ -296,10 +298,5 @@ const styles = StyleSheet.create({
     gap: 12,
     minHeight: 60,
     paddingHorizontal: 14,
-  },
-  next: {
-    gap: Spacing.one,
-    padding: Spacing.three,
-    borderRadius: Radius.lg,
   },
 });

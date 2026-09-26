@@ -14,6 +14,7 @@ export type IconName =
   | 'chevron'
   | 'refresh'
   | 'shield'
+  | 'bell'
   | 'minus';
 
 interface IconProps {
@@ -92,6 +93,12 @@ export function Icon({ name, size = 20, color, strokeWidth = 2 }: IconProps) {
           <Path d="M4 4v4h4" {...common} />
           <Path d="M4 13a8 8 0 0 0 14.9 4" {...common} />
           <Path d="M20 20v-4h-4" {...common} />
+        </>
+      )}
+      {name === 'bell' && (
+        <>
+          <Path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" {...common} />
+          <Path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" {...common} />
         </>
       )}
       {name === 'shield' && (

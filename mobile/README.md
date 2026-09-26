@@ -29,7 +29,10 @@ npm run typecheck
 - **Onboarding**: home currency (detected from the region) and travel currencies on first launch.
 - **Rates**: pair chart (1W, 1M, 1Y, 5Y) with scrubbing, low/high, and a compare list. History comes from ECB via
   Frankfurter for ~30 major currencies, and from exchange-api daily snapshots for the rest.
-- **Trips**: placeholder. Alerts and trips come next.
+- **Rate alerts**: "rises above / falls below" targets per pair, checked on every rates refresh and by a
+  background task (~15 min), with a local notification when reached. Notifications and background
+  checks need a development or store build; in Expo Go alerts only show as Reached in the list.
+- **Trips**: placeholder.
 
 ## Layout
 

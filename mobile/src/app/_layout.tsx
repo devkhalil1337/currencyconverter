@@ -14,17 +14,27 @@ import { Appearance, AppState, Platform } from 'react-native';
 
 import { Palette } from '@/constants/theme';
 import { useIsDark } from '@/hooks/use-colors';
+import { checkAlerts } from '@/lib/check-alerts';
+import { configureForegroundNotifications } from '@/lib/notifications';
+import { activeAlertCount, useAlerts } from '@/store/alerts';
 import { usePrefs } from '@/store/prefs';
 import { useRates } from '@/store/rates';
+import { syncAlertTask } from '@/tasks/rate-alerts';
 
 SplashScreen.preventAutoHideAsync();
+configureForegroundNotifications();
 
 function useStoresHydrated() {
-  const check = () => usePrefs.persist.hasHydrated() && useRates.persist.hasHydrated();
+  const check = () =>
+    usePrefs.persist.hasHydrated() && useRates.persist.hasHydrated() && useAlerts.persist.hasHydrated();
   const [hydrated, setHydrated] = useState(check);
   useEffect(() => {
     const update = () => setHydrated(check());
-    const unsubs = [usePrefs.persist.onFinishHydration(update), useRates.persist.onFinishHydration(update)];
+    const unsubs = [
+      usePrefs.persist.onFinishHydration(update),
+      useRates.persist.onFinishHydration(update),
+      useAlerts.persist.onFinishHydration(update),
+    ];
     update();
     return () => unsubs.forEach((unsub) => unsub());
   }, []);
@@ -63,6 +73,18 @@ export default function RootLayout() {
     });
     return () => sub.remove();
   }, [hydrated, refresh]);
+
+  // Each successful rates refresh is a chance for an alert to fire.
+  const fetchedAt = useRates((s) => s.fetchedAt);
+  useEffect(() => {
+    if (hydrated && fetchedAt) checkAlerts();
+  }, [hydrated, fetchedAt]);
+
+  const activeAlerts = useAlerts((s) => activeAlertCount(s.alerts));
+  useEffect(() => {
+    if (!hydrated) return;
+    syncAlertTask(activeAlerts > 0).catch((err) => console.warn('Alert task sync failed', err));
+  }, [hydrated, activeAlerts]);
 
   const ready = (fontsLoaded || !!fontError) && hydrated;
   useEffect(() => {
