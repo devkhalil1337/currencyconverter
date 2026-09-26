@@ -52,6 +52,29 @@
           "icon": "./assets/images/notification-icon.png",
           "color": "#0F766E"
         }
+      ],
+      [
+        "react-native-android-widget",
+        {
+          "fonts": [
+            "./node_modules/@expo-google-fonts/geist/400Regular/Geist_400Regular.ttf",
+            "./node_modules/@expo-google-fonts/geist/600SemiBold/Geist_600SemiBold.ttf"
+          ],
+          "widgets": [
+            {
+              "name": "Rates",
+              "label": "Fairrate rates",
+              "description": "Your currencies against your home currency",
+              "minWidth": "250dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 2,
+              "previewImage": "./assets/images/widget-preview.png",
+              "updatePeriodMillis": 1800000,
+              "resizeMode": "horizontal|vertical"
+            }
+          ]
+        }
       ]
     ],
     "experiments": {

@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/app-text';
 import { DevTools } from '@/components/dev-tools';
@@ -11,6 +11,8 @@ import { BottomTabInset, Font, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
 import { formatTime } from '@/lib/format';
 import { usePrefs, type Appearance } from '@/store/prefs';
+import { useIsPro } from '@/store/pro';
+import { pinRatesWidget } from '@/widgets/task-handler';
 import { currencyName, useRates } from '@/store/rates';
 
 const APPEARANCES: { value: Appearance; label: string }[] = [
@@ -24,10 +26,40 @@ export default function SettingsScreen() {
   const { homeCurrency, cardFee, appearance, setCardFee, setAppearance } = usePrefs();
   const { rates, names, fetchedAt, status, refresh } = useRates();
   const rateCount = rates ? Object.keys(rates).length : 0;
+  const isPro = useIsPro();
 
   return (
     <Screen title="Settings">
       <ScrollView contentContainerStyle={styles.content}>
+        <View style={[styles.pro, { backgroundColor: c.accentSoft }]}>
+          <AppText style={[styles.proTitle, { color: c.accentOnSoft }]}>
+            {isPro ? 'You have Fairrate Pro' : 'Fairrate Pro'}
+          </AppText>
+          <AppText variant="small" style={{ color: c.accentOnSoft }}>
+            {isPro
+              ? 'Unlimited alerts and trips are unlocked.'
+              : Platform.OS === 'android'
+                ? 'Unlimited rate alerts and trips, plus a home-screen widget.'
+                : 'Unlimited rate alerts and trips. Widgets coming soon.'}
+          </AppText>
+          <Pressable
+            onPress={() =>
+              isPro
+                ? Linking.openURL(
+                    Platform.OS === 'ios'
+                      ? 'https://apps.apple.com/account/subscriptions'
+                      : 'https://play.google.com/store/account/subscriptions'
+                  )
+                : router.push('/paywall')
+            }
+            accessibilityRole="button"
+            style={({ pressed }) => [styles.proButton, { backgroundColor: c.accentOnSoft, opacity: pressed ? 0.85 : 1 }]}>
+            <AppText variant="bodyStrong" style={{ color: c.accentSoft }}>
+              {isPro ? 'Manage subscription' : 'See Pro plans'}
+            </AppText>
+          </Pressable>
+        </View>
+
         <ListGroup title="Money">
           <ListRow
             label="Home currency"
@@ -49,6 +81,13 @@ export default function SettingsScreen() {
         </ListGroup>
 
         <ListGroup title="App">
+          {Platform.OS === 'android' ? (
+            <ListRow
+              label="Home-screen widget"
+              value={isPro ? 'Add' : 'Pro'}
+              onPress={() => (isPro ? pinRatesWidget() : router.push('/paywall'))}
+            />
+          ) : null}
           <View style={styles.appearanceRow}>
             <AppText>Appearance</AppText>
             <View
@@ -117,6 +156,24 @@ function StepButton({ icon, label, onPress }: { icon: 'plus' | 'minus'; label: s
 }
 
 const styles = StyleSheet.create({
+  pro: {
+    gap: Spacing.two,
+    padding: Spacing.three + 2,
+    borderRadius: Radius.xl - 2,
+  },
+  proTitle: {
+    fontFamily: Font.serif,
+    fontSize: 28,
+    lineHeight: 32,
+  },
+  proButton: {
+    alignSelf: 'flex-start',
+    minHeight: 44,
+    paddingHorizontal: 18,
+    marginTop: Spacing.one,
+    borderRadius: Radius.pill,
+    justifyContent: 'center',
+  },
   content: {
     gap: Spacing.four - 4,
     paddingHorizontal: Spacing.three,

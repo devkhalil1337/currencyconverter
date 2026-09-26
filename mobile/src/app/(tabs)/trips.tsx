@@ -12,6 +12,7 @@ import { useColors } from '@/hooks/use-colors';
 import { formatCurrency } from '@/lib/format';
 import { currentTrip, formatDateRange, summarize, toIsoDate, tripPhase } from '@/lib/trips';
 import { usePrefs } from '@/store/prefs';
+import { FREE_LIMITS, useIsPro } from '@/store/pro';
 import { useTrips } from '@/store/trips';
 
 export default function TripsScreen() {
@@ -19,6 +20,9 @@ export default function TripsScreen() {
   const { trips, expenses } = useTrips();
   const cardFee = usePrefs((s) => s.cardFee);
   const today = toIsoDate(new Date());
+  const isPro = useIsPro();
+  const openNewTrip = () =>
+    !isPro && trips.length >= FREE_LIMITS.trips ? router.push('/paywall?reason=trips') : router.push('/trip-new');
 
   const featured = currentTrip(trips, today) ?? trips[0] ?? null;
   const others = trips.filter((t) => t.id !== featured?.id).sort((a, b) => b.startDate.localeCompare(a.startDate));
@@ -26,7 +30,7 @@ export default function TripsScreen() {
 
   const newTrip = (
     <Pressable
-      onPress={() => router.push('/trip-new')}
+      onPress={openNewTrip}
       accessibilityRole="button"
       accessibilityLabel="New trip"
       style={[styles.round, { backgroundColor: c.card, borderColor: c.line }]}>
@@ -46,7 +50,7 @@ export default function TripsScreen() {
               included.
             </AppText>
             <Pressable
-              onPress={() => router.push('/trip-new')}
+              onPress={openNewTrip}
               accessibilityRole="button"
               style={({ pressed }) => [styles.cta, { backgroundColor: c.accent, opacity: pressed ? 0.85 : 1 }]}>
               <AppText variant="bodyStrong" tone="onAccent">

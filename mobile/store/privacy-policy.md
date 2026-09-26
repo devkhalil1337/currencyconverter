@@ -29,6 +29,15 @@ The requests contain only the currencies needed and never contain personal infor
 Like any website, these services receive your IP address when the app connects to them. See
 their own privacy policies for how they handle server logs.
 
+## Purchases
+
+Fairrate Pro is sold through the App Store and Google Play. Payments are handled entirely by Apple
+or Google; Fairrate never sees your card details. To check whether you have Pro, the app uses
+[RevenueCat](https://www.revenuecat.com/privacy), which receives an anonymous app user ID, your
+purchase history for this app, and basic device information (such as OS version and country from
+the store). This data is used only to unlock Pro and restore purchases, and is not used for
+advertising.
+
 ## Notifications
 
 Rate alert notifications are created **on your device** when a rate reaches your target. Fairrate
@@ -43,7 +52,7 @@ background task periodically. The task only downloads rates and compares them to
 - No account or sign-in.
 - No advertising and no advertising identifiers.
 - No analytics or tracking.
-- No selling or sharing of data with third parties.
+- No selling of data. Purchase data is shared only with RevenueCat, as described above.
 
 ## Children
 
@@ -51,7 +60,7 @@ Fairrate is not directed at children under 13 and does not knowingly collect any
 
 ## Changes
 
-If this policy changes, for example when optional features such as analytics or purchases are
+If this policy changes, for example when optional features such as analytics are
 added, the updated version will be published here with a new effective date, and the app store
 listings will be updated before the change ships.
 

@@ -5,6 +5,7 @@ import { Platform } from 'react-native';
 
 import { checkAlerts } from '@/lib/check-alerts';
 import { requestNotificationPermission, showNotification } from '@/lib/notifications';
+import { usePro } from '@/store/pro';
 import { useRates } from '@/store/rates';
 import { RATE_ALERTS_TASK } from '@/tasks/rate-alerts';
 
@@ -13,6 +14,7 @@ import { ListGroup, ListRow } from './list-group';
 /** Debug-only helpers for checking notifications and the background task on a device. */
 export function DevTools() {
   const [status, setStatus] = useState('');
+  const { devPro, setDevPro } = usePro();
 
   const testNotification = async () => {
     const permission = await requestNotificationPermission();
@@ -47,6 +49,14 @@ export function DevTools() {
 
   return (
     <ListGroup title="Developer">
+      <ListRow
+        label="Pretend Pro"
+        value={devPro ? 'On' : 'Off'}
+        onPress={() => {
+          setDevPro(!devPro);
+          setStatus(`Pretend Pro ${devPro ? 'off' : 'on'}`);
+        }}
+      />
       <ListRow label="Send test notification" onPress={testNotification} />
       <ListRow label="Run background check now" onPress={runTask} />
       <ListRow label="Simulate rates +2%" onPress={() => simulateMove(1.02)} />

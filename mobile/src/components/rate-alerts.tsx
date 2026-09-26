@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { Linking, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
@@ -7,7 +8,8 @@ import { parseRateInput, suggestTarget, validateTarget, type Direction } from '@
 import { checkAlerts } from '@/lib/check-alerts';
 import { formatRate } from '@/lib/format';
 import { requestNotificationPermission, type PermissionState } from '@/lib/notifications';
-import { MAX_ALERTS, useAlerts } from '@/store/alerts';
+import { activeAlertCount, MAX_ALERTS, useAlerts } from '@/store/alerts';
+import { FREE_LIMITS, useIsPro } from '@/store/pro';
 
 import { AppText } from './app-text';
 import { Icon } from './icon';
@@ -55,6 +57,9 @@ export function RateAlerts({ from, to, live, onSelectPair }: RateAlertsProps) {
 function AlertForm({ from, to, live, full }: { from: string; to: string; live: number | null; full: boolean }) {
   const c = useColors();
   const add = useAlerts((s) => s.add);
+  const active = useAlerts((s) => activeAlertCount(s.alerts));
+  const isPro = useIsPro();
+  const atFreeLimit = !isPro && active >= FREE_LIMITS.activeAlerts;
   const [direction, setDirection] = useState<Direction>('above');
   const [text, setText] = useState(() => (live ? formatRate(suggestTarget('above', live)).replace(/,/g, '') : ''));
   const [edited, setEdited] = useState(false);
@@ -69,6 +74,10 @@ function AlertForm({ from, to, live, full }: { from: string; to: string; live: n
   };
 
   const create = async () => {
+    if (atFreeLimit) {
+      router.push('/paywall?reason=alerts');
+      return;
+    }
     const target = parseRateInput(text);
     const problem = validateTarget(direction, target, live);
     if (problem) {
@@ -150,9 +159,14 @@ function AlertForm({ from, to, live, full }: { from: string; to: string; live: n
           { backgroundColor: full ? c.subtle : c.accent, opacity: pressed ? 0.85 : 1 },
         ]}>
         <AppText variant="bodyStrong" tone={full ? 'muted' : 'onAccent'}>
-          {full ? `Limit of ${MAX_ALERTS} alerts reached` : 'Create alert'}
+          {full ? `Limit of ${MAX_ALERTS} alerts reached` : atFreeLimit ? 'Unlock more alerts with Pro' : 'Create alert'}
         </AppText>
       </Pressable>
+      {!isPro && !full && (
+        <AppText variant="caption" tone="muted">
+          {Math.min(active, FREE_LIMITS.activeAlerts)} of {FREE_LIMITS.activeAlerts} free alerts in use
+        </AppText>
+      )}
 
       {saved && permission === 'granted' && (
         <AppText variant="small" tone="accent">

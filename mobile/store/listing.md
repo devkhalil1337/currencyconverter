@@ -45,8 +45,16 @@ chart to see the rate on any day.
 Set a target, such as "tell me when EUR/USD falls below 1.08", and get a notification when it is
 reached.
 
+**Trips and budgets**
+Log what you spend on a trip in the local currency and see the total at home, card fees included,
+with a daily budget.
+
+**Fairrate Pro**
+Unlimited alerts and trips, plus a home-screen widget on Android. Free includes 2 alerts and
+1 trip.
+
 **Private by design**
-No account. No ads. No tracking. Your settings and alerts stay on your phone.
+No account. No ads. No tracking. Your settings, alerts and trips stay on your phone.
 
 Rates are daily mid-market reference rates from public sources, including the European Central Bank.
 They are for information only. Your bank or exchange service may use a different rate.
@@ -59,11 +67,15 @@ They are for information only. Your bank or exchange service may use a different
 
 ## Privacy answers
 
-Both answers assume no analytics SDK and no purchases. Revisit them when either is added.
+With RevenueCat purchases (and still no analytics):
 
-- **Apple App Privacy:** Data Not Collected.
-- **Google Play Data safety:** No data collected, no data shared. All network requests use HTTPS.
-  Nothing is stored off-device, so uninstalling the app removes all data.
+- **Apple App Privacy:** Purchases › Purchase History, and Identifiers › User ID (RevenueCat's
+  anonymous app user ID). Both "used for App Functionality", **not linked to identity** beyond
+  the anonymous ID, **not used for tracking**.
+- **Google Play Data safety:** Collected: App activity › Purchase history; App info › Device or
+  other IDs (anonymous). Purpose: App functionality. Not shared for advertising. Encrypted in
+  transit. Users can request deletion through the contact email.
+- Recheck RevenueCat's current guidance before submitting; it publishes the exact answers.
 
 ## Screenshots to capture (6.9" iPhone, then Android phone)
 

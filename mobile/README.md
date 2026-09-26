@@ -32,7 +32,10 @@ npm run typecheck
 - **Rate alerts**: "rises above / falls below" targets per pair, checked on every rates refresh and by a
   background task (~15 min), with a local notification when reached. Notifications and background
   checks need a development or store build; in Expo Go alerts only show as Reached in the list.
-- **Trips**: placeholder.
+- **Trips**: trips with a local currency, dates and budget; expenses by category and card/cash,
+  with the home cost fixed at entry (card fee included); budget left per day.
+- **Pro** (RevenueCat): paywall, restore, Settings card. Free plan: 2 active alerts and 1 trip.
+- **Android widget**: home-screen "Rates" widget (Pro); free users see an unlock prompt.
 
 ## Layout
 
@@ -50,6 +53,21 @@ src/
 
 Rates come from the free [fawazahmed0/exchange-api](https://github.com/fawazahmed0/exchange-api)
 (Cloudflare host, jsDelivr fallback).
+
+## Purchases (RevenueCat)
+
+Create a RevenueCat project with an entitlement named `pro` and a current offering with annual,
+monthly and lifetime packages. Then set the public SDK keys, for example in `.env.local`:
+
+```bash
+EXPO_PUBLIC_REVENUECAT_TEST_KEY=test_...        # Test Store, used in debug builds only
+EXPO_PUBLIC_REVENUECAT_APPLE_KEY=appl_...
+EXPO_PUBLIC_REVENUECAT_GOOGLE_KEY=goog_...
+EXPO_PUBLIC_PRIVACY_URL=https://your-site/privacy
+```
+
+Without keys the paywall says purchases aren't set up. In debug builds, Settings › Developer ›
+Pretend Pro unlocks Pro features for testing.
 
 ## Testing on an iPhone
 

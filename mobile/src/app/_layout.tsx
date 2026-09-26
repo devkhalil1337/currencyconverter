@@ -16,11 +16,14 @@ import { Palette } from '@/constants/theme';
 import { useIsDark } from '@/hooks/use-colors';
 import { checkAlerts } from '@/lib/check-alerts';
 import { configureForegroundNotifications } from '@/lib/notifications';
+import { configurePurchases } from '@/lib/purchases';
 import { activeAlertCount, useAlerts } from '@/store/alerts';
 import { usePrefs } from '@/store/prefs';
+import { usePro } from '@/store/pro';
 import { useRates } from '@/store/rates';
 import { useTrips } from '@/store/trips';
 import { syncAlertTask } from '@/tasks/rate-alerts';
+import { updateRatesWidget } from '@/widgets/task-handler';
 
 SplashScreen.preventAutoHideAsync();
 configureForegroundNotifications();
@@ -30,7 +33,8 @@ function useStoresHydrated() {
     usePrefs.persist.hasHydrated() &&
     useRates.persist.hasHydrated() &&
     useAlerts.persist.hasHydrated() &&
-    useTrips.persist.hasHydrated();
+    useTrips.persist.hasHydrated() &&
+    usePro.persist.hasHydrated();
   const [hydrated, setHydrated] = useState(check);
   useEffect(() => {
     const update = () => setHydrated(check());
@@ -39,6 +43,7 @@ function useStoresHydrated() {
       useRates.persist.onFinishHydration(update),
       useAlerts.persist.onFinishHydration(update),
       useTrips.persist.onFinishHydration(update),
+      usePro.persist.onFinishHydration(update),
     ];
     update();
     return () => unsubs.forEach((unsub) => unsub());
@@ -91,6 +96,20 @@ export default function RootLayout() {
     syncAlertTask(activeAlerts > 0).catch((err) => console.warn('Alert task sync failed', err));
   }, [hydrated, activeAlerts]);
 
+  // RevenueCat is the source of truth for Pro; the cached flag covers offline starts.
+  const setPro = usePro((s) => s.setPro);
+  useEffect(() => {
+    if (hydrated) configurePurchases(setPro);
+  }, [hydrated, setPro]);
+
+  // Keep a placed home-screen widget in step with rates, the currency list and Pro.
+  const homeCurrency = usePrefs((s) => s.homeCurrency);
+  const currencies = usePrefs((s) => s.currencies);
+  const proState = usePro((s) => s.isPro || s.devPro);
+  useEffect(() => {
+    if (hydrated) updateRatesWidget();
+  }, [hydrated, fetchedAt, homeCurrency, currencies, proState]);
+
   const ready = (fontsLoaded || !!fontError) && hydrated;
   useEffect(() => {
     if (ready) SplashScreen.hideAsync();
@@ -133,6 +152,7 @@ export default function RootLayout() {
         <Stack.Screen name="trip-new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="expense-new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="trip/[id]" />
+        <Stack.Screen name="paywall" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
       </Stack>
     </ThemeProvider>
   );
