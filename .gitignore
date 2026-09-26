@@ -5,3 +5,8 @@
 *.rar
 *.zip
 *.dll
+
+# Signing secrets: never commit
+*.keystore
+*.jks
+build.json

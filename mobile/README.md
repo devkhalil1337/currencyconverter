@@ -51,6 +51,37 @@ src/
 Rates come from the free [fawazahmed0/exchange-api](https://github.com/fawazahmed0/exchange-api)
 (Cloudflare host, jsDelivr fallback).
 
+## Testing on an iPhone
+
+**Without an Apple Developer account:** install **Expo Go** from the App Store, run
+`npx expo start --tunnel` and scan the QR code with the iPhone camera. The UI, charts and alert
+notifications all work in Expo Go on iOS; background checks do not.
+
+**With an Apple Developer account** (EAS builds in the cloud, no Mac needed):
+
+```bash
+npx eas-cli@latest login
+npx eas-cli@latest device:create                                   # register the iPhone once
+npx eas-cli@latest build --profile development --platform ios      # install via the link/QR
+npx eas-cli@latest build --profile production --platform ios --auto-submit   # TestFlight
+```
+
+## Android builds on this Windows machine
+
+The Android SDK and Gradle cache live under a user folder with a space in its name, which breaks
+NDK linking. Use the junctions in `D:\sdk-links`:
+
+```bash
+ANDROID_HOME=D:/sdk-links/android-sdk GRADLE_USER_HOME=D:/sdk-links/gradle npx expo run:android
+```
+
+With the phone on USB, run `adb reverse tcp:8081 tcp:8081` so it can reach Metro.
+
+## Store material
+
+`store/listing.md` has the store texts and privacy answers; `store/privacy-policy.md` is the policy
+to publish (fill in the contact email first).
+
 ## Store identity
 
 `app.json` keeps the existing Play Store package `com.currency.io` with `versionCode` 40000,
