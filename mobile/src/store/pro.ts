@@ -3,6 +3,9 @@ import { persist } from 'zustand/middleware';
 
 import { persistStorage } from './storage';
 
+/** Debug builds and test builds (EXPO_PUBLIC_TEST_TOOLS=1) get the Developer tools, incl. Pretend Pro. */
+export const TEST_TOOLS = __DEV__ || process.env.EXPO_PUBLIC_TEST_TOOLS === '1';
+
 /** Free-plan limits; Pro removes them. */
 export const FREE_LIMITS = {
   activeAlerts: 2,
@@ -34,5 +37,5 @@ export const usePro = create<ProState>()(
 );
 
 export function useIsPro(): boolean {
-  return usePro((s) => s.isPro || (__DEV__ && s.devPro));
+  return usePro((s) => s.isPro || (TEST_TOOLS && s.devPro));
 }

@@ -12,7 +12,7 @@ import { Font, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
 import { buy, loadPackages, loadTrials, purchasesAvailable, restore } from '@/lib/purchases';
 import { billingPeriod, fullPrice, pricePer, trialLength, type Period } from '@/lib/trial';
-import { FREE_LIMITS, useIsPro, usePro } from '@/store/pro';
+import { FREE_LIMITS, TEST_TOOLS, useIsPro, usePro } from '@/store/pro';
 
 const TERMS_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
 const PRIVACY_URL = process.env.EXPO_PUBLIC_PRIVACY_URL;
@@ -169,7 +169,7 @@ export default function Paywall() {
           <View style={[styles.notice, { backgroundColor: c.subtle }]}>
             <AppText variant="bodyStrong">Purchases aren’t set up in this build</AppText>
             <AppText variant="small" tone="muted">
-              Add the RevenueCat keys to enable plans.{__DEV__ ? ' In debug builds, use Settings › Developer › Pretend Pro to test.' : ''}
+              Add the RevenueCat keys to enable plans.{TEST_TOOLS ? ' In test builds, use Settings › Developer › Pretend Pro to test.' : ''}
             </AppText>
           </View>
         ) : packages === null ? (

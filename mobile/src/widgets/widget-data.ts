@@ -7,7 +7,7 @@ import {
   type WidgetSource,
 } from '@/lib/widget-snapshot';
 import { usePrefs } from '@/store/prefs';
-import { usePro } from '@/store/pro';
+import { TEST_TOOLS, usePro } from '@/store/pro';
 import { useRates } from '@/store/rates';
 
 import type { RatesWidgetProps } from './rates-widget';
@@ -23,7 +23,7 @@ function widgetSource(): WidgetSource {
     rates,
     names,
     fetchedAt,
-    locked: !(isPro || (__DEV__ && devPro)),
+    locked: !(isPro || (TEST_TOOLS && devPro)),
   };
 }
 

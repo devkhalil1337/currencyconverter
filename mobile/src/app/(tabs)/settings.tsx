@@ -11,7 +11,7 @@ import { BottomTabInset, Font, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
 import { formatTime } from '@/lib/format';
 import { usePrefs, type Appearance } from '@/store/prefs';
-import { useIsPro } from '@/store/pro';
+import { TEST_TOOLS, useIsPro } from '@/store/pro';
 import { pinRatesWidget } from '@/widgets/task-handler';
 import { currencyName, useRates } from '@/store/rates';
 
@@ -140,7 +140,7 @@ export default function SettingsScreen() {
           </View>
         </ListGroup>
 
-        {__DEV__ && <DevTools />}
+        {TEST_TOOLS && <DevTools />}
 
         <View style={styles.privacy}>
           <Icon name="shield" size={18} color={c.muted} />
