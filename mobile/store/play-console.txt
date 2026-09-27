@@ -1,0 +1,71 @@
+TRIPPENCE — PLAY CONSOLE COPY (paste each block as plain text)
+Build: release/Trippence-4.0.0-40000.aab   version 4.0.0 (40000)   package com.currency.io
+
+=== App name (max 30) ===
+Trippence: Currency Converter
+
+=== Short description (max 80) ===
+Fast, offline currency converter with card-fee costs, charts and rate alerts.
+
+=== Full description (max 4000) ===
+Every currency. One tap. Even offline.
+
+Trippence is a calm, fast currency converter for travelers and anyone who spends money in more than one currency.
+
+CONVERT IN ONE TAP
+• See all your currencies at once and type on a big, simple keypad.
+• Tap any currency to make it the base.
+• Over 300 currencies, including crypto.
+
+KNOW THE REAL COST
+Card and ATM fees make every purchase cost more than the exchange rate says. Turn on Real cost, set your card's fee, and Trippence shows what you will actually pay at home.
+
+WORKS OFFLINE
+The latest rates are saved on your phone, so the converter keeps working on a plane, abroad without data, or in a basement café.
+
+CHARTS AND HISTORY
+Check how a pair moved over the last week, month, year or five years. Slide your finger across the chart to see the rate on any day.
+
+RATE ALERTS
+Set a target, such as "tell me when EUR/USD falls below 1.08", and get a notification when it is reached.
+
+TRIPS AND BUDGETS
+Log what you spend on a trip in the local currency and see the total at home, card fees included, with a daily budget.
+
+TRIPPENCE PRO
+• Home-screen widget with your rates.
+• Rates on any past date, for checking what a purchase really cost.
+• CSV export for your records or expense reports.
+• Unlimited rate alerts and trips.
+
+Free includes 2 alerts and 1 trip.
+
+PRIVATE BY DESIGN
+No account. No ads. No tracking. Your settings, alerts and trips stay on your phone.
+
+Rates are daily mid-market reference rates from public sources, including the European Central Bank. They are for information only. Your bank or exchange service may use a different rate.
+
+=== Release notes / What's new (max 500) ===
+Say hello to Trippence. The app has been rebuilt from scratch:
+• New design with light and dark mode
+• Faster converter that works offline
+• "Real cost" shows prices with your card fee
+• Rate charts and rate alerts
+• Trip budgets and expenses
+• Trippence Pro: home-screen widget, rates on past dates, CSV export
+
+Note: the crypto portfolio and watchlist from the old version were retired.
+
+=== Store settings ===
+Category: Finance        Tags: Currency converter, Travel
+Ads: No                  In-app purchases: Yes (Trippence Pro)
+Content rating: Everyone Target audience: 18+ (finance app, not for children)
+Privacy policy URL: [ADD URL]
+Contact email: [ADD EMAIL]
+
+=== Graphics (store/screenshots) ===
+Feature graphic 1024x500: feature-graphic.png
+App icon 512x512: icon-512.png
+Phone screenshots 1080x2160, in this order:
+01-real-cost.png  02-convert.png  03-chart.png  04-alerts.png
+05-trip.png  06-expense.png  07-past-rate.png  08-dark.png

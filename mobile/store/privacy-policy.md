@@ -12,6 +12,7 @@ Trippence saves the following **only on your device**. It is never uploaded to u
 - Your settings: home currency, the currencies in your list, card fee, and appearance.
 - The last downloaded exchange rates, so the app works offline.
 - Rate alerts you create (currency pair, direction and target rate).
+- Trips you create and the expenses you log in them.
 
 Deleting the app removes all of this data.
 
