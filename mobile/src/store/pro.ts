@@ -30,7 +30,7 @@ export const usePro = create<ProState>()(
       setDevPro: (devPro) => set({ devPro }),
     }),
     {
-      name: 'fairrate-pro',
+      name: 'trippence-pro',
       storage: persistStorage,
     }
   )

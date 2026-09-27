@@ -7,7 +7,7 @@ import { checkAlerts } from '@/lib/check-alerts';
 import { useAlerts } from '@/store/alerts';
 import { useRates } from '@/store/rates';
 
-export const RATE_ALERTS_TASK = 'fairrate-rate-alerts';
+export const RATE_ALERTS_TASK = 'trippence-rate-alerts';
 
 // Must run at module load (global scope) so the OS can wake the task
 // even when no screen is mounted.

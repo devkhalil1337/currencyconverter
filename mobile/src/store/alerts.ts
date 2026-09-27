@@ -41,7 +41,7 @@ export const useAlerts = create<AlertsState>()(
         set((s) => ({ alerts: s.alerts.map((a) => (ids.includes(a.id) ? { ...a, triggeredAt: at } : a)) })),
     }),
     {
-      name: 'fairrate-alerts',
+      name: 'trippence-alerts',
       storage: persistStorage,
     }
   )

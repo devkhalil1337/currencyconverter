@@ -143,7 +143,7 @@ export default function Paywall() {
       <ScrollView contentContainerStyle={styles.inner}>
         <SheetHeader title="" />
         <Text style={[styles.title, { color: c.ink }]} accessibilityRole="header">
-          Fairrate <Text style={{ color: c.accent, fontFamily: Font.serifItalic }}>Pro</Text>
+          Trippence <Text style={{ color: c.accent, fontFamily: Font.serifItalic }}>Pro</Text>
         </Text>
         <AppText tone="muted">
           {reason && REASONS[reason] ? `${REASONS[reason]} ` : ''}For people who spend money in more than one
@@ -162,7 +162,7 @@ export default function Paywall() {
         {isPro ? (
           <View style={[styles.notice, { backgroundColor: c.accentSoft }]}>
             <AppText variant="bodyStrong" style={{ color: c.accentOnSoft }}>
-              You have Fairrate Pro. Thank you!
+              You have Trippence Pro. Thank you!
             </AppText>
           </View>
         ) : !available ? (

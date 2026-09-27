@@ -37,7 +37,7 @@ export default function Onboarding() {
             <View style={[styles.mark, { backgroundColor: c.inverse }]}>
               <Icon name="convert" size={20} color={c.accent} strokeWidth={2.2} />
             </View>
-            <AppText style={styles.brandName}>Fairrate</AppText>
+            <AppText style={styles.brandName}>Trippence</AppText>
           </View>
 
           <Text style={[styles.headline, { color: c.ink }]} accessibilityRole="header">

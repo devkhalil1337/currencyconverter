@@ -64,7 +64,7 @@ export const useRates = create<RatesState>()(
       },
     }),
     {
-      name: 'fairrate-rates',
+      name: 'trippence-rates',
       storage: persistStorage,
       partialize: ({ rates, names, date, fetchedAt }) => ({ rates, names, date, fetchedAt }),
     }

@@ -36,11 +36,11 @@ async function openWidgets(isPro: boolean) {
   } else if (Platform.OS === 'ios') {
     Alert.alert(
       'Add a widget',
-      'Touch and hold your Home Screen, tap Edit › Add Widget, then search for Fairrate.\n\nLock Screen widgets: touch and hold the Lock Screen › Customize.'
+      'Touch and hold your Home Screen, tap Edit › Add Widget, then search for Trippence.\n\nLock Screen widgets: touch and hold the Lock Screen › Customize.'
     );
   } else if (!(await pinRatesWidget())) {
     // Some launchers can't pin widgets for an app, so explain the manual way.
-    Alert.alert('Add the widget', 'Touch and hold an empty spot on your home screen, tap Widgets, then find Fairrate.');
+    Alert.alert('Add the widget', 'Touch and hold an empty spot on your home screen, tap Widgets, then find Trippence.');
   }
 }
 
@@ -56,7 +56,7 @@ export default function SettingsScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.pro, { backgroundColor: c.accentSoft }]}>
           <AppText style={[styles.proTitle, { color: c.accentOnSoft }]}>
-            {isPro ? 'You have Fairrate Pro' : 'Fairrate Pro'}
+            {isPro ? 'You have Trippence Pro' : 'Trippence Pro'}
           </AppText>
           <AppText variant="small" style={{ color: c.accentOnSoft }}>
             {isPro
@@ -149,7 +149,7 @@ export default function SettingsScreen() {
           </AppText>
         </View>
         <AppText variant="caption" tone="muted" style={styles.version}>
-          Fairrate {Constants.expoConfig?.version ?? ''}
+          Trippence {Constants.expoConfig?.version ?? ''}
         </AppText>
       </ScrollView>
     </Screen>

@@ -43,7 +43,7 @@ export default function ConvertScreen() {
         <View style={styles.empty}>
           <AppText variant="bodyStrong">Couldn’t load rates</AppText>
           <AppText tone="muted" style={styles.emptyText}>
-            Connect to the internet once and Fairrate will keep working offline after that.
+            Connect to the internet once and Trippence will keep working offline after that.
           </AppText>
           <Pressable
             onPress={() => refresh(true)}

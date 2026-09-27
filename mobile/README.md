@@ -1,6 +1,6 @@
-# Fairrate (Expo)
+# Trippence (Expo)
 
-The rewrite of the Crypto Currency Converter Cordova app as **Fairrate**, a fast,
+The rewrite of the Crypto Currency Converter Cordova app as **Trippence**, a fast,
 offline-first currency app for travelers and remote workers. Built with Expo SDK 57,
 Expo Router and TypeScript for iOS, Android and web.
 

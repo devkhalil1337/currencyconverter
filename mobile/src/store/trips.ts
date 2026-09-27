@@ -39,7 +39,7 @@ export const useTrips = create<TripsState>()(
       deleteExpense: (id) => set((s) => ({ expenses: s.expenses.filter((e) => e.id !== id) })),
     }),
     {
-      name: 'fairrate-trips',
+      name: 'trippence-trips',
       storage: persistStorage,
     }
   )

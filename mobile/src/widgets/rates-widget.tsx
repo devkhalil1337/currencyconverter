@@ -36,7 +36,7 @@ function Body({ home, rows, updated, locked, t }: RatesWidgetProps & { t: Tone }
     return (
       <FlexWidget
         clickAction="OPEN_URI"
-        clickActionData={{ uri: 'fairrate://paywall?reason=widgets' }}
+        clickActionData={{ uri: 'trippence://paywall?reason=widgets' }}
         style={{
           height: 'match_parent',
           width: 'match_parent',
@@ -45,7 +45,7 @@ function Body({ home, rows, updated, locked, t }: RatesWidgetProps & { t: Tone }
           padding: 16,
           justifyContent: 'center',
         }}>
-        <TextWidget text="Fairrate" style={{ fontSize: 13, fontFamily: SEMIBOLD, color: t.accent }} />
+        <TextWidget text="Trippence" style={{ fontSize: 13, fontFamily: SEMIBOLD, color: t.accent }} />
         <TextWidget
           text="Live rates on your home screen"
           style={{ fontSize: 17, fontFamily: SEMIBOLD, color: t.ink, marginTop: 4 }}

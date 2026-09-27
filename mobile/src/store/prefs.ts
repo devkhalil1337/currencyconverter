@@ -95,7 +95,7 @@ export const usePrefs = create<PrefsState>()(
         }),
     }),
     {
-      name: 'fairrate-prefs',
+      name: 'trippence-prefs',
       storage: persistStorage,
       version: 1,
     }

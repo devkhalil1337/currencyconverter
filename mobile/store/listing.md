@@ -7,9 +7,9 @@ widgets (iOS 17+), Android has a home-screen widget; the description says both.
 
 | Field | Limit | Text | Length |
 |---|---|---|---|
-| App Store name | 30 | Fairrate: Currency Converter | 28 |
+| App Store name | 30 | Trippence: Currency Converter | 29 |
 | App Store subtitle | 30 | Offline rates for travelers | 27 |
-| Google Play title | 30 | Fairrate: Currency Converter | 28 |
+| Google Play title | 30 | Trippence: Currency Converter | 29 |
 | Google Play short description | 80 | Fast, offline currency converter with card-fee costs, charts and rate alerts. | 77 |
 
 **App Store keywords** (100 characters, comma-separated, no spaces):
@@ -22,7 +22,7 @@ exchange,rate,travel,money,forex,euro,dollar,pound,yen,calculator,offline,fx,ale
 
 Every currency. One tap. Even offline.
 
-Fairrate is a calm, fast currency converter for travelers and anyone who spends money in more than
+Trippence is a calm, fast currency converter for travelers and anyone who spends money in more than
 one currency.
 
 **Convert in one tap**
@@ -32,7 +32,7 @@ one currency.
 
 **Know the real cost**
 Card and ATM fees make every purchase cost more than the exchange rate says. Turn on Real cost, set
-your card's fee, and Fairrate shows what you will actually pay at home.
+your card's fee, and Trippence shows what you will actually pay at home.
 
 **Works offline**
 The latest rates are saved on your phone, so the converter keeps working on a plane, abroad without
@@ -50,7 +50,7 @@ reached.
 Log what you spend on a trip in the local currency and see the total at home, card fees included,
 with a daily budget.
 
-**Fairrate Pro**
+**Trippence Pro**
 - Widgets: your rates on the home screen, and on the Lock Screen on iPhone (iOS 17 or later).
 - Rates on any past date, for checking what a purchase really cost, plus CSV export for your
   records or expense reports.
@@ -64,11 +64,11 @@ No account. No ads. No tracking. Your settings, alerts and trips stay on your ph
 Rates are daily mid-market reference rates from public sources, including the European Central Bank.
 They are for information only. Your bank or exchange service may use a different rate.
 
-## Update notes (Cordova → Fairrate)
+## Update notes (Cordova → Trippence)
 
-> Say hello to Fairrate. The app has been rebuilt from scratch with a new design, a faster
+> Say hello to Trippence. The app has been rebuilt from scratch with a new design, a faster
 > converter, offline rates, card-fee "Real cost", rate charts, rate alerts and trip budgets.
-> Fairrate Pro adds widgets, rates on past dates and CSV export.
+> Trippence Pro adds widgets, rates on past dates and CSV export.
 > Note: crypto portfolio and watchlist from the old version were retired.
 
 ## Privacy answers

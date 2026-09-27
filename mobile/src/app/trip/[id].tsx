@@ -125,7 +125,7 @@ export default function TripDetail() {
             <Pressable
               onPress={exportCsv}
               accessibilityRole="button"
-              accessibilityHint={isPro ? 'Shares a spreadsheet of this trip’s expenses' : 'Requires Fairrate Pro'}
+              accessibilityHint={isPro ? 'Shares a spreadsheet of this trip’s expenses' : 'Requires Trippence Pro'}
               style={({ pressed }) => [styles.action, { borderColor: c.line, opacity: pressed ? 0.7 : 1 }]}>
               <Icon name="share" size={18} color={c.ink} />
               <AppText variant="bodyStrong">Export CSV</AppText>

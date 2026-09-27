@@ -197,7 +197,7 @@ export default function RatesScreen() {
               onPress={exportHistory}
               accessibilityRole="button"
               accessibilityLabel="Export chart data as CSV"
-              accessibilityHint={isPro ? undefined : 'Requires Fairrate Pro'}
+              accessibilityHint={isPro ? undefined : 'Requires Trippence Pro'}
               hitSlop={6}
               style={({ pressed }) => [styles.export, { borderColor: c.line, opacity: pressed ? 0.7 : 1 }]}>
               <Icon name="share" size={14} color={c.ink} />
@@ -247,7 +247,7 @@ export default function RatesScreen() {
         <Pressable
           onPress={openPastRate}
           accessibilityRole="button"
-          accessibilityHint={isPro ? undefined : 'Requires Fairrate Pro'}
+          accessibilityHint={isPro ? undefined : 'Requires Trippence Pro'}
           style={({ pressed }) => [
             styles.pair,
             { backgroundColor: pressed ? c.subtle : c.card, borderColor: c.line },

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Fairrate",
-    "slug": "fairrate",
+    "name": "Trippence",
+    "slug": "trippence",
     "version": "4.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "fairrate",
+    "scheme": "trippence",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/images/icon.png",
@@ -68,7 +68,7 @@
           "widgets": [
             {
               "name": "Rates",
-              "label": "Fairrate rates",
+              "label": "Trippence rates",
               "description": "Your currencies against your home currency",
               "minWidth": "250dp",
               "minHeight": "110dp",
@@ -84,8 +84,8 @@
       [
         "expo-image-picker",
         {
-          "cameraPermission": "Fairrate uses the camera to scan receipts so it can fill in the amount for you.",
-          "photosPermission": "Fairrate reads the receipt photos you choose to fill in the amount for you.",
+          "cameraPermission": "Trippence uses the camera to scan receipts so it can fill in the amount for you.",
+          "photosPermission": "Trippence reads the receipt photos you choose to fill in the amount for you.",
           "microphonePermission": false
         }
       ],

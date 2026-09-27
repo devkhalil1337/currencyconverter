@@ -130,8 +130,8 @@ export function slugify(text: string, maxLength = 40): string {
     .replace(/^-+|-+$/g, '');
 }
 
-/** e.g. fairrate-lisbon-2026-09-26.csv; `fallback` stands in when nothing survives slugifying. */
+/** e.g. trippence-lisbon-2026-09-26.csv; `fallback` stands in when nothing survives slugifying. */
 export function exportFileName(parts: string[], date: string, fallback = 'export'): string {
   const slug = slugify(parts.join(' ')) || fallback;
-  return `fairrate-${slug}-${date}.csv`;
+  return `trippence-${slug}-${date}.csv`;
 }

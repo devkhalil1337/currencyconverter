@@ -2,7 +2,7 @@ import SwiftUI
 import WidgetKit
 
 @main
-struct FairrateWidgets: WidgetBundle {
+struct TrippenceWidgets: WidgetBundle {
     var body: some Widget {
         PairWidget()
         RatesWidget()
@@ -10,7 +10,7 @@ struct FairrateWidgets: WidgetBundle {
 }
 
 struct PairWidget: Widget {
-    let kind = "FairratePair"
+    let kind = "TrippencePair"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: RatesProvider()) { entry in
@@ -23,7 +23,7 @@ struct PairWidget: Widget {
 }
 
 struct RatesWidget: Widget {
-    let kind = "FairrateRates"
+    let kind = "TrippenceRates"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: RatesProvider()) { entry in

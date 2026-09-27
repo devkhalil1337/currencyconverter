@@ -22,7 +22,7 @@ export function DevTools() {
       setStatus(`Notifications: ${permission}`);
       return;
     }
-    await showNotification('Fairrate test', 'Notifications are working.');
+    await showNotification('Trippence test', 'Notifications are working.');
     setStatus('Test notification sent');
   };
 

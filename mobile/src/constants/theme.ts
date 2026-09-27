@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
 /**
- * Fairrate design tokens. Mirrors the mockups: warm off-white ground,
+ * Trippence design tokens. Mirrors the mockups: warm off-white ground,
  * charcoal ink and a single teal accent (mint in dark mode).
  */
 export const Palette = {

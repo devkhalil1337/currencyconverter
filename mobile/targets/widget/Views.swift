@@ -27,8 +27,8 @@ func rgb(_ hex: UInt32) -> Color {
 }
 
 enum Links {
-    static let app = URL(string: "fairrate://")
-    static let paywall = URL(string: "fairrate://paywall?reason=widgets")
+    static let app = URL(string: "trippence://")
+    static let paywall = URL(string: "trippence://paywall?reason=widgets")
 
     static func forEntry(_ entry: RatesEntry) -> URL? {
         entry.status == .locked ? paywall : app
@@ -60,7 +60,7 @@ struct LockedView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Fairrate Pro")
+            Text("Trippence Pro")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(tone.accent)
             Text("Unlock widgets")
@@ -80,7 +80,7 @@ struct SetupView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Fairrate")
+            Text("Trippence")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(tone.accent)
             Text("Open the app to load your rates")
@@ -141,11 +141,11 @@ struct PairWidgetView: View {
     private var inlineText: String {
         switch entry.status {
         case .locked:
-            return "Fairrate Pro"
+            return "Trippence Pro"
         case .setup:
-            return "Open Fairrate"
+            return "Open Trippence"
         case .ready:
-            guard let row = entry.first else { return "Fairrate" }
+            guard let row = entry.first else { return "Trippence" }
             return "\(row.code.uppercased()) \(RateText.full(row.rate))"
         }
     }
@@ -194,13 +194,13 @@ struct PairRectangularView: View {
         VStack(alignment: .leading, spacing: 1) {
             switch entry.status {
             case .locked:
-                Text("Fairrate Pro")
+                Text("Trippence Pro")
                     .font(.system(size: 13, weight: .semibold))
                     .widgetAccentable()
                 Text("Unlock widgets")
                     .font(.system(size: 15, weight: .semibold))
             case .setup:
-                Text("Fairrate")
+                Text("Trippence")
                     .font(.system(size: 13, weight: .semibold))
                     .widgetAccentable()
                 Text("Open to load rates")
