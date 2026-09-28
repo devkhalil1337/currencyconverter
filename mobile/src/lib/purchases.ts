@@ -8,24 +8,11 @@ import Purchases, {
   type PurchasesPackage,
 } from 'react-native-purchases';
 
+import { storeKey } from './store-key';
 import { freeTrial, type Period } from './trial';
 
 /** RevenueCat entitlement that unlocks Pro. Create it with this identifier in the dashboard. */
 export const PRO_ENTITLEMENT = 'pro';
-
-/**
- * Public SDK keys come from env vars so none are hard-coded:
- * - EXPO_PUBLIC_REVENUECAT_TEST_KEY: RevenueCat Test Store, used in development builds only
- *   (the SDK refuses a Test Store key in release builds).
- * - EXPO_PUBLIC_REVENUECAT_APPLE_KEY / EXPO_PUBLIC_REVENUECAT_GOOGLE_KEY: store keys for releases.
- */
-function apiKey(): string | null {
-  const test = process.env.EXPO_PUBLIC_REVENUECAT_TEST_KEY;
-  if (__DEV__ && test) return test;
-  if (Platform.OS === 'ios') return process.env.EXPO_PUBLIC_REVENUECAT_APPLE_KEY ?? null;
-  if (Platform.OS === 'android') return process.env.EXPO_PUBLIC_REVENUECAT_GOOGLE_KEY ?? null;
-  return null;
-}
 
 let configured = false;
 
@@ -41,7 +28,7 @@ export function hasPro(info: CustomerInfo): boolean {
 /** Configures RevenueCat once and reports entitlement changes. */
 export function configurePurchases(onChange: (isPro: boolean) => void): void {
   if (configured || Platform.OS === 'web') return;
-  const key = apiKey();
+  const key = storeKey();
   if (!key) return;
   if (__DEV__) Purchases.setLogLevel(LOG_LEVEL.WARN);
   Purchases.configure({ apiKey: key });

@@ -11,7 +11,7 @@ import { BottomTabInset, Font, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
 import { formatTime } from '@/lib/format';
 import { usePrefs, type Appearance } from '@/store/prefs';
-import { TEST_TOOLS, useIsPro } from '@/store/pro';
+import { FREE_LAUNCH, TEST_TOOLS, useIsPro } from '@/store/pro';
 import { pinRatesWidget } from '@/widgets/task-handler';
 import { currencyName, useRates } from '@/store/rates';
 
@@ -56,31 +56,35 @@ export default function SettingsScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.pro, { backgroundColor: c.accentSoft }]}>
           <AppText style={[styles.proTitle, { color: c.accentOnSoft }]}>
-            {isPro ? 'You have Trippence Pro' : 'Trippence Pro'}
+            {FREE_LAUNCH ? 'Everything is unlocked' : isPro ? 'You have Trippence Pro' : 'Trippence Pro'}
           </AppText>
           <AppText variant="small" style={{ color: c.accentOnSoft }}>
-            {isPro
-              ? 'Every Pro feature is unlocked. Thanks for your support!'
-              : HAS_WIDGETS
-                ? 'Widgets, trips, past rates, export and unlimited alerts.'
-                : 'Trips, past rates, export and unlimited alerts.'}
+            {FREE_LAUNCH
+              ? 'Every feature is free while Trippence is new. Enjoy!'
+              : isPro
+                ? 'Every Pro feature is unlocked. Thanks for your support!'
+                : HAS_WIDGETS
+                  ? 'Widgets, trips, past rates, export and unlimited alerts.'
+                  : 'Trips, past rates, export and unlimited alerts.'}
           </AppText>
-          <Pressable
-            onPress={() =>
-              isPro
-                ? Linking.openURL(
-                    Platform.OS === 'ios'
-                      ? 'https://apps.apple.com/account/subscriptions'
-                      : 'https://play.google.com/store/account/subscriptions'
-                  )
-                : router.push('/paywall')
-            }
-            accessibilityRole="button"
-            style={({ pressed }) => [styles.proButton, { backgroundColor: c.accentOnSoft, opacity: pressed ? 0.85 : 1 }]}>
-            <AppText variant="bodyStrong" style={{ color: c.accentSoft }}>
-              {isPro ? 'Manage subscription' : 'See Pro plans'}
-            </AppText>
-          </Pressable>
+          {!FREE_LAUNCH && (
+            <Pressable
+              onPress={() =>
+                isPro
+                  ? Linking.openURL(
+                      Platform.OS === 'ios'
+                        ? 'https://apps.apple.com/account/subscriptions'
+                        : 'https://play.google.com/store/account/subscriptions'
+                    )
+                  : router.push('/paywall')
+              }
+              accessibilityRole="button"
+              style={({ pressed }) => [styles.proButton, { backgroundColor: c.accentOnSoft, opacity: pressed ? 0.85 : 1 }]}>
+              <AppText variant="bodyStrong" style={{ color: c.accentSoft }}>
+                {isPro ? 'Manage subscription' : 'See Pro plans'}
+              </AppText>
+            </Pressable>
+          )}
         </View>
 
         <ListGroup title="Money">

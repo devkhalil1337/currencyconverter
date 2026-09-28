@@ -1,6 +1,7 @@
 # Store listing (draft, US English)
 
-Only describes features that ship today. Widgets differ by platform: iPhone has home and lock-screen
+Only describes features that ship today. Version 4.0.1 launches with every feature free (no store
+key in the build); the Pro wording comes back when purchases are switched on. Widgets differ by platform: iPhone has home and lock-screen
 widgets (iOS 17+), Android has a home-screen widget; the description says both.
 
 ## Name and short texts
@@ -50,13 +51,12 @@ reached.
 Log what you spend on a trip in the local currency and see the total at home, card fees included,
 with a daily budget.
 
-**Trippence Pro**
-- Widgets: your rates on the home screen, and on the Lock Screen on iPhone (iOS 17 or later).
+**More for power users**
+- Widgets: your rates on the home screen.
 - Rates on any past date, for checking what a purchase really cost, plus CSV export for your
   records or expense reports.
-- Unlimited rate alerts and trips.
 
-Free includes 2 alerts and 1 trip.
+Every feature is free while Trippence is new.
 
 **Private by design**
 No account. No ads. No tracking. Your settings, alerts and trips stay on your phone.
@@ -68,7 +68,7 @@ They are for information only. Your bank or exchange service may use a different
 
 > Say hello to Trippence. The app has been rebuilt from scratch with a new design, a faster
 > converter, offline rates, card-fee "Real cost", rate charts, rate alerts and trip budgets.
-> Trippence Pro adds widgets, rates on past dates and CSV export.
+> It also has a home-screen widget, rates on past dates and CSV export.
 > Note: crypto portfolio and watchlist from the old version were retired.
 
 ## Privacy answers

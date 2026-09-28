@@ -12,7 +12,7 @@ import { Font, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
 import { buy, loadPackages, loadTrials, purchasesAvailable, restore } from '@/lib/purchases';
 import { billingPeriod, fullPrice, pricePer, trialLength, type Period } from '@/lib/trial';
-import { FREE_LIMITS, TEST_TOOLS, useIsPro, usePro } from '@/store/pro';
+import { FREE_LAUNCH, FREE_LIMITS, useIsPro, usePro } from '@/store/pro';
 
 const TERMS_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
 const PRIVACY_URL = process.env.EXPO_PUBLIC_PRIVACY_URL;
@@ -159,7 +159,16 @@ export default function Paywall() {
           ))}
         </View>
 
-        {isPro ? (
+        {FREE_LAUNCH ? (
+          <View style={[styles.notice, { backgroundColor: c.accentSoft }]}>
+            <AppText variant="bodyStrong" style={{ color: c.accentOnSoft }}>
+              Everything is free right now
+            </AppText>
+            <AppText variant="small" style={{ color: c.accentOnSoft }}>
+              Every feature is unlocked while Trippence is new. There is nothing to buy.
+            </AppText>
+          </View>
+        ) : isPro ? (
           <View style={[styles.notice, { backgroundColor: c.accentSoft }]}>
             <AppText variant="bodyStrong" style={{ color: c.accentOnSoft }}>
               You have Trippence Pro. Thank you!
@@ -167,9 +176,9 @@ export default function Paywall() {
           </View>
         ) : !available ? (
           <View style={[styles.notice, { backgroundColor: c.subtle }]}>
-            <AppText variant="bodyStrong">Purchases aren’t set up in this build</AppText>
+            <AppText variant="bodyStrong">Plans aren’t available right now</AppText>
             <AppText variant="small" tone="muted">
-              Add the RevenueCat keys to enable plans.{TEST_TOOLS ? ' In test builds, use Settings › Developer › Pretend Pro to test.' : ''}
+              Check your connection and try again in a moment.
             </AppText>
           </View>
         ) : packages === null ? (

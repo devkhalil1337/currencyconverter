@@ -32,13 +32,12 @@ Set a target, such as "tell me when EUR/USD falls below 1.08", and get a notific
 TRIPS AND BUDGETS
 Log what you spend on a trip in the local currency and see the total at home, card fees included, with a daily budget.
 
-TRIPPENCE PRO
+MORE FOR POWER USERS
 • Home-screen widget with your rates.
 • Rates on any past date, for checking what a purchase really cost.
 • CSV export for your records or expense reports.
-• Unlimited rate alerts and trips.
 
-Free includes 2 alerts and 1 trip.
+Every feature is free while Trippence is new.
 
 PRIVATE BY DESIGN
 No account. No ads. No tracking. Your settings, alerts and trips stay on your phone.
@@ -52,13 +51,13 @@ Say hello to Trippence. The app has been rebuilt from scratch:
 • "Real cost" shows prices with your card fee
 • Rate charts and rate alerts
 • Trip budgets and expenses
-• Trippence Pro: home-screen widget, rates on past dates, CSV export
+• Home-screen widget, rates on past dates and CSV export
 
 Note: the crypto portfolio and watchlist from the old version were retired.
 
 === Store settings ===
 Category: Finance        Tags: Currency converter, Travel
-Ads: No                  In-app purchases: Yes (Trippence Pro)
+Ads: No                  In-app purchases: None in this version (every feature is free)
 Content rating: Everyone Target audience: 18+ (finance app, not for children)
 Privacy policy URL: [ADD URL]
 Contact email: [ADD EMAIL]

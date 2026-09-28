@@ -7,7 +7,7 @@ import {
   type WidgetSource,
 } from '@/lib/widget-snapshot';
 import { usePrefs } from '@/store/prefs';
-import { TEST_TOOLS, usePro } from '@/store/pro';
+import { isProNow, usePro } from '@/store/pro';
 import { useRates } from '@/store/rates';
 
 import type { RatesWidgetProps } from './rates-widget';
@@ -16,14 +16,13 @@ import type { RatesWidgetProps } from './rates-widget';
 function widgetSource(): WidgetSource {
   const { homeCurrency, currencies } = usePrefs.getState();
   const { rates, names, fetchedAt } = useRates.getState();
-  const { isPro, devPro } = usePro.getState();
   return {
     home: homeCurrency,
     codes: widgetCodes(homeCurrency, currencies),
     rates,
     names,
     fetchedAt,
-    locked: !(isPro || (TEST_TOOLS && devPro)),
+    locked: !isProNow(),
   };
 }
 

@@ -19,7 +19,7 @@ import { configureForegroundNotifications } from '@/lib/notifications';
 import { configurePurchases } from '@/lib/purchases';
 import { activeAlertCount, useAlerts } from '@/store/alerts';
 import { usePrefs } from '@/store/prefs';
-import { usePro } from '@/store/pro';
+import { FREE_LAUNCH, usePro } from '@/store/pro';
 import { useRates } from '@/store/rates';
 import { useTrips } from '@/store/trips';
 import { syncAlertTask } from '@/tasks/rate-alerts';
@@ -100,9 +100,12 @@ export default function RootLayout() {
 
   // RevenueCat is the source of truth for Pro; the cached flag covers offline starts.
   const setPro = usePro((s) => s.setPro);
+  const markEarlyUser = usePro((s) => s.markEarlyUser);
   useEffect(() => {
-    if (hydrated) configurePurchases(setPro);
-  }, [hydrated, setPro]);
+    if (!hydrated) return;
+    if (FREE_LAUNCH) markEarlyUser();
+    else configurePurchases(setPro);
+  }, [hydrated, setPro, markEarlyUser]);
 
   // Keep placed home-screen widgets in step with rates, the currency list and Pro.
   const homeCurrency = usePrefs((s) => s.homeCurrency);
