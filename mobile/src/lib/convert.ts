@@ -19,6 +19,26 @@ export function withCardFee(value: number, feePercent: number): number {
   return value * (1 + feePercent / 100);
 }
 
+export type FeeKind = 'incl' | 'after' | 'none';
+
+/**
+ * Applies the card fee in the direction money actually moves. The fee is charged in the
+ * home currency, so a foreign price costs more at home, a home amount buys less abroad,
+ * and a conversion between two foreign currencies has no fee to show.
+ */
+export function realCost(
+  value: number,
+  from: string,
+  to: string,
+  home: string,
+  feePercent: number
+): { value: number; kind: FeeKind } {
+  if (from === to || feePercent <= 0) return { value, kind: 'none' };
+  if (to === home) return { value: withCardFee(value, feePercent), kind: 'incl' };
+  if (from === home) return { value: value / (1 + feePercent / 100), kind: 'after' };
+  return { value, kind: 'none' };
+}
+
 export type Key = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '.' | 'del';
 
 const MAX_DIGITS = 12;

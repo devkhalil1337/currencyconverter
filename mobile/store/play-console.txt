@@ -1,5 +1,5 @@
 TRIPPENCE — PLAY CONSOLE COPY (paste each block as plain text)
-Build: release/Trippence-4.0.0-40000.aab   version 4.0.0 (40000)   package com.currency.io
+Build: release/Trippence-4.0.1-40001.aab   version 4.0.1 (40001)   package com.currency.io
 
 === App name (max 30) ===
 Trippence: Currency Converter

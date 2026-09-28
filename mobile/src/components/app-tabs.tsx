@@ -7,8 +7,12 @@ export default function AppTabs() {
   const c = useColors();
   return (
     <NativeTabs
+      backgroundColor={c.card}
+      indicatorColor={c.accentSoft}
+      rippleColor={c.subtle}
       tintColor={c.accent}
       iconColor={{ default: c.muted, selected: c.accent }}
+      labelStyle={{ default: { color: c.muted }, selected: { color: c.accent } }}
       labelVisibilityMode="labeled">
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Label>Convert</NativeTabs.Trigger.Label>

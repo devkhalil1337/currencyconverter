@@ -9,14 +9,14 @@ import { RatesStatus } from '@/components/rates-status';
 import { Screen } from '@/components/screen';
 import { BottomTabInset, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
-import { convert, toTypedAmount, unitRate, withCardFee } from '@/lib/convert';
+import { convert, realCost as applyRealCost, toTypedAmount, unitRate } from '@/lib/convert';
 import { formatMoney, formatRate, formatTyped } from '@/lib/format';
 import { usePrefs } from '@/store/prefs';
 import { currencyName, useRates } from '@/store/rates';
 
 export default function ConvertScreen() {
   const c = useColors();
-  const { currencies, base, amount, realCost, cardFee, press, setBase, toggleRealCost, removeCurrency } = usePrefs();
+  const { homeCurrency, currencies, base, amount, realCost, cardFee, press, setBase, toggleRealCost, removeCurrency } = usePrefs();
   const { rates, names, status, refresh } = useRates();
 
   const typedValue = parseFloat(amount) || 0;
@@ -59,12 +59,15 @@ export default function ConvertScreen() {
           {currencies.map((code) => {
             const isBase = code === base;
             const raw = convert(typedValue, base, code, rates);
-            const shown = raw !== null && realCost && !isBase ? withCardFee(raw, cardFee) : raw;
+            const fee =
+              raw !== null && realCost ? applyRealCost(raw, base, code, homeCurrency, cardFee) : null;
+            const shown = fee ? fee.value : raw;
+            const feeShown = fee !== null && fee.kind !== 'none';
             const unit = unitRate(base, code, rates);
             let sub = 'Amount';
             if (!isBase) {
-              sub = realCost
-                ? `incl. ${cardFee}% card fee`
+              sub = feeShown
+                ? `${fee.kind === 'incl' ? 'incl.' : 'after'} ${cardFee}% card fee`
                 : unit !== null
                   ? `1 ${base.toUpperCase()} = ${formatRate(unit)}`
                   : 'No rate';
@@ -77,7 +80,7 @@ export default function ConvertScreen() {
                 isBase={isBase}
                 value={isBase ? formatTyped(amount) : shown !== null ? formatMoney(shown, code) : '—'}
                 sub={sub}
-                subAccent={isBase || realCost}
+                subAccent={isBase || feeShown}
                 onPress={() => {
                   if (!isBase && raw !== null) setBase(code, toTypedAmount(raw, code));
                 }}
@@ -95,7 +98,7 @@ export default function ConvertScreen() {
           label={`Real cost +${cardFee}%`}
           active={realCost}
           onPress={toggleRealCost}
-          accessibilityHint="Adds your card fee to converted amounts"
+          accessibilityHint="Shows amounts with your card fee, to and from your home currency"
         />
         <Chip icon="plus" label="Add currency" onPress={() => router.push('/currency-picker?mode=add')} />
       </View>

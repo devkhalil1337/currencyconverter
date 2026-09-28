@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { Alert, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/app-text';
 import { ExpenseRow } from '@/components/expense-row';
@@ -39,6 +39,7 @@ function dayLabel(timestamp: number, today: string): string {
 
 export default function TripDetail() {
   const c = useColors();
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { trips, expenses, deleteTrip, deleteExpense } = useTrips();
   const cardFee = usePrefs((s) => s.cardFee);
@@ -81,7 +82,7 @@ export default function TripDetail() {
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: c.bg }]} edges={['top', 'left', 'right']}>
-      <ScrollView contentContainerStyle={styles.inner}>
+      <ScrollView contentContainerStyle={[styles.inner, { paddingBottom: Spacing.six + insets.bottom }]}>
         <SheetHeader title="Trip" kind="back" />
         <TripCard trip={trip} summary={summarize(trip, expenses, today)} today={today} cardFee={cardFee} />
 
