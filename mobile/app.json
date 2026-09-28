@@ -30,7 +30,14 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.currency.io",
-      "versionCode": 40001
+      "versionCode": 40002,
+      "blockedPermissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ]
     },
     "web": {
       "output": "static",
@@ -79,14 +86,6 @@
               "resizeMode": "horizontal|vertical"
             }
           ]
-        }
-      ],
-      [
-        "expo-image-picker",
-        {
-          "cameraPermission": "Trippence uses the camera to scan receipts so it can fill in the amount for you.",
-          "photosPermission": "Trippence reads the receipt photos you choose to fill in the amount for you.",
-          "microphonePermission": false
         }
       ],
       "expo-sharing",

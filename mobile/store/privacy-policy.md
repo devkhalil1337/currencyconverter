@@ -1,6 +1,8 @@
 # Trippence Privacy Policy
 
-_Effective: 26 September 2026_
+_Effective: 28 September 2026_
+
+The published version is `privacy-policy.html`; keep the two in step.
 
 Trippence is a currency converter. It works without an account and does not collect personal
 data. This policy explains what the app stores and which services it contacts.
@@ -14,12 +16,16 @@ Trippence saves the following **only on your device**. It is never uploaded to u
 - Rate alerts you create (currency pair, direction and target rate).
 - Trips you create and the expenses you log in them.
 
+When you export a trip or rate history, the app creates a CSV file on your device and opens your
+phone’s share sheet. The file goes only where you choose to send it.
+
 Deleting the app removes all of this data.
 
 ## Services the app contacts
 
 To download exchange rates and rate history, Trippence sends requests to these public services.
-The requests contain only the currencies needed and never contain personal information.
+The requests contain only the currencies and dates needed and never contain personal information.
+The home-screen widget uses the same services to keep its rates up to date.
 
 | Service | Used for | Operator |
 |---|---|---|
@@ -32,11 +38,15 @@ their own privacy policies for how they handle server logs.
 
 ## Purchases
 
-Trippence Pro is sold through the App Store and Google Play. Payments are handled entirely by Apple
-or Google; Trippence never sees your card details. To check whether you have Pro, the app uses
+Every feature of Trippence is currently free, and the app has nothing to buy. In this version the
+app does not contact any purchase service.
+
+If a paid plan (“Trippence Pro”) is offered in a later version, it will be sold through Google Play
+and the App Store. Payments are handled entirely by Google or Apple; Trippence never sees your card
+details. To check whether you have Pro, the app would use
 [RevenueCat](https://www.revenuecat.com/privacy), which receives an anonymous app user ID, your
 purchase history for this app, and basic device information (such as OS version and country from
-the store). This data is used only to unlock Pro and restore purchases, and is not used for
+the store). This data would be used only to unlock Pro and restore purchases, never for
 advertising.
 
 ## Notifications
@@ -53,7 +63,14 @@ background task periodically. The task only downloads rates and compares them to
 - No account or sign-in.
 - No advertising and no advertising identifiers.
 - No analytics or tracking.
-- No selling of data. Purchase data is shared only with RevenueCat, as described above.
+- No access to your location, contacts, camera, photos or files.
+- No selling or sharing of data.
+
+## Your choices
+
+Because your data is stored only on your device, you control it directly: you can delete alerts,
+expenses and trips inside the app, or remove everything by deleting the app. We hold no copy, so
+there is nothing for us to export or erase on your behalf.
 
 ## Children
 
@@ -61,8 +78,7 @@ Trippence is not directed at children under 13 and does not knowingly collect an
 
 ## Changes
 
-If this policy changes, for example when optional features such as analytics are
-added, the updated version will be published here with a new effective date, and the app store
+If this policy changes, for example when a paid plan or an optional feature is added, the updated version will be published here with a new effective date, and the app store
 listings will be updated before the change ships.
 
 ## Contact
