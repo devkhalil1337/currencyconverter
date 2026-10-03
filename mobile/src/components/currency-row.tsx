@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { useT } from '@/i18n';
 
 import { AppText } from './app-text';
 import { CurrencyBadge } from './currency-badge';
@@ -19,6 +20,7 @@ interface CurrencyRowProps {
 
 export function CurrencyRow({ code, name, value, sub, isBase, subAccent, onPress, onLongPress }: CurrencyRowProps) {
   const c = useColors();
+  const t = useT();
   return (
     <Pressable
       onPress={onPress}
@@ -26,7 +28,7 @@ export function CurrencyRow({ code, name, value, sub, isBase, subAccent, onPress
       accessibilityRole="button"
       accessibilityState={{ selected: isBase }}
       accessibilityLabel={`${code.toUpperCase()}, ${name}, ${value}`}
-      accessibilityHint={isBase ? 'Base currency. Type an amount on the keypad.' : 'Makes this the base currency. Long press to remove.'}
+      accessibilityHint={isBase ? t('convert.baseHint') : t('convert.otherHint')}
       style={({ pressed }) => [
         styles.row,
         {

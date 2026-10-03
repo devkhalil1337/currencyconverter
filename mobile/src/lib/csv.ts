@@ -1,6 +1,8 @@
+import { t } from '@/i18n';
+
 import { decimalsFor } from './convert';
 import type { Point } from './history';
-import { CATEGORIES, toIsoDate, type Expense, type Trip } from './trips';
+import { categoryLabel, methodLabel, toIsoDate, type Expense, type Trip } from './trips';
 
 /** Strings are text cells; numbers are written as machine-readable numbers. */
 export type CsvCell = string | number | null | undefined;
@@ -57,24 +59,27 @@ function localTime(d: Date): string {
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
-export const TRIP_CSV_HEADER = [
-  'Date',
-  'Time',
-  'Title',
-  'Category',
-  'Payment',
-  'Amount',
-  'Currency',
-  'Amount (home)',
-  'Home currency',
-];
+/** Column headers in the app's language; the cells below stay machine-readable. */
+export function tripCsvHeader(): string[] {
+  return [
+    t('csv.date'),
+    t('csv.time'),
+    t('csv.title'),
+    t('csv.category'),
+    t('csv.payment'),
+    t('csv.amount'),
+    t('csv.currency'),
+    t('csv.amountHome'),
+    t('csv.homeCurrency'),
+  ];
+}
 
 /** A trip's expenses, oldest first, with a totals row. Dates and times are local. */
 export function tripCsv(trip: Trip, expenses: Expense[]): string {
   const own = expenses.filter((e) => e.tripId === trip.id).sort((a, b) => a.createdAt - b.createdAt);
   const currency = trip.currency.toUpperCase();
   const home = trip.homeCurrency.toUpperCase();
-  const rows: CsvCell[][] = [TRIP_CSV_HEADER];
+  const rows: CsvCell[][] = [tripCsvHeader()];
   let total = 0;
   let totalHome = 0;
   let hasHome = false;
@@ -92,8 +97,8 @@ export function tripCsv(trip: Trip, expenses: Expense[]): string {
       toIsoDate(created),
       localTime(created),
       e.title,
-      CATEGORIES.find((c) => c.value === e.category)?.label ?? 'Other',
-      e.method === 'card' ? 'Card' : 'Cash',
+      categoryLabel(e.category),
+      methodLabel(e.method),
       amount,
       currency,
       homeAmount,
@@ -101,7 +106,7 @@ export function tripCsv(trip: Trip, expenses: Expense[]): string {
     ]);
   }
   rows.push([
-    'Total',
+    t('csv.total'),
     null,
     null,
     null,
@@ -116,7 +121,7 @@ export function tripCsv(trip: Trip, expenses: Expense[]): string {
 
 export function seriesCsv(points: Point[], from: string, to: string): string {
   const pair = `${from.toUpperCase()}/${to.toUpperCase()}`;
-  return toCsv([['Date', 'Rate', 'Pair'], ...points.map((p) => [p.date, p.value, pair])]);
+  return toCsv([[t('csv.date'), t('csv.rate'), t('csv.pair')], ...points.map((p) => [p.date, p.value, pair])]);
 }
 
 /** Lowercase ASCII words joined by dashes, e.g. "São Paulo & Rio!" → "sao-paulo-rio". */

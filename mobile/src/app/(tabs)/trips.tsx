@@ -5,18 +5,29 @@ import { AppText } from '@/components/app-text';
 import { ExpenseRow } from '@/components/expense-row';
 import { Icon } from '@/components/icon';
 import { ListGroup } from '@/components/list-group';
+import { LocaleBoundary } from '@/components/locale-boundary';
 import { Screen } from '@/components/screen';
 import { TripCard } from '@/components/trip-card';
 import { BottomTabInset, Font, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { useT } from '@/i18n';
 import { formatCurrency } from '@/lib/format';
 import { currentTrip, formatDateRange, summarize, toIsoDate, tripPhase } from '@/lib/trips';
 import { usePrefs } from '@/store/prefs';
 import { FREE_LIMITS, useIsPro } from '@/store/pro';
 import { useTrips } from '@/store/trips';
 
-export default function TripsScreen() {
+export default function TripsRoute() {
+  return (
+    <LocaleBoundary>
+      <TripsScreen />
+    </LocaleBoundary>
+  );
+}
+
+function TripsScreen() {
   const c = useColors();
+  const t = useT();
   const { trips, expenses } = useTrips();
   const cardFee = usePrefs((s) => s.cardFee);
   const today = toIsoDate(new Date());
@@ -27,12 +38,13 @@ export default function TripsScreen() {
   const featured = currentTrip(trips, today) ?? trips[0] ?? null;
   const others = trips.filter((t) => t.id !== featured?.id).sort((a, b) => b.startDate.localeCompare(a.startDate));
   const recent = featured ? expenses.filter((e) => e.tripId === featured.id).slice(0, 5) : [];
+  const upcoming = t('trips.upcoming');
 
   const newTrip = (
     <Pressable
       onPress={openNewTrip}
       accessibilityRole="button"
-      accessibilityLabel="New trip"
+      accessibilityLabel={t('trips.newTrip')}
       style={[styles.round, { backgroundColor: c.card, borderColor: c.line }]}>
       <Icon name="plus" size={20} color={c.ink} />
     </Pressable>
@@ -40,21 +52,20 @@ export default function TripsScreen() {
 
   if (!featured) {
     return (
-      <Screen title="Trips" right={newTrip}>
+      <Screen title={t('tabs.trips')} right={newTrip}>
         <View style={styles.pad}>
           <View style={[styles.empty, { backgroundColor: c.feature }]}>
             <Icon name="suitcase" size={28} color={c.featureAccent} />
-            <AppText style={[styles.emptyTitle, { color: c.onFeature }]}>Track a trip’s spending</AppText>
+            <AppText style={[styles.emptyTitle, { color: c.onFeature }]}>{t('trips.emptyTitle')}</AppText>
             <AppText variant="small" style={{ color: c.onFeature, opacity: 0.75 }}>
-              Set a budget, log what you spend in the local currency and see the total at home, card fees
-              included.
+              {t('trips.emptyBody')}
             </AppText>
             <Pressable
               onPress={openNewTrip}
               accessibilityRole="button"
               style={({ pressed }) => [styles.cta, { backgroundColor: c.accent, opacity: pressed ? 0.85 : 1 }]}>
               <AppText variant="bodyStrong" tone="onAccent">
-                Plan a trip
+                {t('trips.planTrip')}
               </AppText>
             </Pressable>
           </View>
@@ -64,7 +75,7 @@ export default function TripsScreen() {
   }
 
   return (
-    <Screen title="Trips" right={newTrip}>
+    <Screen title={t('tabs.trips')} right={newTrip}>
       <ScrollView contentContainerStyle={styles.content}>
         <TripCard
           trip={featured}
@@ -80,12 +91,12 @@ export default function TripsScreen() {
           style={({ pressed }) => [styles.add, { backgroundColor: c.accent, opacity: pressed ? 0.85 : 1 }]}>
           <Icon name="plus" size={18} color={c.onAccent} strokeWidth={2.2} />
           <AppText variant="bodyStrong" tone="onAccent">
-            Add expense
+            {t('trips.addExpense')}
           </AppText>
         </Pressable>
 
         {recent.length > 0 && (
-          <ListGroup title="Recent">
+          <ListGroup title={t('trips.recent')}>
             {recent.map((e) => (
               <ExpenseRow key={e.id} expense={e} currency={featured.currency} homeCurrency={featured.homeCurrency} />
             ))}
@@ -94,13 +105,13 @@ export default function TripsScreen() {
         {recent.length > 0 && (
           <Pressable onPress={() => router.push({ pathname: '/trip/[id]', params: { id: featured.id } })} accessibilityRole="button" hitSlop={8}>
             <AppText variant="bodyStrong" tone="accent" style={styles.center}>
-              See all expenses
+              {t('trips.seeAll')}
             </AppText>
           </Pressable>
         )}
 
         {others.length > 0 && (
-          <ListGroup title="Other trips">
+          <ListGroup title={t('trips.otherTrips')}>
             {others.map((t) => {
               const s = summarize(t, expenses, today);
               const phase = tripPhase(t, today);
@@ -116,7 +127,7 @@ export default function TripsScreen() {
                     </AppText>
                     <AppText variant="small" tone="muted">
                       {formatDateRange(t)}
-                      {phase === 'upcoming' ? ' · Upcoming' : ''}
+                      {phase === 'upcoming' ? ` · ${upcoming}` : ''}
                     </AppText>
                   </View>
                   <View style={styles.amounts}>

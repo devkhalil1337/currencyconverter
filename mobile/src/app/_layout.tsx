@@ -14,6 +14,7 @@ import { Appearance, AppState, Platform } from 'react-native';
 
 import { Palette } from '@/constants/theme';
 import { useIsDark } from '@/hooks/use-colors';
+import { useLocaleKey } from '@/i18n';
 import { checkAlerts } from '@/lib/check-alerts';
 import { configureForegroundNotifications } from '@/lib/notifications';
 import { configurePurchases } from '@/lib/purchases';
@@ -111,9 +112,10 @@ export default function RootLayout() {
   const homeCurrency = usePrefs((s) => s.homeCurrency);
   const currencies = usePrefs((s) => s.currencies);
   const proState = usePro((s) => s.isPro || s.devPro);
+  const localeKey = useLocaleKey();
   useEffect(() => {
     if (hydrated) updateWidgets();
-  }, [hydrated, fetchedAt, homeCurrency, currencies, proState]);
+  }, [hydrated, fetchedAt, homeCurrency, currencies, proState, localeKey]);
 
   const ready = (fontsLoaded || !!fontError) && hydrated;
   useEffect(() => {
@@ -124,6 +126,21 @@ export default function RootLayout() {
 
   const palette = isDark ? Palette.dark : Palette.light;
   const navTheme = isDark ? DarkTheme : DefaultTheme;
+  // Pickers open as sheets. Android's form sheet collapses when the currency search
+  // keyboard opens, so use a full-screen modal there.
+  const sheetOptions =
+    Platform.OS === 'ios'
+      ? {
+          presentation: 'formSheet' as const,
+          sheetAllowedDetents: [0.9],
+          sheetGrabberVisible: true,
+          contentStyle: { backgroundColor: palette.bg },
+        }
+      : {
+          presentation: 'modal' as const,
+          animation: 'slide_from_bottom' as const,
+          contentStyle: { backgroundColor: palette.bg },
+        };
 
   return (
     <ThemeProvider
@@ -135,25 +152,8 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="onboarding" options={{ gestureEnabled: false, animation: 'fade' }} />
-        <Stack.Screen
-          name="currency-picker"
-          options={
-            // Android's form sheet collapses when the search keyboard opens,
-            // so use a full-screen modal there.
-            Platform.OS === 'ios'
-              ? {
-                  presentation: 'formSheet',
-                  sheetAllowedDetents: [0.9],
-                  sheetGrabberVisible: true,
-                  contentStyle: { backgroundColor: palette.bg },
-                }
-              : {
-                  presentation: 'modal',
-                  animation: 'slide_from_bottom',
-                  contentStyle: { backgroundColor: palette.bg },
-                }
-          }
-        />
+        <Stack.Screen name="currency-picker" options={sheetOptions} />
+        <Stack.Screen name="language" options={sheetOptions} />
         <Stack.Screen name="trip-new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="expense-new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="trip/[id]" />

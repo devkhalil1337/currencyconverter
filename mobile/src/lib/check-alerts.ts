@@ -1,3 +1,4 @@
+import { t } from '@/i18n';
 import { useAlerts } from '@/store/alerts';
 import { useRates } from '@/store/rates';
 
@@ -29,10 +30,16 @@ export async function checkAlerts(ratesOverride?: Rates): Promise<number> {
   await Promise.all(
     due.map(({ alert, rate }) => {
       const pair = `${alert.from.toUpperCase()}/${alert.to.toUpperCase()}`;
-      const verb = alert.direction === 'above' ? 'rose above' : 'fell below';
+      const target = formatRate(alert.target);
       return showNotification(
-        `${pair} ${verb} ${formatRate(alert.target)}`,
-        `1 ${alert.from.toUpperCase()} = ${formatRate(rate ?? 0)} ${alert.to.toUpperCase()} now.`
+        alert.direction === 'above'
+          ? t('notifications.roseAbove', { pair, rate: target })
+          : t('notifications.fellBelow', { pair, rate: target }),
+        t('notifications.body', {
+          from: alert.from.toUpperCase(),
+          rate: formatRate(rate ?? 0),
+          to: alert.to.toUpperCase(),
+        })
       ).catch((err) => console.warn('Alert notification failed', err));
     })
   );

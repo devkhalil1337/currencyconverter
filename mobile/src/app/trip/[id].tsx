@@ -10,6 +10,7 @@ import { SheetHeader } from '@/components/sheet-header';
 import { TripCard } from '@/components/trip-card';
 import { Font, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { appLocale, t, useT } from '@/i18n';
 import { exportFileName, tripCsv } from '@/lib/csv';
 import { shareCsv } from '@/lib/export-file';
 import { summarize, toIsoDate, type Expense } from '@/lib/trips';
@@ -23,22 +24,23 @@ function confirm(message: string, action: string, onConfirm: () => void) {
     return;
   }
   Alert.alert(message, undefined, [
-    { text: 'Cancel', style: 'cancel' },
+    { text: t('common.cancel'), style: 'cancel' },
     { text: action, style: 'destructive', onPress: onConfirm },
   ]);
 }
 
 function dayLabel(timestamp: number, today: string): string {
   const iso = toIsoDate(new Date(timestamp));
-  if (iso === today) return 'Today';
+  if (iso === today) return t('trip.today');
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
-  if (iso === toIsoDate(yesterday)) return 'Yesterday';
-  return new Date(timestamp).toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' });
+  if (iso === toIsoDate(yesterday)) return t('trip.yesterday');
+  return new Date(timestamp).toLocaleDateString(appLocale(), { weekday: 'short', day: 'numeric', month: 'short' });
 }
 
 export default function TripDetail() {
   const c = useColors();
+  const t = useT();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { trips, expenses, deleteTrip, deleteExpense } = useTrips();
@@ -51,8 +53,8 @@ export default function TripDetail() {
     return (
       <SafeAreaView style={[styles.safe, { backgroundColor: c.bg }]}>
         <View style={styles.inner}>
-          <SheetHeader title="Trip" kind="back" />
-          <AppText tone="muted">This trip no longer exists.</AppText>
+          <SheetHeader title={t('trip.title')} kind="back" />
+          <AppText tone="muted">{t('trip.missing')}</AppText>
         </View>
       </SafeAreaView>
     );
@@ -74,16 +76,16 @@ export default function TripDetail() {
     }
     try {
       const result = await shareCsv(exportFileName([trip.name], today, 'trip'), tripCsv(trip, expenses), trip.name);
-      if (result === 'unavailable') Alert.alert('Sharing isn’t available on this device.');
+      if (result === 'unavailable') Alert.alert(t('errors.sharingUnavailable'));
     } catch {
-      Alert.alert('Couldn’t export this trip', 'Please try again.');
+      Alert.alert(t('trip.exportFailed'), t('errors.pleaseTryAgain'));
     }
   };
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: c.bg }]} edges={['top', 'left', 'right']}>
       <ScrollView contentContainerStyle={[styles.inner, { paddingBottom: Spacing.six + insets.bottom }]}>
-        <SheetHeader title="Trip" kind="back" />
+        <SheetHeader title={t('trip.title')} kind="back" />
         <TripCard trip={trip} summary={summarize(trip, expenses, today)} today={today} cardFee={cardFee} />
 
         <Pressable
@@ -92,13 +94,13 @@ export default function TripDetail() {
           style={({ pressed }) => [styles.add, { backgroundColor: c.accent, opacity: pressed ? 0.85 : 1 }]}>
           <Icon name="plus" size={18} color={c.onAccent} strokeWidth={2.2} />
           <AppText variant="bodyStrong" tone="onAccent">
-            Add expense
+            {t('trips.addExpense')}
           </AppText>
         </Pressable>
 
         {groups.length === 0 ? (
           <AppText tone="muted" style={styles.center}>
-            No expenses yet.
+            {t('trip.noExpenses')}
           </AppText>
         ) : (
           groups.map((g) => (
@@ -109,7 +111,13 @@ export default function TripDetail() {
                   expense={e}
                   currency={trip.currency}
                   homeCurrency={trip.homeCurrency}
-                  onLongPress={() => confirm(`Delete “${e.title || 'expense'}”?`, 'Delete', () => deleteExpense(e.id))}
+                  onLongPress={() =>
+                    confirm(
+                      t('trip.deleteExpense', { title: e.title || t('trip.untitledExpense') }),
+                      t('common.delete'),
+                      () => deleteExpense(e.id)
+                    )
+                  }
                 />
               ))}
             </ListGroup>
@@ -117,7 +125,7 @@ export default function TripDetail() {
         )}
         {groups.length > 0 && (
           <AppText variant="caption" tone="muted" style={styles.center}>
-            Long press an expense to delete it.
+            {t('trip.longPressHint')}
           </AppText>
         )}
 
@@ -126,14 +134,14 @@ export default function TripDetail() {
             <Pressable
               onPress={exportCsv}
               accessibilityRole="button"
-              accessibilityHint={isPro ? 'Shares a spreadsheet of this trip’s expenses' : 'Requires Trippence Pro'}
+              accessibilityHint={isPro ? t('trip.exportHint') : t('common.requiresPro')}
               style={({ pressed }) => [styles.action, { borderColor: c.line, opacity: pressed ? 0.7 : 1 }]}>
               <Icon name="share" size={18} color={c.ink} />
-              <AppText variant="bodyStrong">Export CSV</AppText>
+              <AppText variant="bodyStrong">{t('trip.exportCsv')}</AppText>
               {!isPro && (
                 <View style={[styles.proPill, { backgroundColor: c.feature }]}>
                   <AppText variant="caption" style={[styles.proText, { color: c.featureAccent }]}>
-                    PRO
+                    {t('common.pro')}
                   </AppText>
                 </View>
               )}
@@ -141,7 +149,7 @@ export default function TripDetail() {
           )}
           <Pressable
             onPress={() =>
-              confirm(`Delete ${trip.name} and all its expenses?`, 'Delete trip', () => {
+              confirm(t('trip.deleteTripConfirm', { name: trip.name }), t('trip.deleteTrip'), () => {
                 deleteTrip(trip.id);
                 router.back();
               })
@@ -150,7 +158,7 @@ export default function TripDetail() {
             style={({ pressed }) => [styles.action, { borderColor: c.line, opacity: pressed ? 0.7 : 1 }]}>
             <Icon name="trash" size={18} color={c.danger} />
             <AppText variant="bodyStrong" tone="danger">
-              Delete trip
+              {t('trip.deleteTrip')}
             </AppText>
           </Pressable>
         </View>

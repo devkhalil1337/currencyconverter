@@ -2,7 +2,8 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Font, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
-import { formatCurrency } from '@/lib/format';
+import { useT } from '@/i18n';
+import { formatCurrency, formatNumber } from '@/lib/format';
 import { dayOfTrip, daysBetween, formatDateRange, tripLength, tripPhase, type Trip, type TripSummary } from '@/lib/trips';
 
 import { AppText } from './app-text';
@@ -17,14 +18,15 @@ interface TripCardProps {
 
 export function TripCard({ trip, summary, today, cardFee, onPress }: TripCardProps) {
   const c = useColors();
+  const t = useT();
   const phase = tripPhase(trip, today);
   const length = tripLength(trip);
   const when =
     phase === 'active'
-      ? `Day ${dayOfTrip(trip, today)} of ${length}`
+      ? t('tripCard.dayOf', { day: dayOfTrip(trip, today), count: length })
       : phase === 'upcoming'
-        ? `Starts in ${daysBetween(today, trip.startDate)} day${daysBetween(today, trip.startDate) === 1 ? '' : 's'}`
-        : 'Finished';
+        ? t('tripCard.startsIn', { count: daysBetween(today, trip.startDate) })
+        : t('tripCard.finished');
   const used = summary.budgetUsed;
   const over = used !== null && used > 1;
 
@@ -49,8 +51,12 @@ export function TripCard({ trip, summary, today, cardFee, onPress }: TripCardPro
       <View>
         <AppText style={[styles.spent, { color: c.onFeature }]}>{formatCurrency(summary.spent, trip.currency)}</AppText>
         <AppText variant="small" style={{ color: c.onFeature, opacity: 0.65 }}>
-          ≈ {formatCurrency(summary.spentHome, trip.homeCurrency)} at home
-          {cardFee > 0 ? `, card payments incl. ${cardFee}% fee` : ''}
+          {cardFee > 0
+            ? t('tripCard.atHomeWithFee', {
+                amount: formatCurrency(summary.spentHome, trip.homeCurrency),
+                fee: formatNumber(cardFee),
+              })
+            : t('tripCard.atHome', { amount: formatCurrency(summary.spentHome, trip.homeCurrency) })}
         </AppText>
       </View>
 
@@ -66,14 +72,17 @@ export function TripCard({ trip, summary, today, cardFee, onPress }: TripCardPro
           </View>
           <View style={styles.budgetRow}>
             <AppText variant="caption" style={{ color: c.onFeature, opacity: 0.7 }}>
-              {Math.round(used * 100)}% of {formatCurrency(trip.budget, trip.currency)}
+              {t('tripCard.budgetUsed', {
+                percent: formatNumber(Math.round(used * 100)),
+                budget: formatCurrency(trip.budget, trip.currency),
+              })}
             </AppText>
             <AppText variant="caption" style={{ color: c.onFeature, opacity: 0.7 }}>
               {summary.remaining !== null && summary.remaining < 0
-                ? `${formatCurrency(-summary.remaining, trip.currency)} over`
+                ? t('tripCard.over', { amount: formatCurrency(-summary.remaining, trip.currency) })
                 : summary.perDayLeft !== null
-                  ? `${formatCurrency(summary.perDayLeft, trip.currency)}/day left`
-                  : `${formatCurrency(summary.remaining ?? 0, trip.currency)} left`}
+                  ? t('tripCard.perDayLeft', { amount: formatCurrency(summary.perDayLeft, trip.currency) })
+                  : t('tripCard.left', { amount: formatCurrency(summary.remaining ?? 0, trip.currency) })}
             </AppText>
           </View>
         </View>
@@ -83,7 +92,7 @@ export function TripCard({ trip, summary, today, cardFee, onPress }: TripCardPro
 
   if (!onPress) return body;
   return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${trip.name} trip details`}>
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={t('tripCard.details', { name: trip.name })}>
       {({ pressed }) => <View style={{ opacity: pressed ? 0.9 : 1 }}>{body}</View>}
     </Pressable>
   );

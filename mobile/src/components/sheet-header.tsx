@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Font } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { useT } from '@/i18n';
 
 import { AppText } from './app-text';
 import { Icon } from './icon';
@@ -17,11 +18,12 @@ interface SheetHeaderProps {
 
 export function SheetHeader({ title, kind = 'close', right }: SheetHeaderProps) {
   const c = useColors();
+  const t = useT();
   const button = (
     <Pressable
       onPress={() => router.back()}
       accessibilityRole="button"
-      accessibilityLabel={kind === 'close' ? 'Close' : 'Back'}
+      accessibilityLabel={kind === 'close' ? t('common.close') : t('common.back')}
       style={[styles.button, { backgroundColor: c.card, borderColor: c.line }]}>
       {kind === 'close' ? (
         <Icon name="close" size={18} color={c.ink} />

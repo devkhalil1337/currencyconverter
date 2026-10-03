@@ -9,6 +9,7 @@ import { Icon } from '@/components/icon';
 import { SheetHeader } from '@/components/sheet-header';
 import { Font, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { useT } from '@/i18n';
 import { parseRateInput } from '@/lib/alerts';
 import { addDays, formatDateRange, toIsoDate } from '@/lib/trips';
 import { usePrefs } from '@/store/prefs';
@@ -18,6 +19,7 @@ import { useTrips } from '@/store/trips';
 
 export default function NewTrip() {
   const c = useColors();
+  const t = useT();
   const { currencies, homeCurrency } = usePrefs();
   const names = useRates((s) => s.names);
   const addTrip = useTrips((s) => s.addTrip);
@@ -49,7 +51,7 @@ export default function NewTrip() {
   const create = () => {
     const budget = budgetText.trim() ? parseRateInput(budgetText) : null;
     if (budget !== null && (!Number.isFinite(budget) || budget <= 0)) {
-      setError('Budget must be a number greater than 0, or left empty.');
+      setError(t('tripNew.budgetError'));
       return;
     }
     const id = addTrip({
@@ -66,25 +68,25 @@ export default function NewTrip() {
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: c.bg }]}>
       <ScrollView contentContainerStyle={styles.inner} keyboardShouldPersistTaps="handled">
-        <SheetHeader title="New trip" />
+        <SheetHeader title={t('tripNew.title')} />
 
         <View style={styles.field}>
           <AppText variant="label" tone="muted">
-            Where to?
+            {t('tripNew.whereTo')}
           </AppText>
           <TextInput
             value={name}
             onChangeText={setName}
-            placeholder="e.g. Lisbon"
+            placeholder={t('tripNew.namePlaceholder')}
             placeholderTextColor={c.muted}
-            accessibilityLabel="Trip name"
+            accessibilityLabel={t('tripNew.nameLabel')}
             style={[styles.input, { color: c.ink, borderColor: c.line, backgroundColor: c.card }]}
           />
         </View>
 
         <View style={styles.field}>
           <AppText variant="label" tone="muted">
-            Local currency
+            {t('tripNew.localCurrency')}
           </AppText>
           <View style={styles.chips}>
             {chips.map((code) => (
@@ -97,19 +99,19 @@ export default function NewTrip() {
                 onPress={() => setCurrency(code)}
               />
             ))}
-            <Chip icon="search" label="Other" onPress={() => router.push('/currency-picker?mode=trip')} />
+            <Chip icon="search" label={t('tripNew.other')} onPress={() => router.push('/currency-picker?mode=trip')} />
           </View>
         </View>
 
         <View style={styles.field}>
           <AppText variant="label" tone="muted">
-            Dates
+            {t('tripNew.dates')}
           </AppText>
           <View style={styles.chips}>
             {[
-              { offset: 0, label: 'Starts today' },
-              { offset: 1, label: 'Tomorrow' },
-              { offset: 7, label: 'In a week' },
+              { offset: 0, label: t('tripNew.startsToday') },
+              { offset: 1, label: t('tripNew.tomorrow') },
+              { offset: 7, label: t('tripNew.inAWeek') },
             ].map((o) => (
               <Chip
                 key={o.offset}
@@ -121,11 +123,9 @@ export default function NewTrip() {
             ))}
           </View>
           <View style={[styles.stepperRow, { backgroundColor: c.card, borderColor: c.line }]}>
-            <AppText style={styles.flex}>
-              {days} day{days === 1 ? '' : 's'}
-            </AppText>
-            <Step icon="minus" label="Fewer days" onPress={() => setDays((d) => Math.max(1, d - 1))} />
-            <Step icon="plus" label="More days" onPress={() => setDays((d) => Math.min(90, d + 1))} />
+            <AppText style={styles.flex}>{t('tripNew.days', { count: days })}</AppText>
+            <Step icon="minus" label={t('tripNew.fewerDays')} onPress={() => setDays((d) => Math.max(1, d - 1))} />
+            <Step icon="plus" label={t('tripNew.moreDays')} onPress={() => setDays((d) => Math.min(90, d + 1))} />
           </View>
           <AppText variant="small" tone="muted">
             {formatDateRange({ startDate, endDate })}
@@ -134,7 +134,7 @@ export default function NewTrip() {
 
         <View style={styles.field}>
           <AppText variant="label" tone="muted">
-            Budget in {currency.toUpperCase()} (optional)
+            {t('tripNew.budgetIn', { code: currency.toUpperCase() })}
           </AppText>
           <TextInput
             value={budgetText}
@@ -143,9 +143,9 @@ export default function NewTrip() {
               setError(null);
             }}
             keyboardType="decimal-pad"
-            placeholder="e.g. 1200"
+            placeholder={t('tripNew.budgetPlaceholder')}
             placeholderTextColor={c.muted}
-            accessibilityLabel="Budget"
+            accessibilityLabel={t('tripNew.budgetLabel')}
             style={[
               styles.input,
               { color: c.ink, borderColor: error ? c.danger : c.line, backgroundColor: c.card },
@@ -163,7 +163,7 @@ export default function NewTrip() {
           accessibilityRole="button"
           style={({ pressed }) => [styles.cta, { backgroundColor: c.accent, opacity: pressed ? 0.85 : 1 }]}>
           <AppText variant="bodyStrong" tone="onAccent" style={styles.ctaText}>
-            Create trip
+            {t('tripNew.create')}
           </AppText>
         </Pressable>
       </ScrollView>

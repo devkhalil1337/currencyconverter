@@ -1,8 +1,9 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useBadgeTone, useColors } from '@/hooks/use-colors';
-import { formatCurrency } from '@/lib/format';
-import { CATEGORIES, type Expense } from '@/lib/trips';
+import { useT } from '@/i18n';
+import { formatCurrency, formatTime } from '@/lib/format';
+import type { Expense } from '@/lib/trips';
 
 import { AppText } from './app-text';
 import { Icon } from './icon';
@@ -16,13 +17,14 @@ interface ExpenseRowProps {
 
 export function ExpenseRow({ expense, currency, homeCurrency, onLongPress }: ExpenseRowProps) {
   const c = useColors();
+  const t = useT();
   const [bg, fg] = useBadgeTone(expense.category);
-  const category = CATEGORIES.find((cat) => cat.value === expense.category)?.label ?? 'Other';
-  const time = new Date(expense.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const category = t(`expense.categories.${expense.category}`);
+  const time = formatTime(expense.createdAt);
   return (
     <Pressable
       onLongPress={onLongPress}
-      accessibilityHint={onLongPress ? 'Long press to delete' : undefined}
+      accessibilityHint={onLongPress ? t('expense.longPressToDelete') : undefined}
       accessibilityLabel={`${expense.title || category}, ${formatCurrency(expense.amount, currency)}`}
       style={({ pressed }) => [styles.row, pressed && onLongPress && { backgroundColor: c.subtle }]}>
       <View style={[styles.icon, { backgroundColor: bg }]}>
@@ -33,7 +35,7 @@ export function ExpenseRow({ expense, currency, homeCurrency, onLongPress }: Exp
           {expense.title || category}
         </AppText>
         <AppText variant="small" tone="muted">
-          {time} · {expense.method === 'card' ? 'Card' : 'Cash'}
+          {time} · {t(`expense.methods.${expense.method}`)}
         </AppText>
       </View>
       <View style={styles.amounts}>

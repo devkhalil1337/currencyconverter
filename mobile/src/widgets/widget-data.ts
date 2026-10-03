@@ -1,3 +1,4 @@
+import { syncLocale, t } from '@/i18n';
 import { unitRate } from '@/lib/convert';
 import { formatRate, formatTime } from '@/lib/format';
 import {
@@ -36,8 +37,10 @@ export function ratesWidgetProps(): RatesWidgetProps {
   return {
     home,
     rows,
-    updated: fetchedAt ? formatTime(fetchedAt) : null,
+    status: fetchedAt ? t('widget.updated', { time: formatTime(fetchedAt) }) : t('widget.openToLoad'),
     locked,
+    lockedTitle: t('widget.lockedTitle'),
+    lockedCta: t('widget.lockedCta'),
   };
 }
 
@@ -48,4 +51,6 @@ export function iosWidgetSnapshot(): IosWidgetSnapshot {
 
 export async function rehydrateWidgetStores(): Promise<void> {
   await Promise.all([usePrefs.persist.rehydrate(), useRates.persist.rehydrate(), usePro.persist.rehydrate()]);
+  // The headless task has no screen to trigger it, so pick up the saved language here.
+  syncLocale();
 }

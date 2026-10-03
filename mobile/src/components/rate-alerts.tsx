@@ -4,9 +4,10 @@ import { Linking, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { Font, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
-import { parseRateInput, suggestTarget, validateTarget, type Direction } from '@/lib/alerts';
+import { appLocale, useT, type TranslationKey } from '@/i18n';
+import { parseRateInput, suggestTarget, validateTarget, type Direction, type TargetProblem } from '@/lib/alerts';
 import { checkAlerts } from '@/lib/check-alerts';
-import { formatRate } from '@/lib/format';
+import { formatRate, formatRateInput } from '@/lib/format';
 import { requestNotificationPermission, type PermissionState } from '@/lib/notifications';
 import { activeAlertCount, MAX_ALERTS, useAlerts } from '@/store/alerts';
 import { FREE_LIMITS, useIsPro } from '@/store/pro';
@@ -14,6 +15,12 @@ import { FREE_LIMITS, useIsPro } from '@/store/pro';
 import { AppText } from './app-text';
 import { Icon } from './icon';
 import { ListGroup } from './list-group';
+
+const PROBLEMS: Record<TargetProblem, TranslationKey> = {
+  notPositive: 'errors.rateNotPositive',
+  notAbove: 'errors.rateNotAbove',
+  notBelow: 'errors.rateNotBelow',
+};
 
 interface RateAlertsProps {
   from: string;
@@ -24,6 +31,7 @@ interface RateAlertsProps {
 }
 
 export function RateAlerts({ from, to, live, onSelectPair }: RateAlertsProps) {
+  const t = useT();
   const alerts = useAlerts((s) => s.alerts);
   const { remove, rearm } = useAlerts();
 
@@ -32,12 +40,16 @@ export function RateAlerts({ from, to, live, onSelectPair }: RateAlertsProps) {
       <AlertForm key={`${from}:${to}`} from={from} to={to} live={live} full={alerts.length >= MAX_ALERTS} />
 
       {alerts.length > 0 && (
-        <ListGroup title="Your alerts">
+        <ListGroup title={t('alerts.yourAlerts')}>
           {alerts.map((alert) => (
             <AlertRow
               key={alert.id}
               pair={`${alert.from.toUpperCase()}/${alert.to.toUpperCase()}`}
-              condition={`${alert.direction === 'above' ? 'Above' : 'Below'} ${formatRate(alert.target)}`}
+              condition={
+                alert.direction === 'above'
+                  ? t('alerts.above', { rate: formatRate(alert.target) })
+                  : t('alerts.below', { rate: formatRate(alert.target) })
+              }
               triggeredAt={alert.triggeredAt}
               onPress={() => onSelectPair(alert.from, alert.to)}
               onRearm={() => rearm(alert.id)}
@@ -47,8 +59,7 @@ export function RateAlerts({ from, to, live, onSelectPair }: RateAlertsProps) {
         </ListGroup>
       )}
       <AppText variant="caption" tone="muted">
-        Alerts use daily reference rates and are checked when you open the app and about every 15 minutes in the
-        background.
+        {t('alerts.footnote')}
       </AppText>
     </View>
   );
@@ -56,21 +67,22 @@ export function RateAlerts({ from, to, live, onSelectPair }: RateAlertsProps) {
 
 function AlertForm({ from, to, live, full }: { from: string; to: string; live: number | null; full: boolean }) {
   const c = useColors();
+  const t = useT();
   const add = useAlerts((s) => s.add);
   const active = useAlerts((s) => activeAlertCount(s.alerts));
   const isPro = useIsPro();
   const atFreeLimit = !isPro && active >= FREE_LIMITS.activeAlerts;
   const [direction, setDirection] = useState<Direction>('above');
-  const [text, setText] = useState(() => (live ? formatRate(suggestTarget('above', live)).replace(/,/g, '') : ''));
+  const [text, setText] = useState(() => (live ? formatRateInput(suggestTarget('above', live)) : ''));
   const [edited, setEdited] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<TargetProblem | null>(null);
   const [permission, setPermission] = useState<PermissionState | null>(null);
   const [saved, setSaved] = useState(false);
 
   const pickDirection = (d: Direction) => {
     setDirection(d);
     setError(null);
-    if (!edited && live) setText(formatRate(suggestTarget(d, live)).replace(/,/g, ''));
+    if (!edited && live) setText(formatRateInput(suggestTarget(d, live)));
   };
 
   const create = async () => {
@@ -101,10 +113,10 @@ function AlertForm({ from, to, live, full }: { from: string; to: string; live: n
         </View>
         <View style={styles.flex}>
           <AppText variant="bodyStrong">
-            Alert me when {from.toUpperCase()}/{to.toUpperCase()}
+            {t('alerts.alertMeWhen', { pair: `${from.toUpperCase()}/${to.toUpperCase()}` })}
           </AppText>
           <AppText variant="small" tone="muted">
-            Now {live !== null ? formatRate(live) : '—'}
+            {t('alerts.now', { rate: live !== null ? formatRate(live) : '—' })}
           </AppText>
         </View>
       </View>
@@ -121,7 +133,7 @@ function AlertForm({ from, to, live, full }: { from: string; to: string; live: n
                 accessibilityState={{ checked: selected }}
                 style={[styles.segmentItem, selected && { backgroundColor: c.card }]}>
                 <AppText variant="small" style={{ fontFamily: Font.semibold, color: selected ? c.ink : c.muted }}>
-                  {d === 'above' ? 'Rises above' : 'Falls below'}
+                  {d === 'above' ? t('alerts.risesAbove') : t('alerts.fallsBelow')}
                 </AppText>
               </Pressable>
             );
@@ -136,16 +148,16 @@ function AlertForm({ from, to, live, full }: { from: string; to: string; live: n
             setSaved(false);
           }}
           keyboardType="decimal-pad"
-          placeholder="Target"
+          placeholder={t('alerts.targetPlaceholder')}
           placeholderTextColor={c.muted}
-          accessibilityLabel="Target rate"
+          accessibilityLabel={t('alerts.targetLabel')}
           style={[styles.input, { color: c.ink, borderColor: error ? c.danger : c.line, backgroundColor: c.bg }]}
         />
       </View>
 
       {error && (
         <AppText variant="small" tone="danger">
-          {error}
+          {t(PROBLEMS[error])}
         </AppText>
       )}
 
@@ -159,33 +171,37 @@ function AlertForm({ from, to, live, full }: { from: string; to: string; live: n
           { backgroundColor: full ? c.subtle : c.accent, opacity: pressed ? 0.85 : 1 },
         ]}>
         <AppText variant="bodyStrong" tone={full ? 'muted' : 'onAccent'}>
-          {full ? `Limit of ${MAX_ALERTS} alerts reached` : atFreeLimit ? 'Unlock more alerts with Pro' : 'Create alert'}
+          {full
+            ? t('alerts.limitReached', { count: MAX_ALERTS })
+            : atFreeLimit
+              ? t('alerts.unlockMore')
+              : t('alerts.create')}
         </AppText>
       </Pressable>
       {!isPro && !full && (
         <AppText variant="caption" tone="muted">
-          {Math.min(active, FREE_LIMITS.activeAlerts)} of {FREE_LIMITS.activeAlerts} free alerts in use
+          {t('alerts.freeUsage', { used: Math.min(active, FREE_LIMITS.activeAlerts), count: FREE_LIMITS.activeAlerts })}
         </AppText>
       )}
 
       {saved && permission === 'granted' && (
         <AppText variant="small" tone="accent">
-          Alert saved. We’ll notify you when it’s reached.
+          {t('alerts.savedGranted')}
         </AppText>
       )}
       {saved && permission === 'unsupported' && (
         <AppText variant="small" tone="muted">
-          Alert saved. This preview can’t send notifications, so it will show as Reached in the list below.
+          {t('alerts.savedUnsupported')}
         </AppText>
       )}
       {saved && (permission === 'denied' || permission === 'undetermined') && (
         <View style={styles.permission}>
           <AppText variant="small" tone="muted" style={styles.flex}>
-            Alert saved, but notifications are off. Turn them on to hear about it.
+            {t('alerts.savedDenied')}
           </AppText>
           <Pressable onPress={() => Linking.openSettings()} accessibilityRole="button" hitSlop={8}>
             <AppText variant="small" tone="accent" style={{ fontFamily: Font.semibold }}>
-              Settings
+              {t('alerts.openSettings')}
             </AppText>
           </Pressable>
         </View>
@@ -205,9 +221,12 @@ interface AlertRowProps {
 
 function AlertRow({ pair, condition, triggeredAt, onPress, onRearm, onRemove }: AlertRowProps) {
   const c = useColors();
+  const t = useT();
   const status = triggeredAt
-    ? `Reached ${new Date(triggeredAt).toLocaleDateString([], { day: 'numeric', month: 'short' })}`
-    : 'Watching';
+    ? t('alerts.reached', {
+        date: new Date(triggeredAt).toLocaleDateString(appLocale(), { day: 'numeric', month: 'short' }),
+      })
+    : t('alerts.watching');
   return (
     <View style={styles.row}>
       <Pressable
@@ -227,11 +246,11 @@ function AlertRow({ pair, condition, triggeredAt, onPress, onRearm, onRemove }: 
         </AppText>
       </View>
       {triggeredAt !== null && (
-        <Pressable onPress={onRearm} accessibilityRole="button" accessibilityLabel={`Re-arm ${pair} alert`} hitSlop={6} style={styles.iconButton}>
+        <Pressable onPress={onRearm} accessibilityRole="button" accessibilityLabel={t('alerts.rearm', { pair })} hitSlop={6} style={styles.iconButton}>
           <Icon name="refresh" size={18} color={c.muted} />
         </Pressable>
       )}
-      <Pressable onPress={onRemove} accessibilityRole="button" accessibilityLabel={`Delete ${pair} alert`} hitSlop={6} style={styles.iconButton}>
+      <Pressable onPress={onRemove} accessibilityRole="button" accessibilityLabel={t('alerts.delete', { pair })} hitSlop={6} style={styles.iconButton}>
         <Icon name="close" size={18} color={c.muted} />
       </Pressable>
     </View>

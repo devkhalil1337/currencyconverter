@@ -5,52 +5,64 @@ import { AppText } from '@/components/app-text';
 import { Chip } from '@/components/chip';
 import { CurrencyRow } from '@/components/currency-row';
 import { Keypad } from '@/components/keypad';
+import { LocaleBoundary } from '@/components/locale-boundary';
 import { RatesStatus } from '@/components/rates-status';
 import { Screen } from '@/components/screen';
 import { BottomTabInset, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { useT } from '@/i18n';
 import { convert, realCost as applyRealCost, toTypedAmount, unitRate } from '@/lib/convert';
-import { formatMoney, formatRate, formatTyped } from '@/lib/format';
+import { formatMoney, formatNumber, formatRate, formatTyped } from '@/lib/format';
 import { usePrefs } from '@/store/prefs';
 import { currencyName, useRates } from '@/store/rates';
 
-export default function ConvertScreen() {
+export default function ConvertRoute() {
+  return (
+    <LocaleBoundary>
+      <ConvertScreen />
+    </LocaleBoundary>
+  );
+}
+
+function ConvertScreen() {
   const c = useColors();
+  const t = useT();
   const { homeCurrency, currencies, base, amount, realCost, cardFee, press, setBase, toggleRealCost, removeCurrency } = usePrefs();
   const { rates, names, status, refresh } = useRates();
 
   const typedValue = parseFloat(amount) || 0;
+  const fee = formatNumber(cardFee);
 
   const confirmRemove = (code: string) => {
-    const message = `Remove ${code.toUpperCase()} from your list?`;
+    const message = t('convert.removeConfirm', { code: code.toUpperCase() });
     if (Platform.OS === 'web') {
       if (window.confirm(message)) removeCurrency(code);
       return;
     }
     Alert.alert(message, undefined, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Remove', style: 'destructive', onPress: () => removeCurrency(code) },
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('common.remove'), style: 'destructive', onPress: () => removeCurrency(code) },
     ]);
   };
 
   return (
-    <Screen title="Convert" right={<RatesStatus />}>
+    <Screen title={t('tabs.convert')} right={<RatesStatus />}>
       <AppText variant="small" tone="muted" style={styles.subtitle}>
-        Tap to set base · hold to remove
+        {t('convert.subtitle')}
       </AppText>
 
       {!rates && status === 'error' ? (
         <View style={styles.empty}>
-          <AppText variant="bodyStrong">Couldn’t load rates</AppText>
+          <AppText variant="bodyStrong">{t('convert.loadFailedTitle')}</AppText>
           <AppText tone="muted" style={styles.emptyText}>
-            Connect to the internet once and Trippence will keep working offline after that.
+            {t('convert.loadFailedBody')}
           </AppText>
           <Pressable
             onPress={() => refresh(true)}
             accessibilityRole="button"
             style={[styles.retry, { backgroundColor: c.accent }]}>
             <AppText variant="bodyStrong" tone="onAccent">
-              Try again
+              {t('common.tryAgain')}
             </AppText>
           </Pressable>
         </View>
@@ -59,18 +71,20 @@ export default function ConvertScreen() {
           {currencies.map((code) => {
             const isBase = code === base;
             const raw = convert(typedValue, base, code, rates);
-            const fee =
+            const cost =
               raw !== null && realCost ? applyRealCost(raw, base, code, homeCurrency, cardFee) : null;
-            const shown = fee ? fee.value : raw;
-            const feeShown = fee !== null && fee.kind !== 'none';
+            const shown = cost ? cost.value : raw;
+            const feeShown = cost !== null && cost.kind !== 'none';
             const unit = unitRate(base, code, rates);
-            let sub = 'Amount';
+            let sub = t('convert.amount');
             if (!isBase) {
               sub = feeShown
-                ? `${fee.kind === 'incl' ? 'incl.' : 'after'} ${cardFee}% card fee`
+                ? cost.kind === 'incl'
+                  ? t('convert.feeIncluded', { fee })
+                  : t('convert.feeDeducted', { fee })
                 : unit !== null
                   ? `1 ${base.toUpperCase()} = ${formatRate(unit)}`
-                  : 'No rate';
+                  : t('convert.noRate');
             }
             return (
               <CurrencyRow
@@ -95,12 +109,12 @@ export default function ConvertScreen() {
         <Chip
           toggle
           icon="card"
-          label={`Real cost +${cardFee}%`}
+          label={t('convert.realCostChip', { fee })}
           active={realCost}
           onPress={toggleRealCost}
-          accessibilityHint="Shows amounts with your card fee, to and from your home currency"
+          accessibilityHint={t('convert.realCostHint')}
         />
-        <Chip icon="plus" label="Add currency" onPress={() => router.push('/currency-picker?mode=add')} />
+        <Chip icon="plus" label={t('convert.addCurrency')} onPress={() => router.push('/currency-picker?mode=add')} />
       </View>
 
       <Keypad onPress={press} />

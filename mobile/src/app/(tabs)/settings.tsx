@@ -6,24 +6,26 @@ import { AppText } from '@/components/app-text';
 import { DevTools } from '@/components/dev-tools';
 import { Icon } from '@/components/icon';
 import { ListGroup, ListRow } from '@/components/list-group';
+import { LocaleBoundary } from '@/components/locale-boundary';
 import { Screen } from '@/components/screen';
 import { BottomTabInset, Font, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
-import { formatTime } from '@/lib/format';
+import { nativeName, systemLanguage, t as translate, useT, type TranslationKey } from '@/i18n';
+import { formatNumber, formatTime } from '@/lib/format';
 import { usePrefs, type Appearance } from '@/store/prefs';
 import { FREE_LAUNCH, TEST_TOOLS, useIsPro } from '@/store/pro';
 import { pinRatesWidget } from '@/widgets/task-handler';
 import { currencyName, useRates } from '@/store/rates';
 
-const APPEARANCES: { value: Appearance; label: string }[] = [
-  { value: 'system', label: 'System' },
-  { value: 'light', label: 'Light' },
-  { value: 'dark', label: 'Dark' },
+const APPEARANCES: { value: Appearance; label: TranslationKey }[] = [
+  { value: 'system', label: 'settings.appearances.system' },
+  { value: 'light', label: 'settings.appearances.light' },
+  { value: 'dark', label: 'settings.appearances.dark' },
 ];
 
-const RATE_TYPES: { value: boolean; label: string }[] = [
-  { value: false, label: 'Mid-market' },
-  { value: true, label: 'With card fee' },
+const RATE_TYPES: { value: boolean; label: TranslationKey }[] = [
+  { value: false, label: 'settings.rateTypes.midMarket' },
+  { value: true, label: 'settings.rateTypes.withCardFee' },
 ];
 
 // The iOS widget extension needs iOS 17, while the app itself still runs on iOS 16.
@@ -34,38 +36,44 @@ async function openWidgets(isPro: boolean) {
   if (!isPro) {
     router.push({ pathname: '/paywall', params: { reason: 'widgets' } });
   } else if (Platform.OS === 'ios') {
-    Alert.alert(
-      'Add a widget',
-      'Touch and hold your Home Screen, tap Edit › Add Widget, then search for Trippence.\n\nLock Screen widgets: touch and hold the Lock Screen › Customize.'
-    );
+    Alert.alert(translate('settings.addWidgetTitle'), translate('settings.addWidgetIos'));
   } else if (!(await pinRatesWidget())) {
     // Some launchers can't pin widgets for an app, so explain the manual way.
-    Alert.alert('Add the widget', 'Touch and hold an empty spot on your home screen, tap Widgets, then find Trippence.');
+    Alert.alert(translate('settings.addWidgetAndroidTitle'), translate('settings.addWidgetAndroid'));
   }
 }
 
-export default function SettingsScreen() {
+export default function SettingsRoute() {
+  return (
+    <LocaleBoundary>
+      <SettingsScreen />
+    </LocaleBoundary>
+  );
+}
+
+function SettingsScreen() {
   const c = useColors();
-  const { homeCurrency, cardFee, realCost, appearance, setCardFee, toggleRealCost, setAppearance } = usePrefs();
+  const t = useT();
+  const { homeCurrency, cardFee, realCost, appearance, language, setCardFee, toggleRealCost, setAppearance } = usePrefs();
   const { rates, names, fetchedAt, status, refresh } = useRates();
   const rateCount = rates ? Object.keys(rates).length : 0;
   const isPro = useIsPro();
 
   return (
-    <Screen title="Settings">
+    <Screen title={t('tabs.settings')}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.pro, { backgroundColor: c.accentSoft }]}>
           <AppText style={[styles.proTitle, { color: c.accentOnSoft }]}>
-            {FREE_LAUNCH ? 'Everything is unlocked' : isPro ? 'You have Trippence Pro' : 'Trippence Pro'}
+            {FREE_LAUNCH ? t('settings.proUnlocked') : isPro ? t('settings.proActive') : t('settings.proTitle')}
           </AppText>
           <AppText variant="small" style={{ color: c.accentOnSoft }}>
             {FREE_LAUNCH
-              ? 'Every feature is free while Trippence is new. Enjoy!'
+              ? t('settings.proBodyFree')
               : isPro
-                ? 'Every Pro feature is unlocked. Thanks for your support!'
+                ? t('settings.proBodyActive')
                 : HAS_WIDGETS
-                  ? 'Widgets, trips, past rates, export and unlimited alerts.'
-                  : 'Trips, past rates, export and unlimited alerts.'}
+                  ? t('settings.proBodyWidgets')
+                  : t('settings.proBody')}
           </AppText>
           {!FREE_LAUNCH && (
             <Pressable
@@ -81,35 +89,35 @@ export default function SettingsScreen() {
               accessibilityRole="button"
               style={({ pressed }) => [styles.proButton, { backgroundColor: c.accentOnSoft, opacity: pressed ? 0.85 : 1 }]}>
               <AppText variant="bodyStrong" style={{ color: c.accentSoft }}>
-                {isPro ? 'Manage subscription' : 'See Pro plans'}
+                {isPro ? t('settings.manageSubscription') : t('settings.seePlans')}
               </AppText>
             </Pressable>
           )}
         </View>
 
-        <ListGroup title="Money">
+        <ListGroup title={t('settings.money')}>
           <ListRow
-            label="Home currency"
+            label={t('settings.homeCurrency')}
             value={`${homeCurrency.toUpperCase()} · ${currencyName(homeCurrency, names)}`}
             onPress={() => router.push('/currency-picker?mode=home')}
           />
           <ListRow
-            label="Card fee for Real cost"
+            label={t('settings.cardFee')}
             right={
               <View style={styles.stepper}>
-                <StepButton icon="minus" label="Decrease card fee" onPress={() => setCardFee(cardFee - 0.5)} />
+                <StepButton icon="minus" label={t('settings.decreaseFee')} onPress={() => setCardFee(cardFee - 0.5)} />
                 <AppText variant="bodyStrong" style={styles.stepValue}>
-                  {cardFee.toFixed(1)}%
+                  {t('common.percent', { value: formatNumber(cardFee, 1) })}
                 </AppText>
-                <StepButton icon="plus" label="Increase card fee" onPress={() => setCardFee(cardFee + 0.5)} />
+                <StepButton icon="plus" label={t('settings.increaseFee')} onPress={() => setCardFee(cardFee + 0.5)} />
               </View>
             }
           />
           <View style={styles.segmentRow}>
-            <AppText style={styles.segmentLabel}>Rate type</AppText>
+            <AppText style={styles.segmentLabel}>{t('settings.rateType')}</AppText>
             <Segment
-              label="Rate type"
-              options={RATE_TYPES}
+              label={t('settings.rateType')}
+              options={RATE_TYPES.map((o) => ({ value: o.value, label: t(o.label) }))}
               value={realCost}
               onChange={(value) => {
                 if (value !== realCost) toggleRealCost();
@@ -118,30 +126,44 @@ export default function SettingsScreen() {
           </View>
         </ListGroup>
 
-        <ListGroup title="App">
+        <ListGroup title={t('settings.app')}>
           <ListRow
-            label="Offline rates"
+            label={t('settings.offlineRates')}
             value={
               status === 'loading'
-                ? 'Updating…'
+                ? t('common.updating')
                 : fetchedAt
-                  ? `${rateCount} saved · ${formatTime(fetchedAt)}`
-                  : 'Not downloaded yet'
+                  ? t('settings.savedAt', { count: rateCount, time: formatTime(fetchedAt) })
+                  : t('settings.notDownloaded')
             }
             onPress={() => refresh(true)}
           />
           {HAS_WIDGETS ? (
             <ListRow
-              label={Platform.OS === 'ios' ? 'Widgets' : 'Home-screen widget'}
-              value={isPro ? 'Add' : undefined}
+              label={Platform.OS === 'ios' ? t('settings.widgets') : t('settings.widget')}
+              value={isPro ? t('settings.add') : undefined}
               right={isPro ? undefined : <ProPill />}
               onPress={() => openWidgets(isPro)}
             />
           ) : null}
           <View style={styles.segmentRow}>
-            <AppText style={styles.segmentLabel}>Appearance</AppText>
-            <Segment label="Appearance" options={APPEARANCES} value={appearance} onChange={setAppearance} />
+            <AppText style={styles.segmentLabel}>{t('settings.appearance')}</AppText>
+            <Segment
+              label={t('settings.appearance')}
+              options={APPEARANCES.map((o) => ({ value: o.value, label: t(o.label) }))}
+              value={appearance}
+              onChange={setAppearance}
+            />
           </View>
+          <ListRow
+            label={t('settings.language')}
+            value={
+              language === 'system'
+                ? t('settings.languageSystem', { language: nativeName(systemLanguage()) })
+                : nativeName(language)
+            }
+            onPress={() => router.push('/language')}
+          />
         </ListGroup>
 
         {TEST_TOOLS && <DevTools />}
@@ -149,7 +171,7 @@ export default function SettingsScreen() {
         <View style={styles.privacy}>
           <Icon name="shield" size={18} color={c.muted} />
           <AppText variant="small" tone="muted">
-            No account. No ads. No tracking.
+            {t('settings.privacy')}
           </AppText>
         </View>
         <AppText variant="caption" tone="muted" style={styles.version}>
@@ -199,10 +221,11 @@ function Segment<T extends string | boolean>({
 
 function ProPill() {
   const c = useColors();
+  const t = useT();
   return (
     <View style={[styles.proPill, { backgroundColor: c.feature }]}>
       <AppText variant="caption" style={[styles.proPillText, { color: c.featureAccent }]}>
-        PRO
+        {t('common.pro')}
       </AppText>
     </View>
   );

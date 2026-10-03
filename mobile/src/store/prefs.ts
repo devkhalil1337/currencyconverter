@@ -2,6 +2,7 @@ import { getLocales } from 'expo-localization';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+import type { LanguagePref } from '@/i18n/languages';
 import { pressKey, type Key } from '@/lib/convert';
 
 import { persistStorage } from './storage';
@@ -20,6 +21,7 @@ interface PrefsState {
   realCost: boolean;
   cardFee: number;
   appearance: Appearance;
+  language: LanguagePref;
   onboarded: boolean;
 
   press: (key: Key) => void;
@@ -28,6 +30,7 @@ interface PrefsState {
   toggleRealCost: () => void;
   setCardFee: (fee: number) => void;
   setAppearance: (appearance: Appearance) => void;
+  setLanguage: (language: LanguagePref) => void;
   setHomeCurrency: (code: string) => void;
   addCurrency: (code: string) => void;
   removeCurrency: (code: string) => void;
@@ -54,6 +57,7 @@ export const usePrefs = create<PrefsState>()(
       realCost: false,
       cardFee: 3,
       appearance: 'system',
+      language: 'system',
       onboarded: false,
 
       press: (key) => set((s) => ({ amount: pressKey(s.amount, key) })),
@@ -71,6 +75,7 @@ export const usePrefs = create<PrefsState>()(
       toggleRealCost: () => set((s) => ({ realCost: !s.realCost })),
       setCardFee: (fee) => set({ cardFee: Math.min(10, Math.max(0, Math.round(fee * 10) / 10)) }),
       setAppearance: (appearance) => set({ appearance }),
+      setLanguage: (language) => set({ language }),
       setHomeCurrency: (code) =>
         set((s) => ({
           homeCurrency: code,
@@ -97,6 +102,7 @@ export const usePrefs = create<PrefsState>()(
     {
       name: 'trippence-prefs',
       storage: persistStorage,
+      // Saved state from before `language` existed merges over the defaults, so it needs no migration.
       version: 1,
     }
   )

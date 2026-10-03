@@ -1,4 +1,6 @@
-export type Category = 'food' | 'transport' | 'stay' | 'shopping' | 'activity' | 'other';
+import { appLocale, t } from '@/i18n';
+
+export type Category ='food' | 'transport' | 'stay' | 'shopping' | 'activity' | 'other';
 export type PaymentMethod = 'card' | 'cash';
 
 export interface Trip {
@@ -32,14 +34,15 @@ export interface Expense {
   createdAt: number;
 }
 
-export const CATEGORIES: { value: Category; label: string }[] = [
-  { value: 'food', label: 'Food' },
-  { value: 'transport', label: 'Transport' },
-  { value: 'stay', label: 'Stay' },
-  { value: 'shopping', label: 'Shopping' },
-  { value: 'activity', label: 'Activities' },
-  { value: 'other', label: 'Other' },
-];
+export const CATEGORIES: Category[] = ['food', 'transport', 'stay', 'shopping', 'activity', 'other'];
+
+export function categoryLabel(category: Category): string {
+  return t(`expense.categories.${category}`);
+}
+
+export function methodLabel(method: PaymentMethod): string {
+  return t(`expense.methods.${method}`);
+}
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -130,6 +133,6 @@ export function formatDateRange(trip: Pick<Trip, 'startDate' | 'endDate'>): stri
   const end = parseIsoDate(trip.endDate);
   const sameYear = start.getFullYear() === end.getFullYear();
   const fmt = (d: Date, withYear: boolean) =>
-    d.toLocaleDateString([], { day: 'numeric', month: 'short', ...(withYear ? { year: 'numeric' } : {}) });
+    d.toLocaleDateString(appLocale(), { day: 'numeric', month: 'short', ...(withYear ? { year: 'numeric' } : {}) });
   return `${fmt(start, !sameYear)} – ${fmt(end, true)}`;
 }

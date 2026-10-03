@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { useT } from '@/i18n';
 import { formatTime } from '@/lib/format';
 import { useRates } from '@/store/rates';
 
@@ -10,28 +11,29 @@ import { AppText } from './app-text';
 /** Small pill showing freshness of the cached rates; tap to refresh. */
 export function RatesStatus() {
   const c = useColors();
+  const t = useT();
   const { status, fetchedAt, date, refresh } = useRates();
 
   let dot = c.accent;
-  let label = 'Loading rates…';
+  let label = t('ratesStatus.loading');
   if (status === 'loading') {
-    label = 'Updating…';
+    label = t('common.updating');
     dot = c.muted;
   } else if (status === 'error' && fetchedAt) {
-    label = `Offline · rates from ${date ?? formatTime(fetchedAt)}`;
+    label = t('ratesStatus.offlineFrom', { date: date ?? formatTime(fetchedAt) });
     dot = c.danger;
   } else if (status === 'error') {
-    label = 'Offline';
+    label = t('ratesStatus.offline');
     dot = c.danger;
   } else if (fetchedAt) {
-    label = `Updated ${formatTime(fetchedAt)}`;
+    label = t('ratesStatus.updated', { time: formatTime(fetchedAt) });
   }
 
   return (
     <Pressable
       onPress={() => refresh(true)}
       accessibilityRole="button"
-      accessibilityLabel={`${label}. Refresh rates`}
+      accessibilityLabel={t('ratesStatus.refresh', { status: label })}
       style={({ pressed }) => [
         styles.pill,
         { backgroundColor: c.card, borderColor: c.line, opacity: pressed ? 0.7 : 1 },

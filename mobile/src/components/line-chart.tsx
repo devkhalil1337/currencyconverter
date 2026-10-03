@@ -3,6 +3,7 @@ import { StyleSheet, View, type GestureResponderEvent, type LayoutChangeEvent } 
 import Svg, { Circle, Defs, Line, LinearGradient, Path, Stop } from 'react-native-svg';
 
 import { Font, Radius } from '@/constants/theme';
+import { useT } from '@/i18n';
 import { chartDomain, type ChartMarker, type PlacedMarker } from '@/lib/chart-markers';
 import type { Point } from '@/lib/history';
 
@@ -24,6 +25,7 @@ const PAD_X = 7;
 const TAG_HEIGHT = 18;
 
 export function LineChart({ points, color, lineColor, height = 170, markers, onScrub }: LineChartProps) {
+  const t = useT();
   const [width, setWidth] = useState(0);
   const [active, setActive] = useState<number | null>(null);
 
@@ -83,10 +85,10 @@ export function LineChart({ points, color, lineColor, height = 170, markers, onS
       accessibilityRole="image"
       accessibilityLabel={
         points.length > 1
-          ? `Chart from ${points[0].date} to ${points[last].date}, low ${low}, high ${high}${domain.markers
+          ? `${t('chart.label', { start: points[0].date, end: points[last].date, low, high })}${domain.markers
               .map((m) => `, ${m.label}`)
               .join('')}`
-          : 'Chart'
+          : t('chart.empty')
       }>
       {width > 0 && points.length > 1 && (
         <>

@@ -3,28 +3,30 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Font, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { useT } from '@/i18n';
 
 import { AppText } from './app-text';
 import { Icon, type IconName } from './icon';
 
 /** Web has no system tab bar, so draw the floating pill from the mockups. */
 export default function AppTabs() {
+  const t = useT();
   return (
     <Tabs>
       <TabSlot style={{ height: '100%' }} />
       <TabList asChild>
         <FloatingTabList>
           <TabTrigger name="index" href="/" asChild>
-            <TabButton icon="convert">Convert</TabButton>
+            <TabButton icon="convert">{t('tabs.convert')}</TabButton>
           </TabTrigger>
           <TabTrigger name="rates" href="/rates" asChild>
-            <TabButton icon="chart">Rates</TabButton>
+            <TabButton icon="chart">{t('tabs.rates')}</TabButton>
           </TabTrigger>
           <TabTrigger name="trips" href="/trips" asChild>
-            <TabButton icon="suitcase">Trips</TabButton>
+            <TabButton icon="suitcase">{t('tabs.trips')}</TabButton>
           </TabTrigger>
           <TabTrigger name="settings" href="/settings" asChild>
-            <TabButton icon="sliders">Settings</TabButton>
+            <TabButton icon="sliders">{t('tabs.settings')}</TabButton>
           </TabTrigger>
         </FloatingTabList>
       </TabList>

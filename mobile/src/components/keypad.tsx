@@ -3,7 +3,9 @@ import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { Font, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { useT } from '@/i18n';
 import type { Key } from '@/lib/convert';
+import { numberSeparators } from '@/lib/format';
 
 import { AppText } from './app-text';
 import { Icon } from './icon';
@@ -17,6 +19,9 @@ const ROWS: Key[][] = [
 
 export function Keypad({ onPress }: { onPress: (key: Key) => void }) {
   const c = useColors();
+  const t = useT();
+  // The key always types "."; it only shows the locale's decimal separator.
+  const decimal = numberSeparators().decimal;
 
   const handle = (key: Key) => {
     if (Platform.OS !== 'web') {
@@ -34,7 +39,7 @@ export function Keypad({ onPress }: { onPress: (key: Key) => void }) {
               key={key}
               onPress={() => handle(key)}
               accessibilityRole="button"
-              accessibilityLabel={key === 'del' ? 'Delete' : key === '.' ? 'Decimal point' : key}
+              accessibilityLabel={key === 'del' ? t('keypad.delete') : key === '.' ? t('keypad.decimal') : key}
               style={({ pressed }) => [
                 styles.key,
                 {
@@ -45,7 +50,7 @@ export function Keypad({ onPress }: { onPress: (key: Key) => void }) {
               {key === 'del' ? (
                 <Icon name="backspace" size={24} color={c.ink} strokeWidth={1.8} />
               ) : (
-                <AppText style={styles.keyLabel}>{key}</AppText>
+                <AppText style={styles.keyLabel}>{key === '.' ? decimal : key}</AppText>
               )}
             </Pressable>
           ))}

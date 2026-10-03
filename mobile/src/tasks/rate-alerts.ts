@@ -3,8 +3,10 @@ import Constants, { ExecutionEnvironment } from 'expo-constants';
 import * as TaskManager from 'expo-task-manager';
 import { Platform } from 'react-native';
 
+import { syncLocale } from '@/i18n';
 import { checkAlerts } from '@/lib/check-alerts';
 import { useAlerts } from '@/store/alerts';
+import { usePrefs } from '@/store/prefs';
 import { useRates } from '@/store/rates';
 
 export const RATE_ALERTS_TASK = 'trippence-rate-alerts';
@@ -14,7 +16,13 @@ export const RATE_ALERTS_TASK = 'trippence-rate-alerts';
 if (Platform.OS !== 'web') {
   TaskManager.defineTask(RATE_ALERTS_TASK, async () => {
     try {
-      await Promise.all([useRates.persist.rehydrate(), useAlerts.persist.rehydrate()]);
+      await Promise.all([
+        useRates.persist.rehydrate(),
+        useAlerts.persist.rehydrate(),
+        usePrefs.persist.rehydrate(),
+      ]);
+      // Notifications go out in the saved language.
+      syncLocale();
       await useRates.getState().refresh(true);
       await checkAlerts();
       return BackgroundTask.BackgroundTaskResult.Success;

@@ -1,6 +1,8 @@
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { Platform } from 'react-native';
 
+import { t } from '@/i18n';
+
 type NotificationsModule = typeof import('expo-notifications');
 
 const CHANNEL_ID = 'rate-alerts';
@@ -27,8 +29,8 @@ function ensureChannel(n: NotificationsModule): Promise<void> {
   if (Platform.OS !== 'android') return Promise.resolve();
   channelReady ??= n
     .setNotificationChannelAsync(CHANNEL_ID, {
-      name: 'Rate alerts',
-      description: 'When a currency pair reaches your target rate',
+      name: t('notifications.channelName'),
+      description: t('notifications.channelDescription'),
       importance: n.AndroidImportance.HIGH,
     })
     .then(() => undefined);

@@ -10,40 +10,56 @@ import { Icon } from '@/components/icon';
 import { SheetHeader } from '@/components/sheet-header';
 import { Font, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { t, useT } from '@/i18n';
 import { buy, loadPackages, loadTrials, purchasesAvailable, restore } from '@/lib/purchases';
-import { billingPeriod, fullPrice, pricePer, trialLength, type Period } from '@/lib/trial';
+import { billingPeriod, fullPrice, trialSpan, type Period } from '@/lib/trial';
 import { FREE_LAUNCH, FREE_LIMITS, useIsPro, usePro } from '@/store/pro';
 
 const TERMS_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
 const PRIVACY_URL = process.env.EXPO_PUBLIC_PRIVACY_URL;
 
-const REASONS: Record<string, string> = {
-  alerts: `Free includes ${FREE_LIMITS.activeAlerts} active alerts.`,
-  trips: `Free includes ${FREE_LIMITS.trips} trip.`,
-  history: 'Rates on past dates are part of Pro.',
-  export: 'CSV export is part of Pro.',
-  scan: 'Receipt scanning is part of Pro.',
-  widgets: 'Widgets are part of Pro.',
-};
+function reasonText(reason: string | undefined): string | null {
+  switch (reason) {
+    case 'alerts':
+      return t('paywall.reasons.alerts', { count: FREE_LIMITS.activeAlerts });
+    case 'trips':
+      return t('paywall.reasons.trips', { count: FREE_LIMITS.trips });
+    case 'history':
+    case 'export':
+    case 'scan':
+    case 'widgets':
+      return t(`paywall.reasons.${reason}`);
+    default:
+      return null;
+  }
+}
 
 // Only promise widgets where they exist: the iOS extension needs iOS 17, and web has none.
 const WIDGETS =
   Platform.OS === 'android'
-    ? ['Home-screen rates widget']
+    ? (['paywall.benefits.widgetAndroid'] as const)
     : Platform.OS === 'ios' && parseInt(String(Platform.Version), 10) >= 17
-      ? ['Home & lock-screen widgets']
+      ? (['paywall.benefits.widgetsIos'] as const)
       : [];
 
 const BENEFITS = [
   ...WIDGETS,
-  'Unlimited trips with budgets',
-  'Rates on any past date + CSV export',
-  'Unlimited rate alerts',
-];
+  'paywall.benefits.trips',
+  'paywall.benefits.pastRates',
+  'paywall.benefits.alerts',
+] as const;
+
+/** "$14.99/year", "$9.99 every 3 months", or just the price when the period is unknown. */
+function pricePer(price: string, period: Period | null): string {
+  if (!period) return price;
+  const unit = ({ DAY: 'day', WEEK: 'week', MONTH: 'month', YEAR: 'year' } as const)[period.unit];
+  return t(`paywall.pricePer.${unit}`, { price, count: period.count });
+}
 
 function planLabel(pkg: PurchasesPackage, trial: Period | undefined): { name: string; note: string } {
   const { name, note } = basePlanLabel(pkg);
-  const lead = trial ? `${trialLength(trial)} free trial` : '';
+  const span = trial ? trialSpan(trial) : null;
+  const lead = span ? t(`paywall.freeTrial.${span.unit}`, { count: span.count }) : '';
   return { name, note: [lead, note].filter(Boolean).join(' · ') };
 }
 
@@ -51,35 +67,39 @@ function basePlanLabel(pkg: PurchasesPackage): { name: string; note: string } {
   switch (pkg.packageType) {
     case PACKAGE_TYPE.ANNUAL:
       return {
-        name: 'Yearly',
-        note: pkg.product.pricePerMonthString ? `${pkg.product.pricePerMonthString}/mo` : 'Billed yearly',
+        name: t('paywall.plans.yearly'),
+        note: pkg.product.pricePerMonthString
+          ? t('paywall.plans.perMonth', { price: pkg.product.pricePerMonthString })
+          : t('paywall.plans.billedYearly'),
       };
     case PACKAGE_TYPE.MONTHLY:
-      return { name: 'Monthly', note: 'Billed monthly' };
+      return { name: t('paywall.plans.monthly'), note: t('paywall.plans.billedMonthly') };
     case PACKAGE_TYPE.LIFETIME:
-      return { name: 'Lifetime', note: 'Pay once, keep forever' };
+      return { name: t('paywall.plans.lifetime'), note: t('paywall.plans.payOnce') };
     default:
       return { name: pkg.product.title, note: '' };
   }
 }
 
 function checkout(pkg: PurchasesPackage | null, trial: Period | undefined): { cta: string; fine: string | null } {
-  if (!pkg) return { cta: 'Subscribe', fine: null };
+  if (!pkg) return { cta: t('paywall.subscribe'), fine: null };
   if (pkg.packageType === PACKAGE_TYPE.LIFETIME) {
-    return { cta: 'Buy lifetime', fine: 'One-time purchase. No subscription.' };
+    return { cta: t('paywall.buyLifetime'), fine: t('paywall.lifetimeFine') };
   }
   if (trial) {
+    const span = trialSpan(trial);
     const renewal = pricePer(fullPrice(pkg.product), billingPeriod(pkg.packageType, pkg.product.subscriptionPeriod));
-    return { cta: `Start ${trialLength(trial)} free trial`, fine: `Then ${renewal}. Cancel anytime.` };
+    return {
+      cta: t(`paywall.startTrial.${span.unit}`, { count: span.count }),
+      fine: t('paywall.trialFine', { price: renewal }),
+    };
   }
-  return {
-    cta: 'Subscribe',
-    fine: 'Renews automatically until cancelled. Cancel anytime in your store account settings.',
-  };
+  return { cta: t('paywall.subscribe'), fine: t('paywall.renewFine') };
 }
 
 export default function Paywall() {
   const c = useColors();
+  const t = useT();
   const { reason } = useLocalSearchParams<{ reason?: string }>();
   const isPro = useIsPro();
   const setPro = usePro((s) => s.setPro);
@@ -101,11 +121,12 @@ export default function Paywall() {
       })
       .catch(() => {
         setPackages([]);
-        setMessage('Couldn’t load plans. Check your connection and try again.');
+        setMessage(t('paywall.loadFailed'));
       });
-  }, [available]);
+  }, [available, t]);
 
   const chosen = packages?.find((p) => p.identifier === selected) ?? null;
+  const reasonLine = reasonText(reason);
   const { cta, fine } = checkout(chosen, chosen ? trials[chosen.identifier] : undefined);
 
   const purchase = async () => {
@@ -120,7 +141,7 @@ export default function Paywall() {
       if (router.canGoBack()) router.back();
       else router.replace('/');
     } else if (result === 'failed') {
-      setMessage('The purchase didn’t go through. You haven’t been charged.');
+      setMessage(t('paywall.purchaseFailed'));
     }
   };
 
@@ -130,9 +151,9 @@ export default function Paywall() {
     try {
       const restored = await restore();
       setPro(restored);
-      setMessage(restored ? 'Pro restored.' : 'No earlier Pro purchase found for this account.');
+      setMessage(restored ? t('paywall.restored') : t('paywall.nothingToRestore'));
     } catch {
-      setMessage('Couldn’t restore purchases. Try again later.');
+      setMessage(t('paywall.restoreFailed'));
     } finally {
       setBusy(false);
     }
@@ -146,15 +167,15 @@ export default function Paywall() {
           Trippence <Text style={{ color: c.accent, fontFamily: Font.serifItalic }}>Pro</Text>
         </Text>
         <AppText tone="muted">
-          {reason && REASONS[reason] ? `${REASONS[reason]} ` : ''}For people who spend money in more than one
-          currency.
+          {reasonLine ? `${reasonLine} ` : ''}
+          {t('paywall.tagline')}
         </AppText>
 
         <View style={styles.benefits}>
           {BENEFITS.map((b) => (
             <View key={b} style={styles.benefit}>
               <Icon name="check" size={20} color={c.accent} strokeWidth={2.4} />
-              <AppText style={styles.flex}>{b}</AppText>
+              <AppText style={styles.flex}>{t(b)}</AppText>
             </View>
           ))}
         </View>
@@ -162,23 +183,23 @@ export default function Paywall() {
         {FREE_LAUNCH ? (
           <View style={[styles.notice, { backgroundColor: c.accentSoft }]}>
             <AppText variant="bodyStrong" style={{ color: c.accentOnSoft }}>
-              Everything is free right now
+              {t('paywall.freeNowTitle')}
             </AppText>
             <AppText variant="small" style={{ color: c.accentOnSoft }}>
-              Every feature is unlocked while Trippence is new. There is nothing to buy.
+              {t('paywall.freeNowBody')}
             </AppText>
           </View>
         ) : isPro ? (
           <View style={[styles.notice, { backgroundColor: c.accentSoft }]}>
             <AppText variant="bodyStrong" style={{ color: c.accentOnSoft }}>
-              You have Trippence Pro. Thank you!
+              {t('paywall.thanks')}
             </AppText>
           </View>
         ) : !available ? (
           <View style={[styles.notice, { backgroundColor: c.subtle }]}>
-            <AppText variant="bodyStrong">Plans aren’t available right now</AppText>
+            <AppText variant="bodyStrong">{t('paywall.unavailableTitle')}</AppText>
             <AppText variant="small" tone="muted">
-              Check your connection and try again in a moment.
+              {t('paywall.unavailableBody')}
             </AppText>
           </View>
         ) : packages === null ? (
@@ -208,7 +229,7 @@ export default function Paywall() {
                       {best && (
                         <View style={[styles.pill, { backgroundColor: c.accent }]}>
                           <AppText variant="caption" tone="onAccent" style={styles.pillText}>
-                            Best value
+                            {t('paywall.bestValue')}
                           </AppText>
                         </View>
                       )}
@@ -261,19 +282,19 @@ export default function Paywall() {
           {available && (
             <Pressable onPress={restorePurchases} disabled={busy} accessibilityRole="button" hitSlop={8}>
               <AppText variant="small" tone="accent" style={{ fontFamily: Font.semibold }}>
-                Restore purchase
+                {t('paywall.restore')}
               </AppText>
             </Pressable>
           )}
           <Pressable onPress={() => Linking.openURL(TERMS_URL)} accessibilityRole="link" hitSlop={8}>
             <AppText variant="small" tone="muted">
-              Terms
+              {t('paywall.terms')}
             </AppText>
           </Pressable>
           {PRIVACY_URL ? (
             <Pressable onPress={() => Linking.openURL(PRIVACY_URL)} accessibilityRole="link" hitSlop={8}>
               <AppText variant="small" tone="muted">
-                Privacy
+                {t('paywall.privacy')}
               </AppText>
             </Pressable>
           ) : null}

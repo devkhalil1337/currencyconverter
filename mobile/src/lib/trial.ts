@@ -1,5 +1,5 @@
 /**
- * Free-trial and billing-period copy for the paywall. The product types are structural subsets
+ * Free-trial and billing periods for the paywall. The product types are structural subsets
  * of react-native-purchases' PurchasesStoreProduct, so this file stays free of native imports.
  */
 
@@ -56,17 +56,17 @@ export function fullPrice(product: TrialProduct & { priceString: string }): stri
   return product.defaultOption?.fullPricePhase?.price.formatted ?? product.priceString;
 }
 
-/** "7-day", "1-month": stores offer trials in weeks, but people think of them in days. */
-export function trialLength(trial: Period): string {
+/** 7 days, 1 month: stores offer trials in weeks, but people think of them in days. */
+export function trialSpan(trial: Period): { unit: 'day' | 'month' | 'year'; count: number } {
   switch (trial.unit) {
     case 'DAY':
-      return `${trial.count}-day`;
+      return { unit: 'day', count: trial.count };
     case 'WEEK':
-      return `${trial.count * 7}-day`;
+      return { unit: 'day', count: trial.count * 7 };
     case 'MONTH':
-      return `${trial.count}-month`;
+      return { unit: 'month', count: trial.count };
     case 'YEAR':
-      return `${trial.count}-year`;
+      return { unit: 'year', count: trial.count };
   }
 }
 
@@ -93,11 +93,4 @@ const PACKAGE_PERIODS: Record<string, Period> = {
 /** Billing period of a package, from the store when it reports one, else from the package type. */
 export function billingPeriod(packageType: string, subscriptionPeriod: string | null): Period | null {
   return parsePeriod(subscriptionPeriod) ?? PACKAGE_PERIODS[packageType] ?? null;
-}
-
-/** "$14.99/year", "$9.99 every 3 months", or just the price when the period is unknown. */
-export function pricePer(priceString: string, period: Period | null): string {
-  if (!period) return priceString;
-  const unit = period.unit.toLowerCase();
-  return period.count === 1 ? `${priceString}/${unit}` : `${priceString} every ${period.count} ${unit}s`;
 }

@@ -8,6 +8,7 @@ import { CurrencyBadge } from '@/components/currency-badge';
 import { Icon } from '@/components/icon';
 import { Font, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { useT } from '@/i18n';
 import { usePrefs } from '@/store/prefs';
 import { currencyName, POPULAR, useRates } from '@/store/rates';
 import { useTripDraft } from '@/store/trip-draft';
@@ -16,6 +17,7 @@ type Mode = 'add' | 'home' | 'trip';
 
 export default function CurrencyPicker() {
   const c = useColors();
+  const t = useT();
   const insets = useSafeAreaInsets();
   const { mode = 'add' } = useLocalSearchParams<{ mode?: Mode }>();
   const [query, setQuery] = useState('');
@@ -47,11 +49,11 @@ export default function CurrencyPicker() {
     <View style={[styles.container, { backgroundColor: c.bg }]}>
       <View style={[styles.inner, Platform.OS === 'android' && { paddingTop: insets.top + Spacing.three }]}>
         <View style={styles.header}>
-          <AppText style={styles.title}>{mode === 'home' ? 'Home currency' : mode === 'trip' ? 'Trip currency' : 'Add currency'}</AppText>
+          <AppText style={styles.title}>{mode === 'home' ? t('picker.home') : mode === 'trip' ? t('picker.trip') : t('picker.add')}</AppText>
           <Pressable
             onPress={() => router.back()}
             accessibilityRole="button"
-            accessibilityLabel="Close"
+            accessibilityLabel={t('common.close')}
             style={[styles.close, { backgroundColor: c.card, borderColor: c.line }]}>
             <Icon name="close" size={18} color={c.ink} />
           </Pressable>
@@ -62,12 +64,12 @@ export default function CurrencyPicker() {
           <TextInput
             value={query}
             onChangeText={setQuery}
-            placeholder="Search by name or code"
+            placeholder={t('picker.searchPlaceholder')}
             placeholderTextColor={c.muted}
             autoFocus
             autoCorrect={false}
             autoCapitalize="none"
-            accessibilityLabel="Search currencies"
+            accessibilityLabel={t('picker.searchLabel')}
             style={[styles.input, { color: c.ink }]}
           />
         </View>
@@ -79,7 +81,7 @@ export default function CurrencyPicker() {
           contentContainerStyle={{ paddingBottom: insets.bottom + Spacing.four }}
           ListEmptyComponent={
             <AppText tone="muted" style={styles.empty}>
-              {rates ? 'No matching currencies' : 'Rates haven’t downloaded yet'}
+              {rates ? t('picker.noMatches') : t('picker.notDownloaded')}
             </AppText>
           }
           renderItem={({ item: code }) => {

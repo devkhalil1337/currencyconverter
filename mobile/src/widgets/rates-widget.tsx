@@ -26,12 +26,16 @@ const REGULAR = 'Geist_400Regular';
 export interface RatesWidgetProps {
   home: string;
   rows: { code: string; rate: string }[];
-  updated: string | null;
+  /** "Updated 14:05", or a hint to open the app before rates have loaded. */
+  status: string;
   /** Free users see an upsell instead of rates. */
   locked: boolean;
+  /** Translated upsell copy; the widget renders headless, so text comes in ready-made. */
+  lockedTitle: string;
+  lockedCta: string;
 }
 
-function Body({ home, rows, updated, locked, t }: RatesWidgetProps & { t: Tone }) {
+function Body({ home, rows, status, locked, lockedTitle, lockedCta, t }: RatesWidgetProps & { t: Tone }) {
   if (locked) {
     return (
       <FlexWidget
@@ -46,11 +50,8 @@ function Body({ home, rows, updated, locked, t }: RatesWidgetProps & { t: Tone }
           justifyContent: 'center',
         }}>
         <TextWidget text="Trippence" style={{ fontSize: 13, fontFamily: SEMIBOLD, color: t.accent }} />
-        <TextWidget
-          text="Live rates on your home screen"
-          style={{ fontSize: 17, fontFamily: SEMIBOLD, color: t.ink, marginTop: 4 }}
-        />
-        <TextWidget text="Tap to unlock with Pro" style={{ fontSize: 13, fontFamily: REGULAR, color: t.muted, marginTop: 4 }} />
+        <TextWidget text={lockedTitle} style={{ fontSize: 17, fontFamily: SEMIBOLD, color: t.ink, marginTop: 4 }} />
+        <TextWidget text={lockedCta} style={{ fontSize: 13, fontFamily: REGULAR, color: t.muted, marginTop: 4 }} />
       </FlexWidget>
     );
   }
@@ -69,10 +70,7 @@ function Body({ home, rows, updated, locked, t }: RatesWidgetProps & { t: Tone }
       }}>
       <FlexWidget style={{ flexDirection: 'row', justifyContent: 'space-between', width: 'match_parent' }}>
         <TextWidget text={`1 ${home.toUpperCase()}`} style={{ fontSize: 15, fontFamily: SEMIBOLD, color: t.ink }} />
-        <TextWidget
-          text={updated ? `Updated ${updated}` : 'Open to load rates'}
-          style={{ fontSize: 11, fontFamily: REGULAR, color: t.muted }}
-        />
+        <TextWidget text={status} style={{ fontSize: 11, fontFamily: REGULAR, color: t.muted }} />
       </FlexWidget>
       {rows.map((row) => (
         <FlexWidget

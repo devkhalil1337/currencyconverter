@@ -7,16 +7,18 @@ import { CurrencyBadge } from '@/components/currency-badge';
 import { Icon } from '@/components/icon';
 import { LineChart } from '@/components/line-chart';
 import { ListGroup } from '@/components/list-group';
+import { LocaleBoundary } from '@/components/locale-boundary';
 import { RateAlerts } from '@/components/rate-alerts';
 import { Screen } from '@/components/screen';
 import { BottomTabInset, Font, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
 import { useHistory } from '@/hooks/use-history';
+import { appLocale, useT, type TranslationKey } from '@/i18n';
 import { alertTargets } from '@/lib/chart-markers';
 import { unitRate } from '@/lib/convert';
 import { exportFileName, seriesCsv } from '@/lib/csv';
 import { shareCsv } from '@/lib/export-file';
-import { formatRate } from '@/lib/format';
+import { formatNumber, formatRate } from '@/lib/format';
 import type { Point, Range } from '@/lib/history';
 import { toIsoDate } from '@/lib/trips';
 import { useAlerts } from '@/store/alerts';
@@ -26,8 +28,15 @@ import { currencyName, useRates } from '@/store/rates';
 
 const RANGES: Range[] = ['1W', '1M', '1Y', '5Y'];
 
+const RANGE_LABELS: Record<Range, TranslationKey> = {
+  '1W': 'rates.ranges.week',
+  '1M': 'rates.ranges.month',
+  '1Y': 'rates.ranges.year',
+  '5Y': 'rates.ranges.fiveYears',
+};
+
 function formatDate(iso: string): string {
-  return new Date(`${iso}T00:00:00Z`).toLocaleDateString([], {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString(appLocale(), {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -35,8 +44,17 @@ function formatDate(iso: string): string {
   });
 }
 
-export default function RatesScreen() {
+export default function RatesRoute() {
+  return (
+    <LocaleBoundary>
+      <RatesScreen />
+    </LocaleBoundary>
+  );
+}
+
+function RatesScreen() {
   const c = useColors();
+  const t = useT();
   const { currencies, homeCurrency } = usePrefs();
   const { rates, names } = useRates();
 
@@ -62,7 +80,7 @@ export default function RatesScreen() {
   const high = values.length ? Math.max(...values) : null;
 
   const alerts = useAlerts((s) => s.alerts);
-  const markers = alertTargets(alerts, from, to).map((value) => ({ value, label: `Alert · ${formatRate(value)}` }));
+  const markers = alertTargets(alerts, from, to).map((value) => ({ value, label: t('rates.alertMarker', { rate: formatRate(value) }) }));
   const isPro = useIsPro();
 
   const swap = () => {
@@ -81,11 +99,11 @@ export default function RatesScreen() {
       const result = await shareCsv(
         exportFileName([from, to, range], toIsoDate(new Date())),
         seriesCsv(history.points, from, to),
-        `${pair} rates`
+        t('rates.exportTitle', { pair })
       );
-      if (result === 'unavailable') Alert.alert('Sharing isn’t available on this device.');
+      if (result === 'unavailable') Alert.alert(t('errors.sharingUnavailable'));
     } catch {
-      Alert.alert('Couldn’t export', 'Please try again.');
+      Alert.alert(t('rates.exportFailed'), t('errors.pleaseTryAgain'));
     }
   };
 
@@ -95,7 +113,7 @@ export default function RatesScreen() {
   };
 
   return (
-    <Screen title="Rates">
+    <Screen title={t('tabs.rates')}>
       <ScrollView contentContainerStyle={styles.content} scrollEnabled={scrub === null}>
         <View style={[styles.pair, { backgroundColor: c.card, borderColor: c.line }]}>
           <View style={styles.badges}>
@@ -109,13 +127,13 @@ export default function RatesScreen() {
               {from.toUpperCase()} / {to.toUpperCase()}
             </AppText>
             <AppText variant="small" tone="muted" numberOfLines={1}>
-              {currencyName(from, names)} to {currencyName(to, names)}
+              {t('common.fromTo', { from: currencyName(from, names), to: currencyName(to, names) })}
             </AppText>
           </View>
           <Pressable
             onPress={swap}
             accessibilityRole="button"
-            accessibilityLabel="Swap currencies"
+            accessibilityLabel={t('common.swapCurrencies')}
             style={({ pressed }) => [styles.swap, { borderColor: c.line, backgroundColor: pressed ? c.subtle : c.bg }]}>
             <Icon name="convert" size={18} color={c.ink} />
           </Pressable>
@@ -129,11 +147,11 @@ export default function RatesScreen() {
             {change !== null && changePct !== null && (
               <AppText variant="bodyStrong" style={{ color: up ? c.accent : c.danger }}>
                 {up ? '▲' : '▼'} {up ? '+' : ''}
-                {changePct.toFixed(2)}%
+                {t('common.percent', { value: formatNumber(changePct, 2) })}
               </AppText>
             )}
             <AppText variant="small" tone="muted">
-              {scrub ? formatDate(scrub.date) : `over ${range} · mid-market`}
+              {scrub ? formatDate(scrub.date) : t('rates.overRange', { range: t(RANGE_LABELS[range]) })}
             </AppText>
           </View>
         </View>
@@ -149,7 +167,7 @@ export default function RatesScreen() {
                 accessibilityState={{ selected }}
                 style={[styles.segmentItem, selected && { backgroundColor: c.card }]}>
                 <AppText variant="small" style={{ fontFamily: Font.semibold, color: selected ? c.ink : c.muted }}>
-                  {r}
+                  {t(RANGE_LABELS[r])}
                 </AppText>
               </Pressable>
             );
@@ -170,13 +188,11 @@ export default function RatesScreen() {
           ) : (
             <View style={styles.chartError}>
               <AppText tone="muted" style={styles.center}>
-                {error === 'Not enough history for this pair'
-                  ? 'No history available for this pair and range.'
-                  : 'Couldn’t load the chart.'}
+                {error === 'Not enough history for this pair' ? t('rates.noHistory') : t('rates.chartFailed')}
               </AppText>
               <Pressable onPress={() => setAttempt((n) => n + 1)} accessibilityRole="button" hitSlop={8}>
                 <AppText variant="bodyStrong" tone="accent">
-                  Try again
+                  {t('common.tryAgain')}
                 </AppText>
               </Pressable>
             </View>
@@ -184,32 +200,32 @@ export default function RatesScreen() {
         </View>
 
         <View style={styles.stats}>
-          <Stat label="Low" value={low !== null ? formatRate(low) : '—'} />
-          <Stat label="High" value={high !== null ? formatRate(high) : '—'} />
-          <Stat label="Now" value={live !== null ? formatRate(live) : '—'} />
+          <Stat label={t('rates.low')} value={low !== null ? formatRate(low) : '—'} />
+          <Stat label={t('rates.high')} value={high !== null ? formatRate(high) : '—'} />
+          <Stat label={t('rates.now')} value={live !== null ? formatRate(live) : '—'} />
         </View>
         {history && (
           <View style={styles.sourceRow}>
             <AppText variant="caption" tone="muted" style={styles.pairNames}>
-              {history.source === 'ecb' ? 'History: European Central Bank (via Frankfurter)' : 'History: exchange-api daily snapshots'}
+              {history.source === 'ecb' ? t('rates.sourceEcb') : t('rates.sourceDaily')}
             </AppText>
             <Pressable
               onPress={exportHistory}
               accessibilityRole="button"
-              accessibilityLabel="Export chart data as CSV"
-              accessibilityHint={isPro ? undefined : 'Requires Trippence Pro'}
+              accessibilityLabel={t('rates.exportLabel')}
+              accessibilityHint={isPro ? undefined : t('common.requiresPro')}
               hitSlop={6}
               style={({ pressed }) => [styles.export, { borderColor: c.line, opacity: pressed ? 0.7 : 1 }]}>
               <Icon name="share" size={14} color={c.ink} />
               <AppText variant="small" style={{ fontFamily: Font.semibold }}>
-                Export
+                {t('rates.export')}
               </AppText>
               {!isPro && <ProPill />}
             </Pressable>
           </View>
         )}
 
-        <ListGroup title={`Compare with 1 ${from.toUpperCase()}`}>
+        <ListGroup title={t('rates.compareWith', { code: from.toUpperCase() })}>
           {(from === homeCurrency ? others : currencies.filter((code) => code !== from)).map((code) => {
             const rate = unitRate(from, code, rates);
             const selected = code === to;
@@ -219,7 +235,7 @@ export default function RatesScreen() {
                 onPress={() => setPicked(code)}
                 accessibilityRole="button"
                 accessibilityState={{ selected }}
-                accessibilityLabel={`${from.toUpperCase()} to ${code.toUpperCase()}`}
+                accessibilityLabel={t('common.fromTo', { from: from.toUpperCase(), to: code.toUpperCase() })}
                 style={({ pressed }) => [styles.row, (pressed || selected) && { backgroundColor: c.subtle }]}>
                 <CurrencyBadge code={code} size={34} />
                 <View style={styles.pairNames}>
@@ -247,7 +263,7 @@ export default function RatesScreen() {
         <Pressable
           onPress={openPastRate}
           accessibilityRole="button"
-          accessibilityHint={isPro ? undefined : 'Requires Trippence Pro'}
+          accessibilityHint={isPro ? undefined : t('common.requiresPro')}
           style={({ pressed }) => [
             styles.pair,
             { backgroundColor: pressed ? c.subtle : c.card, borderColor: c.line },
@@ -256,9 +272,9 @@ export default function RatesScreen() {
             <Icon name="calendar" size={18} color={c.accentOnSoft} />
           </View>
           <View style={styles.pairNames}>
-            <AppText variant="bodyStrong">Rate on a past date</AppText>
+            <AppText variant="bodyStrong">{t('rates.pastRateTitle')}</AppText>
             <AppText variant="small" tone="muted">
-              For invoices and expense reports
+              {t('rates.pastRateSubtitle')}
             </AppText>
           </View>
           {!isPro && <ProPill />}
@@ -271,10 +287,11 @@ export default function RatesScreen() {
 
 function ProPill() {
   const c = useColors();
+  const t = useT();
   return (
     <View style={[styles.proPill, { backgroundColor: c.feature }]}>
       <AppText variant="caption" style={[styles.proText, { color: c.featureAccent }]}>
-        PRO
+        {t('common.pro')}
       </AppText>
     </View>
   );

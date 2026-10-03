@@ -9,6 +9,7 @@ import { CurrencyBadge } from '@/components/currency-badge';
 import { Icon } from '@/components/icon';
 import { Font, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useColors } from '@/hooks/use-colors';
+import { useT } from '@/i18n';
 import { usePrefs } from '@/store/prefs';
 import { currencyName, useRates } from '@/store/rates';
 
@@ -16,6 +17,7 @@ const DESTINATIONS = ['eur', 'gbp', 'usd', 'jpy', 'mxn', 'cad', 'chf', 'aud', 't
 
 export default function Onboarding() {
   const c = useColors();
+  const t = useT();
   const { homeCurrency, completeOnboarding } = usePrefs();
   const names = useRates((s) => s.names);
   const options = DESTINATIONS.filter((code) => code !== homeCurrency);
@@ -41,32 +43,35 @@ export default function Onboarding() {
           </View>
 
           <Text style={[styles.headline, { color: c.ink }]} accessibilityRole="header">
-            Every currency.{'\n'}One tap.{'\n'}
-            <Text style={[styles.headlineAccent, { color: c.accent }]}>Even offline.</Text>
+            {t('onboarding.headline1')}
+            {'\n'}
+            {t('onboarding.headline2')}
+            {'\n'}
+            <Text style={[styles.headlineAccent, { color: c.accent }]}>{t('onboarding.headline3')}</Text>
           </Text>
 
           <View style={styles.section}>
             <AppText variant="label" tone="muted">
-              Home currency
+              {t('onboarding.homeCurrency')}
             </AppText>
             <View style={[styles.homeCard, { backgroundColor: c.card, borderColor: c.line }]}>
               <CurrencyBadge code={homeCurrency} size={40} />
               <View style={styles.homeNames}>
                 <AppText variant="bodyStrong">{currencyName(homeCurrency, names)}</AppText>
                 <AppText variant="small" tone="muted">
-                  Detected from your region
+                  {t('onboarding.detected')}
                 </AppText>
               </View>
               <Pressable
                 onPress={() => router.push('/currency-picker?mode=home')}
                 accessibilityRole="button"
-                accessibilityLabel="Change home currency"
+                accessibilityLabel={t('onboarding.changeHome')}
                 style={({ pressed }) => [
                   styles.change,
                   { borderColor: c.line, backgroundColor: pressed ? c.subtle : c.bg },
                 ]}>
                 <AppText variant="small" style={{ fontFamily: Font.semibold }}>
-                  Change
+                  {t('onboarding.change')}
                 </AppText>
               </Pressable>
             </View>
@@ -74,7 +79,7 @@ export default function Onboarding() {
 
           <View style={styles.section}>
             <AppText variant="label" tone="muted">
-              Where are you headed?
+              {t('onboarding.whereHeaded')}
             </AppText>
             <View style={styles.chips}>
               {options.map((code) => (
@@ -89,7 +94,7 @@ export default function Onboarding() {
               ))}
             </View>
             <AppText variant="small" tone="muted">
-              You can add any of 300+ currencies later.
+              {t('onboarding.addLater')}
             </AppText>
           </View>
         </ScrollView>
@@ -100,11 +105,11 @@ export default function Onboarding() {
             accessibilityRole="button"
             style={({ pressed }) => [styles.cta, { backgroundColor: c.accent, opacity: pressed ? 0.85 : 1 }]}>
             <AppText variant="bodyStrong" tone="onAccent" style={styles.ctaText}>
-              Continue
+              {t('onboarding.continue')}
             </AppText>
           </Pressable>
           <AppText variant="small" tone="muted" style={styles.center}>
-            No account needed. Works offline after first launch.
+            {t('onboarding.footer')}
           </AppText>
         </View>
       </SafeAreaView>

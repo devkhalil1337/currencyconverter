@@ -10,6 +10,7 @@ import { Icon } from '@/components/icon';
 import { SheetHeader } from '@/components/sheet-header';
 import { Font, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useColors, useIsDark } from '@/hooks/use-colors';
+import { appLocale, useT, type TranslationKey } from '@/i18n';
 import { parseRateInput } from '@/lib/alerts';
 import { formatCurrency, formatRate } from '@/lib/format';
 import {
@@ -26,11 +27,11 @@ import { usePrefs } from '@/store/prefs';
 import { useIsPro } from '@/store/pro';
 import { currencyName, useRates } from '@/store/rates';
 
-const NOTES: Record<DateNote, string> = {
-  exact: '',
-  'previous-business-day': ', the last business day before',
-  'latest-published': ', the latest published',
-  'earlier-snapshot': ', the closest earlier day',
+const RATE_FROM: Record<DateNote, TranslationKey> = {
+  exact: 'pastRate.rateFrom.exact',
+  'previous-business-day': 'pastRate.rateFrom.previousBusinessDay',
+  'latest-published': 'pastRate.rateFrom.latestPublished',
+  'earlier-snapshot': 'pastRate.rateFrom.earlierSnapshot',
 };
 
 function localDate(iso: string): Date {
@@ -39,7 +40,7 @@ function localDate(iso: string): Date {
 }
 
 function formatDay(iso: string, weekday: 'short' | 'long' | null = 'short'): string {
-  return new Date(`${iso}T00:00:00Z`).toLocaleDateString([], {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString(appLocale(), {
     ...(weekday ? { weekday } : {}),
     day: 'numeric',
     month: 'short',
@@ -64,6 +65,7 @@ export default function PastRateScreen() {
 
 function PastRateView() {
   const c = useColors();
+  const t = useT();
   const isDark = useIsDark();
   const params = useLocalSearchParams<{ from?: string; to?: string }>();
   const homeCurrency = usePrefs((s) => s.homeCurrency);
@@ -102,8 +104,10 @@ function PastRateView() {
   const rateLine = result ? `1 ${fromCode} = ${formatRate(result.rate)} ${toCode}` : '';
   const amountLine =
     result && amount !== null ? `${formatCurrency(amount, from)} = ${formatCurrency(amount * result.rate, to)}` : null;
-  const note = result ? NOTES[dateNote(date, result.date, result.source, today)] : '';
-  const source = result?.source === 'ecb' ? 'ECB reference rate' : 'Daily mid-market rate';
+  const rateFrom = result
+    ? t(RATE_FROM[dateNote(date, result.date, result.source, today)], { date: formatDay(result.date) })
+    : '';
+  const source = result?.source === 'ecb' ? t('pastRate.sourceEcb') : t('pastRate.sourceDaily');
 
   const swap = () => {
     setFrom(to);
@@ -126,8 +130,11 @@ function PastRateView() {
 
   const share = () => {
     if (!result) return;
-    const what = amountLine ? `${amountLine} at ${rateLine}` : rateLine;
-    Share.share({ message: `${what} on ${formatDay(result.date)} (${source})` }).catch(() => {});
+    const day = formatDay(result.date);
+    const message = amountLine
+      ? t('pastRate.shareMessageAmount', { amount: amountLine, rate: rateLine, date: day, source })
+      : t('pastRate.shareMessage', { rate: rateLine, date: day, source });
+    Share.share({ message }).catch(() => {});
   };
 
   return (
@@ -137,7 +144,7 @@ function PastRateView() {
         keyboardShouldPersistTaps="handled"
         // Lets the result below the amount field scroll above the iOS keyboard.
         automaticallyAdjustKeyboardInsets>
-        <SheetHeader title="Past rate" />
+        <SheetHeader title={t('pastRate.title')} />
 
         <View style={[styles.card, styles.row, { backgroundColor: c.card, borderColor: c.line }]}>
           <View style={styles.badges}>
@@ -151,13 +158,13 @@ function PastRateView() {
               {fromCode} / {toCode}
             </AppText>
             <AppText variant="small" tone="muted" numberOfLines={1}>
-              {currencyName(from, names)} to {currencyName(to, names)}
+              {t('common.fromTo', { from: currencyName(from, names), to: currencyName(to, names) })}
             </AppText>
           </View>
           <Pressable
             onPress={swap}
             accessibilityRole="button"
-            accessibilityLabel="Swap currencies"
+            accessibilityLabel={t('common.swapCurrencies')}
             style={({ pressed }) => [styles.round, { borderColor: c.line, backgroundColor: pressed ? c.subtle : c.bg }]}>
             <Icon name="convert" size={18} color={c.ink} />
           </Pressable>
@@ -165,13 +172,13 @@ function PastRateView() {
 
         <View style={styles.field}>
           <AppText variant="label" tone="muted">
-            Date
+            {t('pastRate.date')}
           </AppText>
           {Platform.OS === 'ios' ? (
             <View style={[styles.card, styles.row, { backgroundColor: c.card, borderColor: c.line }]}>
               <Icon name="calendar" size={20} color={c.muted} />
               <AppText style={styles.flex} numberOfLines={1}>
-                {localDate(date).toLocaleDateString([], { weekday: 'long' })}
+                {localDate(date).toLocaleDateString(appLocale(), { weekday: 'long' })}
               </AppText>
               <DateTimePicker
                 value={localDate(date)}
@@ -180,6 +187,7 @@ function PastRateView() {
                 minimumDate={localDate(minDate)}
                 maximumDate={localDate(today)}
                 onValueChange={(_event, d) => pickDate(d)}
+                locale={appLocale()}
                 accentColor={c.accent}
                 themeVariant={isDark ? 'dark' : 'light'}
               />
@@ -188,8 +196,8 @@ function PastRateView() {
             <Pressable
               onPress={openAndroidPicker}
               accessibilityRole="button"
-              accessibilityLabel={`Date, ${formatDay(date, 'long')}`}
-              accessibilityHint="Opens a calendar"
+              accessibilityLabel={t('pastRate.dateLabel', { date: formatDay(date, 'long') })}
+              accessibilityHint={t('pastRate.opensCalendar')}
               style={({ pressed }) => [
                 styles.card,
                 styles.row,
@@ -213,19 +221,19 @@ function PastRateView() {
                 }}
                 placeholder="YYYY-MM-DD"
                 placeholderTextColor={c.muted}
-                accessibilityLabel="Date, as year-month-day"
+                accessibilityLabel={t('pastRate.dateInputLabel')}
                 style={[styles.flex, styles.dateInput, { color: c.ink }]}
               />
             </View>
           )}
           <AppText variant="caption" tone="muted">
-            Rates for this pair go back to {formatDay(minDate, null)}.
+            {t('pastRate.goesBackTo', { date: formatDay(minDate, null) })}
           </AppText>
         </View>
 
         <View style={styles.field}>
           <AppText variant="label" tone="muted">
-            Amount (optional)
+            {t('pastRate.amountOptional')}
           </AppText>
           <View style={[styles.amountBox, { backgroundColor: c.card, borderColor: c.line }]}>
             <TextInput
@@ -234,7 +242,7 @@ function PastRateView() {
               keyboardType="decimal-pad"
               placeholder="1"
               placeholderTextColor={c.muted}
-              accessibilityLabel={`Amount in ${fromCode}`}
+              accessibilityLabel={t('pastRate.amountIn', { code: fromCode })}
               style={[styles.amountInput, { color: c.ink }]}
             />
             <AppText variant="bodyStrong" tone="muted">
@@ -252,8 +260,7 @@ function PastRateView() {
               {amountLine && <AppText variant="numberLarge">{amountLine}</AppText>}
               <View style={styles.caption}>
                 <AppText variant="small" tone="muted">
-                  Rate from {formatDay(result.date)}
-                  {note}
+                  {rateFrom}
                 </AppText>
                 <AppText variant="small" tone="muted">
                   {source}
@@ -264,20 +271,18 @@ function PastRateView() {
                 accessibilityRole="button"
                 style={({ pressed }) => [styles.share, { borderColor: c.line, opacity: pressed ? 0.7 : 1 }]}>
                 <Icon name="share" size={18} color={c.ink} />
-                <AppText variant="bodyStrong">Share</AppText>
+                <AppText variant="bodyStrong">{t('pastRate.share')}</AppText>
               </Pressable>
             </>
           ) : current?.error ? (
             <View style={styles.center}>
               <AppText tone="muted" style={styles.centerText}>
-                {current.error === 'no-data'
-                  ? 'No rate was published for this pair on that date.'
-                  : 'Couldn’t load the rate. Check your connection.'}
+                {current.error === 'no-data' ? t('pastRate.noData') : t('pastRate.loadFailed')}
               </AppText>
               {current.error === 'network' && (
                 <Pressable onPress={() => setAttempt((n) => n + 1)} accessibilityRole="button" hitSlop={8}>
                   <AppText variant="bodyStrong" tone="accent">
-                    Try again
+                    {t('common.tryAgain')}
                   </AppText>
                 </Pressable>
               )}
