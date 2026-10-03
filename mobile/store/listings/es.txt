@@ -1,0 +1,55 @@
+TRIPPENCE — GOOGLE PLAY LISTING, SPANISH (es) (paste each block as plain text)
+
+=== App name (max 30) === (28/30)
+Trippence: Cambio de divisas
+
+=== Short description (max 80) === (79/80)
+Conversor de divisas rápido y sin conexión, con comisiones, gráficos y alertas.
+
+=== Full description (max 4000) === (1906/4000)
+Todas las divisas. Un toque. Y sin conexión.
+
+Trippence es un conversor de divisas rápido y tranquilo para viajeros y para cualquiera que gaste dinero en más de una moneda.
+
+CONVIERTE CON UN TOQUE
+• Ve todas tus divisas a la vez y escribe en un teclado grande y sencillo.
+• Toca cualquier divisa para convertirla en la base.
+• Más de 300 divisas, criptomonedas incluidas.
+
+CONOCE EL PRECIO REAL
+Las comisiones de la tarjeta y de los cajeros hacen que cada compra cueste más de lo que indica el tipo de cambio. Activa Precio real, indica la comisión de tu tarjeta y Trippence te mostrará lo que de verdad pagarás en tu moneda.
+
+FUNCIONA SIN CONEXIÓN
+Los tipos de cambio más recientes se guardan en tu teléfono, así que el conversor sigue funcionando en un avión, en el extranjero sin datos o en un café sin cobertura.
+
+GRÁFICOS E HISTORIAL
+Mira cómo se ha movido un par en la última semana, mes, año o cinco años. Desliza el dedo por el gráfico para ver el cambio de cualquier día.
+
+ALERTAS DE CAMBIO
+Fija un objetivo, como "avísame cuando el EUR/USD baje de 1,08", y recibe una notificación cuando se alcance.
+
+VIAJES Y PRESUPUESTOS
+Anota lo que gastas en un viaje en la moneda local y ve el total en tu moneda, con las comisiones de la tarjeta incluidas y un presupuesto diario.
+
+MÁS PARA USUARIOS AVANZADOS
+• Widget en la pantalla de inicio con tus cambios.
+• Tipos de cambio de cualquier fecha pasada, para comprobar cuánto te costó realmente una compra.
+• Exportación CSV para tus registros o informes de gastos.
+
+Todas las funciones son gratis mientras Trippence sea nueva.
+
+PRIVACIDAD DESDE EL DISEÑO
+Sin cuenta. Sin anuncios. Sin rastreo. Tus ajustes, alertas y viajes se quedan en tu teléfono.
+
+Los tipos de cambio son tipos medios de referencia diarios de fuentes públicas, entre ellas el Banco Central Europeo. Son solo informativos. Tu banco o servicio de cambio puede aplicar un tipo diferente.
+
+=== Release notes / What's new (max 500) === (464/500)
+Te presentamos Trippence. La app se ha creado de nuevo desde cero:
+• Nuevo diseño con modo claro y oscuro
+• Conversor más rápido que funciona sin conexión
+• "Precio real" muestra los precios con la comisión de tu tarjeta
+• Gráficos y alertas de cambio
+• Presupuestos y gastos de viaje
+• Widget en la pantalla de inicio, cambios de fechas pasadas y exportación CSV
+
+Nota: la cartera y la lista de seguimiento de criptomonedas de la versión anterior se han retirado.

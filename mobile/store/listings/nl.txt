@@ -1,0 +1,56 @@
+TRIPPENCE — GOOGLE PLAY LISTING, NEDERLANDS (nl-NL)
+Translated from store/play-console.txt. Paste each block as plain text.
+
+=== App name (max 30) === (27/30)
+Trippence: Valuta omrekenen
+
+=== Short description (max 80) === (75/80)
+Snelle offline valuta-omrekenaar met kaartkosten, grafieken en koersalerts.
+
+=== Full description (max 4000) === (1746/4000)
+Elke valuta. Eén tik. Zelfs offline.
+
+Trippence is een rustige, snelle valuta-omrekenaar voor reizigers en iedereen die geld uitgeeft in meer dan één valuta.
+
+OMREKENEN MET ÉÉN TIK
+• Zie al je valuta tegelijk en typ op een groot, eenvoudig toetsenblok.
+• Tik op een valuta om die de basis te maken.
+• Meer dan 300 valuta, inclusief crypto.
+
+KEN DE ECHTE PRIJS
+Kaart- en pinkosten maken elke aankoop duurder dan de wisselkoers doet vermoeden. Zet Echte prijs aan, stel de kosten van je kaart in en Trippence laat zien wat je thuis echt betaalt.
+
+WERKT OFFLINE
+De nieuwste koersen worden op je telefoon bewaard, dus de omrekenaar blijft werken in het vliegtuig, in het buitenland zonder data of in een kelderbarretje.
+
+GRAFIEKEN EN GESCHIEDENIS
+Bekijk hoe een valutapaar zich heeft ontwikkeld over een week, een maand, een jaar of vijf jaar. Schuif met je vinger over de grafiek om de koers op elke dag te zien.
+
+KOERSALERTS
+Stel een doel in, zoals "laat het me weten als EUR/USD onder 1,08 zakt", en krijg een melding zodra het bereikt is.
+
+REIZEN EN BUDGETTEN
+Noteer je reisuitgaven in de lokale valuta en zie het totaal in je thuisvaluta, inclusief kaartkosten, met een dagbudget.
+
+MEER VOOR POWERUSERS
+• Widget op je startscherm met je koersen.
+• Koersen op elke eerdere datum, om te checken wat een aankoop echt kostte.
+• CSV-export voor je administratie of onkostendeclaraties.
+
+Alle functies zijn gratis zolang Trippence nieuw is.
+
+PRIVACY VOOROP
+Geen account. Geen advertenties. Geen tracking. Je instellingen, alerts en reizen blijven op je telefoon.
+
+De koersen zijn dagelijkse middenkoersen uit openbare bronnen, waaronder de Europese Centrale Bank. Ze zijn alleen ter informatie. Je bank of wisselkantoor kan een andere koers gebruiken.
+
+=== Release notes / What's new (max 500) === (399/500)
+Maak kennis met Trippence. De app is helemaal opnieuw gebouwd:
+• Nieuw ontwerp met lichte en donkere modus
+• Snellere omrekenaar die offline werkt
+• "Echte prijs" toont prijzen met je kaartkosten
+• Koersgrafieken en koersalerts
+• Reisbudgetten en uitgaven
+• Widget op je startscherm, koersen op eerdere datums en CSV-export
+
+Let op: de cryptoportfolio en watchlist uit de oude versie zijn verdwenen.

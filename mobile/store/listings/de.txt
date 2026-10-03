@@ -1,0 +1,55 @@
+TRIPPENCE — GOOGLE PLAY LISTING, GERMAN (de) (paste each block as plain text)
+
+=== App name (max 30) === (26/30)
+Trippence: Währungsrechner
+
+=== Short description (max 80) === (77/80)
+Schneller Offline-Währungsrechner mit Kartengebühren, Charts und Kursalarmen.
+
+=== Full description (max 4000) === (1909/4000)
+Jede Währung. Ein Fingertipp. Auch offline.
+
+Trippence ist ein ruhiger, schneller Währungsrechner für Reisende und alle, die Geld in mehr als einer Währung ausgeben.
+
+UMRECHNEN MIT EINEM TIPP
+• Sieh alle deine Währungen auf einen Blick und tippe auf einem großen, einfachen Tastenfeld.
+• Tippe auf eine Währung, um sie zur Basis zu machen.
+• Über 300 Währungen, inklusive Krypto.
+
+DEN ECHTPREIS KENNEN
+Karten- und Geldautomatengebühren machen jeden Kauf teurer, als der Wechselkurs verrät. Schalte Echtpreis ein, gib die Gebühr deiner Karte an, und Trippence zeigt dir, was du zu Hause wirklich bezahlst.
+
+FUNKTIONIERT OFFLINE
+Die neuesten Kurse werden auf deinem Handy gespeichert. So funktioniert der Rechner auch im Flugzeug, im Ausland ohne Daten oder im Kellercafé.
+
+CHARTS UND VERLAUF
+Sieh dir an, wie sich ein Währungspaar in der letzten Woche, im letzten Monat, Jahr oder in fünf Jahren entwickelt hat. Fahr mit dem Finger über das Diagramm, um den Kurs an jedem Tag zu sehen.
+
+KURSALARME
+Lege ein Ziel fest, etwa „Sag mir Bescheid, wenn EUR/USD unter 1,08 fällt“, und erhalte eine Benachrichtigung, sobald es erreicht ist.
+
+REISEN UND BUDGETS
+Erfasse deine Reiseausgaben in der Landeswährung und sieh die Summe in deiner Heimatwährung – inklusive Kartengebühren und mit Tagesbudget.
+
+MEHR FÜR POWER-USER
+• Widget für den Startbildschirm mit deinen Kursen.
+• Kurse an jedem früheren Tag, um zu prüfen, was ein Kauf wirklich gekostet hat.
+• CSV-Export für deine Unterlagen oder Spesenabrechnungen.
+
+Alle Funktionen sind kostenlos, solange Trippence neu ist.
+
+PRIVAT VON ANFANG AN
+Kein Konto. Keine Werbung. Kein Tracking. Deine Einstellungen, Alarme und Reisen bleiben auf deinem Handy.
+
+Die Kurse sind tägliche Referenz-Mittelkurse aus öffentlichen Quellen, darunter die Europäische Zentralbank. Sie dienen nur zur Information. Deine Bank oder Wechselstube verwendet möglicherweise einen anderen Kurs.
+
+=== Release notes / What's new (max 500) === (401/500)
+Hallo, Trippence! Die App wurde komplett neu entwickelt:
+• Neues Design mit hellem und dunklem Modus
+• Schnellerer Rechner, der offline funktioniert
+• „Echtpreis“ zeigt Preise inklusive Kartengebühr
+• Kurs-Charts und Kursalarme
+• Reisebudgets und Ausgaben
+• Startbildschirm-Widget, historische Kurse und CSV-Export
+
+Hinweis: Das Krypto-Portfolio und die Watchlist der alten Version wurden eingestellt.

@@ -1,0 +1,56 @@
+TRIPPENCE — FICHE GOOGLE PLAY EN FRANÇAIS (fr-FR) (coller chaque bloc en texte brut)
+Traduction de store/play-console.txt. Les espaces avant : ? ! et dans « » sont insécables.
+
+=== Nom de l’application (max 30) === (26/30)
+Trippence : Taux de change
+
+=== Description courte (max 80) === (79/80)
+Convertisseur de devises hors ligne : coût réel, graphiques et alertes de taux.
+
+=== Description complète (max 4000) === (2034/4000)
+Toutes les devises. En un geste. Même hors ligne.
+
+Trippence est un convertisseur de devises simple et rapide, pour les voyageurs et tous ceux qui dépensent dans plusieurs devises.
+
+CONVERTISSEZ EN UN GESTE
+• Voyez toutes vos devises d’un coup d’œil et saisissez les montants sur un grand pavé numérique.
+• Touchez une devise pour en faire la devise de base.
+• Plus de 300 devises, cryptomonnaies comprises.
+
+CONNAISSEZ LE COÛT RÉEL
+Les frais de carte et de retrait rendent chaque achat plus cher que ne l’indique le taux de change. Activez Coût réel, indiquez les frais de votre carte, et Trippence affiche ce que vous paierez vraiment dans votre devise.
+
+FONCTIONNE HORS LIGNE
+Les derniers taux sont enregistrés sur votre téléphone : le convertisseur continue de fonctionner en avion, à l’étranger sans données ou dans un café en sous-sol.
+
+GRAPHIQUES ET HISTORIQUE
+Suivez l’évolution d’une paire sur la dernière semaine, le dernier mois, la dernière année ou les cinq dernières années. Faites glisser le doigt sur le graphique pour voir le taux de n’importe quel jour.
+
+ALERTES DE TAUX
+Fixez un objectif, par exemple « prévenez-moi quand l’EUR/USD passe sous 1,08 », et recevez une notification dès qu’il est atteint.
+
+VOYAGES ET BUDGETS
+Notez vos dépenses de voyage en devise locale et voyez le total dans votre devise, frais de carte inclus, avec un budget quotidien.
+
+ENCORE PLUS DE FONCTIONS
+• Widget d’écran d’accueil avec vos taux.
+• Taux à n’importe quelle date passée, pour vérifier ce qu’un achat a vraiment coûté.
+• Export CSV pour vos archives ou vos notes de frais.
+
+Toutes les fonctionnalités sont gratuites pendant le lancement de Trippence.
+
+CONFIDENTIALITÉ INTÉGRÉE
+Aucun compte. Aucune pub. Aucun pistage. Vos réglages, alertes et voyages restent sur votre téléphone.
+
+Les taux sont des taux de référence moyens du marché, publiés chaque jour par des sources publiques, dont la Banque centrale européenne. Ils sont fournis à titre indicatif. Votre banque ou votre bureau de change peut appliquer un taux différent.
+
+=== Notes de version / Nouveautés (max 500) === (436/500)
+Voici Trippence. L’app a été entièrement reconstruite :
+• Nouveau design avec modes clair et sombre
+• Convertisseur plus rapide qui fonctionne hors ligne
+• « Coût réel » affiche les prix avec vos frais de carte
+• Graphiques et alertes de taux
+• Budgets et dépenses de voyage
+• Widget d’écran d’accueil, taux à des dates passées et export CSV
+
+Remarque : le portefeuille crypto et la liste de suivi de l’ancienne version ont été retirés.

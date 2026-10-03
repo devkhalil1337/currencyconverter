@@ -1,0 +1,55 @@
+TRIPPENCE — GOOGLE PLAY LISTING, ITALIAN (it) (paste each block as plain text)
+
+=== App name (max 30) === (30/30)
+Trippence: Convertitore valute
+
+=== Short description (max 80) === (75/80)
+Convertitore di valute veloce e offline, con commissioni, grafici e avvisi.
+
+=== Full description (max 4000) === (1981/4000)
+Ogni valuta. Un solo tocco. Anche offline.
+
+Trippence è un convertitore di valute semplice e veloce per chi viaggia e per chiunque spenda denaro in più di una valuta.
+
+CONVERTI CON UN TOCCO
+• Vedi tutte le tue valute insieme e digita su un tastierino grande e semplice.
+• Tocca una valuta qualsiasi per renderla la valuta base.
+• Oltre 300 valute, criptovalute incluse.
+
+SCOPRI IL COSTO REALE
+Le commissioni della carta e dei bancomat fanno costare ogni acquisto più di quanto indichi il tasso di cambio. Attiva Costo reale, imposta la commissione della tua carta e Trippence ti mostra quanto pagherai davvero nella tua valuta.
+
+FUNZIONA OFFLINE
+I cambi più recenti vengono salvati sul telefono, così il convertitore continua a funzionare in aereo, all'estero senza connessione dati o in un bar senza campo.
+
+GRAFICI E STORICO
+Guarda come si è mossa una coppia di valute nell'ultima settimana, nell'ultimo mese, anno o negli ultimi cinque anni. Fai scorrere il dito sul grafico per vedere il cambio di qualsiasi giorno.
+
+AVVISI DI CAMBIO
+Imposta una soglia, ad esempio "avvisami quando EUR/USD scende sotto 1,08", e ricevi una notifica quando viene raggiunta.
+
+VIAGGI E BUDGET
+Registra le spese di un viaggio in valuta locale e vedi il totale nella tua valuta, commissioni della carta incluse, con un budget giornaliero.
+
+DI PIÙ PER GLI UTENTI ESPERTI
+• Widget nella schermata Home con i tuoi cambi.
+• Cambi in qualsiasi data passata, per verificare quanto ti è costato davvero un acquisto.
+• Esportazione CSV per i tuoi archivi o per le note spese.
+
+Tutte le funzioni sono gratuite finché Trippence è una novità.
+
+PRIVACY PER SCELTA
+Nessun account. Nessuna pubblicità. Nessun tracciamento. Impostazioni, avvisi e viaggi restano sul tuo telefono.
+
+I cambi sono tassi medi di mercato di riferimento giornalieri, tratti da fonti pubbliche tra cui la Banca centrale europea. Hanno solo scopo informativo. La tua banca o il tuo servizio di cambio potrebbero applicare un tasso diverso.
+
+=== Release notes / What's new (max 500) === (423/500)
+Ecco Trippence. L'app è stata ricostruita da zero:
+• Nuovo design con modalità chiara e scura
+• Convertitore più veloce che funziona offline
+• "Costo reale" mostra i prezzi con la commissione della carta
+• Grafici e avvisi di cambio
+• Budget e spese di viaggio
+• Widget nella schermata Home, cambi in date passate ed esportazione CSV
+
+Nota: il portafoglio crypto e la watchlist della versione precedente sono stati rimossi.

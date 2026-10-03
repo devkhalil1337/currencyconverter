@@ -1,0 +1,63 @@
+TRIPPENCE — GOOGLE PLAY LISTING, PORTUGUESE (paste each block as plain text)
+Best suited to: pt-PT (Português – Portugal). European spelling and terms ("comissão",
+"multibanco", "partilhar", "a app"), with neutral phrasing where possible, so it can also
+serve as the pt-BR fallback. A dedicated pt-BR listing would swap e.g. "comissão" -> "taxa",
+"multibancos" -> "caixas eletrônicos", "guardados" -> "salvos", "registos" -> "registros".
+
+=== App name (max 30) ===
+Trippence: Conversor de moedas
+(30/30)
+
+=== Short description (max 80) ===
+Conversor de moedas rápido e offline: custo real do cartão, gráficos e alertas
+(78/80)
+
+=== Full description (max 4000) ===
+Todas as moedas. Um só toque. Mesmo offline.
+
+O Trippence é um conversor de moedas tranquilo e rápido para quem viaja e para quem gasta dinheiro em mais do que uma moeda.
+
+CONVERTA COM UM TOQUE
+• Veja todas as suas moedas de uma vez e escreva num teclado grande e simples.
+• Toque numa moeda para a tornar a moeda base.
+• Mais de 300 moedas, incluindo criptomoedas.
+
+CONHEÇA O CUSTO REAL
+As comissões do cartão e dos multibancos fazem cada compra custar mais do que o câmbio indica. Ative o Custo real, defina a comissão do seu cartão e o Trippence mostra quanto vai realmente pagar na sua moeda.
+
+FUNCIONA OFFLINE
+Os câmbios mais recentes ficam guardados no dispositivo, por isso o conversor continua a funcionar num avião, no estrangeiro sem dados móveis ou num café numa cave.
+
+GRÁFICOS E HISTÓRICO
+Veja como um par de moedas evoluiu na última semana, mês, ano ou nos últimos cinco anos. Deslize o dedo pelo gráfico para ver o câmbio de qualquer dia.
+
+ALERTAS DE CÂMBIO
+Defina um alvo, como "avisar quando EUR/USD descer abaixo de 1,08", e receba uma notificação quando for atingido.
+
+VIAGENS E ORÇAMENTOS
+Anote o que gasta numa viagem na moeda local e veja o total na sua moeda, com as comissões do cartão incluídas e um orçamento diário.
+
+MAIS PARA UTILIZADORES AVANÇADOS
+• Widget na página inicial com os seus câmbios.
+• Câmbios de qualquer data passada, para confirmar quanto custou realmente uma compra.
+• Exportação CSV para os seus registos ou relatórios de despesas.
+
+Todas as funcionalidades são grátis enquanto o Trippence é novo.
+
+PRIVACIDADE DE RAIZ
+Sem conta. Sem anúncios. Sem rastreio. As suas definições, alertas e viagens ficam no seu dispositivo.
+
+Os câmbios são taxas médias de mercado de referência diárias, obtidas de fontes públicas, incluindo o Banco Central Europeu. Servem apenas para informação. O seu banco ou serviço de câmbio pode usar uma taxa diferente.
+(1887/4000)
+
+=== Release notes / What's new (max 500) ===
+Diga olá ao Trippence. A app foi reconstruída de raiz:
+• Novo design com modo claro e escuro
+• Conversor mais rápido que funciona offline
+• "Custo real" mostra os preços com a comissão do cartão
+• Gráficos e alertas de câmbio
+• Orçamentos e despesas de viagem
+• Widget na página inicial, câmbios de datas passadas e exportação CSV
+
+Nota: a carteira de criptomoedas e a lista de favoritos da versão anterior foram descontinuadas.
+(428/500)
