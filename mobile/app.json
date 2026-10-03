@@ -2,7 +2,7 @@
   "expo": {
     "name": "Trippence",
     "slug": "trippence",
-    "version": "4.0.1",
+    "version": "4.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "trippence",
@@ -30,7 +30,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.currency.io",
-      "versionCode": 40002,
+      "versionCode": 40003,
       "blockedPermissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO",
@@ -90,7 +90,18 @@
       ],
       "expo-sharing",
       "@react-native-community/datetimepicker",
-      "@bacons/apple-targets"
+      "@bacons/apple-targets",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "extraProguardRules": "# react-native-android-widget ships no R8 rules and builds widgets from JS descriptions.\n-keep class com.reactnativeandroidwidget.** { *; }"
+          }
+        }
+      ],
+      "./plugins/with-baseline-profile"
     ],
     "experiments": {
       "typedRoutes": true,

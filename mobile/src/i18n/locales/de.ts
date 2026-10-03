@@ -34,7 +34,7 @@ export const de: Messages = {
     noRate: 'Kein Kurs',
     realCostChip: 'Echtpreis +%{fee} %',
     realCostHint: 'Zeigt Beträge inkl. Kartengebühr, von und in deine Heimatwährung',
-    addCurrency: 'Währung hinzufügen',
+    addCurrency: 'Währung',
     baseHint: 'Basiswährung. Gib einen Betrag über das Tastenfeld ein.',
     otherHint: 'Macht diese zur Basiswährung. Lange drücken zum Entfernen.',
   },

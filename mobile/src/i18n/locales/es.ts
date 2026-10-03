@@ -33,7 +33,7 @@ export const es: Messages = {
     noRate: 'Sin datos',
     realCostChip: 'Precio real +%{fee}%',
     realCostHint: 'Muestra las cantidades con la comisión de tu tarjeta, desde y hacia tu moneda',
-    addCurrency: 'Añadir divisa',
+    addCurrency: 'Divisa',
     baseHint: 'Divisa base. Escribe una cantidad en el teclado.',
     otherHint: 'La convierte en la divisa base. Toca y mantén para quitarla.',
   },

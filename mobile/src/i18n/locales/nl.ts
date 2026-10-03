@@ -32,7 +32,7 @@ export const nl: Messages = {
     noRate: 'Geen koers',
     realCostChip: 'Echte prijs +%{fee}%',
     realCostHint: 'Toont bedragen met je kaartkosten, van en naar je thuisvaluta',
-    addCurrency: 'Valuta toevoegen',
+    addCurrency: 'Valuta',
     baseHint: 'Basisvaluta. Typ een bedrag op het toetsenblok.',
     otherHint: 'Maakt dit de basisvaluta. Lang indrukken om te verwijderen.',
   },

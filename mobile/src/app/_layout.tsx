@@ -27,7 +27,20 @@ import { syncAlertTask } from '@/tasks/rate-alerts';
 import { updateWidgets } from '@/widgets/task-handler';
 
 SplashScreen.preventAutoHideAsync();
-configureForegroundNotifications();
+
+/**
+ * Housekeeping that the first screen doesn't need (alert checks, background task,
+ * widgets, notification setup) waits until the JS thread is idle, so low-end phones
+ * paint the converter sooner.
+ */
+function whenIdle(task: () => void): () => void {
+  if (typeof requestIdleCallback === 'function') {
+    const id = requestIdleCallback(task, { timeout: 2000 });
+    return () => cancelIdleCallback(id);
+  }
+  const id = setTimeout(task, 300);
+  return () => clearTimeout(id);
+}
 
 function useStoresHydrated() {
   const check = () =>
@@ -90,13 +103,15 @@ export default function RootLayout() {
   // Each successful rates refresh is a chance for an alert to fire.
   const fetchedAt = useRates((s) => s.fetchedAt);
   useEffect(() => {
-    if (hydrated && fetchedAt) checkAlerts();
+    if (hydrated && fetchedAt) return whenIdle(() => checkAlerts());
   }, [hydrated, fetchedAt]);
 
   const activeAlerts = useAlerts((s) => activeAlertCount(s.alerts));
   useEffect(() => {
     if (!hydrated) return;
-    syncAlertTask(activeAlerts > 0).catch((err) => console.warn('Alert task sync failed', err));
+    return whenIdle(() => {
+      syncAlertTask(activeAlerts > 0).catch((err) => console.warn('Alert task sync failed', err));
+    });
   }, [hydrated, activeAlerts]);
 
   // RevenueCat is the source of truth for Pro; the cached flag covers offline starts.
@@ -114,12 +129,14 @@ export default function RootLayout() {
   const proState = usePro((s) => s.isPro || s.devPro);
   const localeKey = useLocaleKey();
   useEffect(() => {
-    if (hydrated) updateWidgets();
+    if (hydrated) return whenIdle(() => updateWidgets());
   }, [hydrated, fetchedAt, homeCurrency, currencies, proState, localeKey]);
 
   const ready = (fontsLoaded || !!fontError) && hydrated;
   useEffect(() => {
-    if (ready) SplashScreen.hideAsync();
+    if (!ready) return;
+    SplashScreen.hideAsync();
+    return whenIdle(() => configureForegroundNotifications());
   }, [ready]);
 
   if (!ready) return null;

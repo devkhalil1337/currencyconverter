@@ -32,7 +32,7 @@ export const it: Messages = {
     noRate: 'Nessun cambio',
     realCostChip: 'Costo reale +%{fee}%',
     realCostHint: 'Mostra gli importi con la commissione della carta, da e verso la tua valuta di casa',
-    addCurrency: 'Aggiungi valuta',
+    addCurrency: 'Valuta',
     baseHint: 'Valuta base. Digita un importo sul tastierino.',
     otherHint: 'La imposta come valuta base. Tieni premuto per rimuoverla.',
   },

@@ -33,7 +33,7 @@ export const fr: Messages = {
     noRate: 'Pas de taux',
     realCostChip: 'Coût réel +%{fee} %',
     realCostHint: 'Affiche les montants avec vos frais de carte, vers et depuis votre devise principale',
-    addCurrency: 'Ajouter une devise',
+    addCurrency: 'Devise',
     baseHint: 'Devise de base. Saisissez un montant sur le pavé.',
     otherHint: 'Définit cette devise comme devise de base. Appui long pour la retirer.',
   },

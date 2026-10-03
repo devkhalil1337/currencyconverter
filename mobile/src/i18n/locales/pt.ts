@@ -33,7 +33,7 @@ export const pt: Messages = {
     noRate: 'Sem câmbio',
     realCostChip: 'Custo real +%{fee}%',
     realCostHint: 'Mostra os valores com a comissão do cartão, de e para a sua moeda de origem',
-    addCurrency: 'Adicionar moeda',
+    addCurrency: 'Moeda',
     baseHint: 'Moeda base. Insira um valor no teclado.',
     otherHint: 'Torna esta a moeda base. Toque longo para remover.',
   },
