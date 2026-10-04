@@ -1,5 +1,5 @@
 TRIPPENCE — PLAY CONSOLE COPY (paste each block as plain text)
-Build: release/Trippence-4.0.1-40002.aab   version 4.0.1 (40002)   package com.currency.io
+Build: release/Trippence-4.0.2-40003.aab   version 4.0.2 (40003)   package com.currency.io
 
 === App name (max 30) ===
 Trippence: Currency Converter
@@ -44,7 +44,7 @@ No account. No ads. No tracking. Your settings, alerts and trips stay on your ph
 
 Rates are daily mid-market reference rates from public sources, including the European Central Bank. They are for information only. Your bank or exchange service may use a different rate.
 
-=== Release notes / What's new (max 500) ===
+=== Release notes 4.0.1 (first Trippence release, kept for reference) ===
 Say hello to Trippence. The app has been rebuilt from scratch:
 • New design with light and dark mode
 • Faster converter that works offline
@@ -54,6 +54,43 @@ Say hello to Trippence. The app has been rebuilt from scratch:
 • Home-screen widget, rates on past dates and CSV export
 
 Note: the crypto portfolio and watchlist from the old version were retired.
+
+=== Release notes 4.0.2 (paste per language in Play Console) ===
+<en-US>
+Now in Spanish, German, French, Italian, Portuguese and Dutch. Choose a language in Settings.
+Faster start, especially on older phones.
+Fixes for Real cost and the tab bar.
+</en-US>
+<de-DE>
+Jetzt auf Deutsch, Spanisch, Französisch, Italienisch, Portugiesisch und Niederländisch. Sprache in den Optionen wählen.
+Schnellerer Start, vor allem auf älteren Handys.
+Korrekturen für Echtpreis und die Tab-Leiste.
+</de-DE>
+<es-ES>
+Ahora en español, alemán, francés, italiano, portugués y neerlandés. Elige el idioma en Ajustes.
+Inicio más rápido, sobre todo en móviles antiguos.
+Correcciones en Precio real y en la barra de pestañas.
+</es-ES>
+<fr-FR>
+Disponible en français, espagnol, allemand, italien, portugais et néerlandais. Choisissez la langue dans Réglages.
+Démarrage plus rapide, surtout sur les téléphones plus anciens.
+Corrections pour Coût réel et la barre d’onglets.
+</fr-FR>
+<it-IT>
+Ora in italiano, spagnolo, tedesco, francese, portoghese e olandese. Scegli la lingua in Impostazioni.
+Avvio più veloce, soprattutto sui telefoni meno recenti.
+Correzioni per Costo reale e la barra delle schede.
+</it-IT>
+<pt-PT>
+Agora em português, espanhol, alemão, francês, italiano e neerlandês. Escolha o idioma em Ajustes.
+Arranque mais rápido, sobretudo em telemóveis mais antigos.
+Correções no Custo real e na barra de separadores.
+</pt-PT>
+<nl-NL>
+Nu in het Nederlands, Spaans, Duits, Frans, Italiaans en Portugees. Kies de taal in Instellingen.
+Snellere start, vooral op oudere telefoons.
+Verbeteringen voor Echte prijs en de tabbalk.
+</nl-NL>
 
 === Store settings ===
 Category: Finance        Tags: Currency converter, Travel
